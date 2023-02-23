@@ -2,4 +2,4 @@ from django.http import HttpResponse
 
 
 def home(request):
-    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application")
+    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application (on Julie's branch)")
