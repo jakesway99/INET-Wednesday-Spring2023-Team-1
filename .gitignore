@@ -28,6 +28,7 @@ secret_key.txt
 .env.development
 .env.test
 .env.production
+.cache
 
 # IDE specific files
 .idea/
