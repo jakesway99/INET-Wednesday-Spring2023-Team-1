@@ -7,8 +7,7 @@ def home(request):
     return HttpResponse("Hello, world. You're at the NYUBeatBuddies application (on Julie's branch)")
 
 def profile_edit(request):
-    client_credentials_manager = SpotifyClientCredentials(client_id='17cb0114380b42dea06bdcc0c96ed786',
-                                                          client_secret='6fcf10f9ddcd4c8f8ff20945c7eaaf01')
+    client_credentials_manager = SpotifyClientCredentials()
 
     tokenDict = client_credentials_manager.get_access_token()
     token = tokenDict['access_token']
