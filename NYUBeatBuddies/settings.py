@@ -9,28 +9,33 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# loading .env file
+dotenv_path = os.path.join(BASE_DIR, ".env")
+load_dotenv(dotenv_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-200uo4nvf!$aifh!cg2=)@h&diu%mxu*&cg(7#i#)om_l4#twa"
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["nbb-env.eba-qmhnyae3.us-west-2.elasticbeanstalk.com"]
+ALLOWED_HOSTS = ["nbb-env.eba-qmhnyae3.us-west-2.elasticbeanstalk.com", "127.0.0.1"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "spotipy",
     "application",
     "django.contrib.admin",
     "django.contrib.auth",
