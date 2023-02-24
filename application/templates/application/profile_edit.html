@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AutoComplete</title>
+    <script src=  
+"https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  
+    </script>  
+    
+    <script src=  
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  
+    </script>  
+    {{ OAuth|json_script:"auths" }} 
+    <script>
+        const auths = JSON.parse(document.getElementById('auths').textContent);
+    </script>
+    <script>
+  $( function() {
+
+  $( "#track1" ).autocomplete({
+    source: getSongList,
+    select: saveTrkOnClick1,
+  });
+  
+   $( "#track2" ).autocomplete({
+    source: getSongList,
+    select: saveTrkOnClick2,
+  });
+  
+   $( "#track3" ).autocomplete({
+    source: getSongList,
+    select: saveTrkOnClick3,
+  });
+   $( "#track4" ).autocomplete({
+    source: getSongList,
+    select: saveTrkOnClick4,
+  });
+   $( "#track5" ).autocomplete({
+    source: getSongList,
+    select: saveTrkOnClick5,
+  });
+  
+   $( "#album1" ).autocomplete({
+    source: getAlbumList,
+    select: saveAlbOnClick1,
+  });
+  
+  $( "#album2" ).autocomplete({
+    source: getAlbumList,
+    select: saveAlbOnClick2,
+  });
+  
+  $( "#album3" ).autocomplete({
+    source: getAlbumList,
+    select: saveAlbOnClick3,
+  });
+  
+  $( "#album4" ).autocomplete({
+    source: getAlbumList,
+    select: saveAlbOnClick4,
+  });
+  
+  $( "#album5" ).autocomplete({
+    source: getAlbumList,
+    select: saveAlbOnClick5,
+  });
+  
+  
+  $( "#artist1" ).autocomplete({
+    source: getArtistList,
+    select: saveArtOnClick1,
+  });
+  
+  $( "#artist2" ).autocomplete({
+    source: getArtistList,
+    select: saveArtOnClick2,
+  });
+  
+  $( "#artist3" ).autocomplete({
+    source: getArtistList,
+    select: saveArtOnClick3,
+  });
+  
+  $( "#artist4" ).autocomplete({
+    source: getArtistList,
+    select: saveArtOnClick4,
+  });
+  
+  $( "#artist5" ).autocomplete({
+    source: getArtistList,
+    select: saveArtOnClick5,
+  });
+    
+    accessToken = auths;
+    function getSongList(request, response) {
+      var songSearch = request.term;
+      var songList = [];
+      $.ajax({
+        url: "https://api.spotify.com/v1/search?q=" + songSearch + "&type=track&limit=25",
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "Authorization" : " Bearer " + accessToken
+        },
+        success: function(data) {
+            var artistData;
+            var songStr;
+            var songID;
+            var ary = data.tracks.items;
+            for (track in ary) {
+                songStr = ary[track].name + " - ";
+                artistData = ary[track].artists;
+                for (artist in artistData) {
+                    songStr = songStr + artistData[artist].name + ", ";
+                }
+                songID = ary[track].id;
+                songList.push({label: songStr.slice(0,-2), value: songID});
+            }
+            response(songList);
+        },
+      })
+    };
+    function saveTrkOnClick1(event, ui) {
+        event.preventDefault();
+        $("#songID1").val(ui.item.value);
+        $("#track1").val(ui.item.label);
+                
+        var test1 = $("#songID1").val();
+        alert(test1);
+    };
+    function saveTrkOnClick2(event, ui) {
+        event.preventDefault();
+        $("#songID2").val(ui.item.value);
+        $("#track2").val(ui.item.label);
+                
+        var test1 = $("#songID2").val();
+        alert(test1);
+    };
+    function saveTrkOnClick3(event, ui) {
+        event.preventDefault();
+        $("#songID3").val(ui.item.value);
+        $("#track3").val(ui.item.label);
+                
+        var test1 = $("#songID3").val();
+        alert(test1);
+    };
+    function saveTrkOnClick4(event, ui) {
+        event.preventDefault();
+        $("#songID4").val(ui.item.value);
+        $("#track4").val(ui.item.label);
+                
+        var test1 = $("#songID4").val();
+        alert(test1);
+    };
+    function saveTrkOnClick5(event, ui) {
+        event.preventDefault();
+        $("#songID5").val(ui.item.value);
+        $("#track5").val(ui.item.label);
+                
+        var test1 = $("#songID5").val();
+        alert(test1);
+    };
+    
+    function getAlbumList(request, response) {
+      var albumSearch = request.term;
+      var albumList = [];
+      $.ajax({
+        url: "https://api.spotify.com/v1/search?q=" + albumSearch + "&type=album&limit=25",
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "Authorization" : " Bearer " + accessToken
+        },
+        success: function(data) {
+            var artistData;
+            var albumStr;
+            var albumID;
+            var ary = data.albums.items;
+            for (album in ary) {
+                albumStr = ary[album].name + " - ";
+                artistData = ary[album].artists;
+                for (artist in artistData) {
+                    albumStr = albumStr + artistData[artist].name + ", ";
+                }
+                albumID = ary[album].id;
+                albumList.push({label: albumStr.slice(0,-2), value: albumID});
+            }
+            response(albumList);
+        },
+      })
+    };
+    function saveAlbOnClick1(event, ui) {
+      event.preventDefault();
+      $("#albumID1").val(ui.item.value);
+      $("#album1").val(ui.item.label);
+
+      var test1 = $("#albumID1").val();
+      alert(test1);
+    };
+    function saveAlbOnClick2(event, ui) {
+      event.preventDefault();
+      $("#albumID2").val(ui.item.value);
+      $("#album2").val(ui.item.label);
+
+      var test1 = $("#albumID").val();
+      alert(test1);
+    };    
+    function saveAlbOnClick3(event, ui) {
+      event.preventDefault();
+      $("#albumID3").val(ui.item.value);
+      $("#album3").val(ui.item.label);
+
+      var test1 = $("#albumID3").val();
+      alert(test1);
+    };
+    function saveAlbOnClick4(event, ui) {
+      event.preventDefault();
+      $("#albumID4").val(ui.item.value);
+      $("#album4").val(ui.item.label);
+
+      var test1 = $("#albumID4").val();
+      alert(test1);
+    };
+    function saveAlbOnClick5(event, ui) {
+      event.preventDefault();
+      $("#albumID5").val(ui.item.value);
+      $("#album5").val(ui.item.label);
+
+      var test1 = $("#albumID5").val();
+      alert(test1);
+    }; 
+    
+    function getArtistList(request, response) {
+      var artistSearch = request.term;
+      var artistList = [];
+      $.ajax({
+        url: "https://api.spotify.com/v1/search?q=" + artistSearch + "&type=artist&limit=25",
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "Authorization" : " Bearer " + accessToken
+        },
+        success: function(data) {
+            var ary = data.artists.items;
+            for (artist in ary) {
+                songID = ary[artist].id;
+                artistList.push({label: ary[artist].name, value: ary[artist].id});
+            }
+            response(artistList);
+        },
+      })
+    };
+    function saveArtOnClick1(event, ui) {
+      event.preventDefault();
+      $("#artistID1").val(ui.item.value);
+      $("#artist1").val(ui.item.label);
+
+      var test1 = $("#artistID1").val();
+      alert(test1);
+    };
+    function saveArtOnClick2(event, ui) {
+      event.preventDefault();
+      $("#artistID2").val(ui.item.value);
+      $("#artist2").val(ui.item.label);
+
+      var test1 = $("#artistID2").val();
+      alert(test1);
+    };    
+    function saveArtOnClick3(event, ui) {
+      event.preventDefault();
+      $("#artistID3").val(ui.item.value);
+      $("#artist3").val(ui.item.label);
+
+      var test1 = $("#artistID3").val();
+      alert(test1);
+    };
+    function saveArtOnClick4(event, ui) {
+      event.preventDefault();
+      $("#artistID4").val(ui.item.value);
+      $("#artist4").val(ui.item.label);
+
+      var test1 = $("#artistID4").val();
+      alert(test1);
+    };
+    function saveArtOnClick5(event, ui) {
+      event.preventDefault();
+      $("#artistID5").val(ui.item.value);
+      $("#artist5").val(ui.item.label);
+
+      var test1 = $("#artistID5").val();
+      alert(test1);
+    };    
+});
+  </script>   
+    <link href=  
+"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
+        rel="stylesheet" type="text/css" />  
+</head>
+<body>
+    <h1>Add Top {{OAuth_key}} 5 Songs  :</h1>
+    1: <input type="text" id="track1">
+    <input type="hidden" id="songID1" name="songID" value=""> <br>
+    2: <input type="text" id="track2">
+    <input type="hidden" id="songID2" name="songID" value=""> <br>
+    3: <input type="text" id="track3">
+    <input type="hidden" id="songID3" name="songID" value=""> <br>
+    4: <input type="text" id="track4">
+    <input type="hidden" id="songID4" name="songID" value=""> <br>
+    5: <input type="text" id="track5">
+    <input type="hidden" id="songID5" name="songID" value=""> <br>
+    <input type = "button" onclick = "showTrackIDs()" value = "Display">
+    <p id="trk1"></p> <br><br>
+    
+    <h1>Add Top 5 Albums:</h1>
+    1: <input type="text" id="album1">
+    <input type="hidden" id="albumID1" name="songID" value=""> <br>
+    2: <input type="text" id="album2">
+    <input type="hidden" id="albumID2" name="songID" value=""> <br>
+    3: <input type="text" id="album3">
+    <input type="hidden" id="albumID3" name="songID" value=""> <br>
+    4: <input type="text" id="album4">
+    <input type="hidden" id="albumID4" name="songID" value=""> <br>
+    5: <input type="text" id="album5">
+    <input type="hidden" id="albumID5" name="songID" value=""> <br>
+    <input type = "button" onclick = "showAlbumIDs()" value = "Display">
+    <p id="alb1"></p> <br><br>
+    
+    <h1>Add Top 5 Artists:</h1>
+    1: <input type="text" id="artist1">
+    <input type="hidden" id="artistID1" name="artistID" value=""> <br>
+    2: <input type="text" id="artist2">
+    <input type="hidden" id="artistID2" name="artistID" value=""> <br>
+    3: <input type="text" id="artist3">
+    <input type="hidden" id="artistID3" name="artistID" value=""> <br>
+    4: <input type="text" id="artist4">
+    <input type="hidden" id="artistID4" name="artistID" value=""> <br>
+    5: <input type="text" id="artist5">
+    <input type="hidden" id="artistID5" name="artistID" value=""> <br>
+    <input type = "button" onclick = "showArtistIDs()" value = "Display">
+    <p id="art1"></p> <br><br>
+
+
+<script>
+
+function showTrackIDs() {
+  var x = document.getElementById("songID1").value;
+  document.getElementById("trk1").innerHTML = x;
+};
+function showAlbumIDs() {
+  var x = document.getElementById("albumID1").value;
+  document.getElementById("alb1").innerHTML = x;
+};
+function showArtistIDs() {
+  var x = document.getElementById("artistID1").value;
+  document.getElementById("art1").innerHTML = x;
+};
+</script>
+</body>
+</html>
