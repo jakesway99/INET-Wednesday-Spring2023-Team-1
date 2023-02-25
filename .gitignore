@@ -6,6 +6,9 @@
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+NYUBeatBuddies/__pycache__/
+application/__pycache__/
+application/migrations/__pycache__/
 *.py[cod]
 *$py.class
 
