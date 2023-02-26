@@ -14,3 +14,6 @@ def profile_edit(request):
     token = token_dict['access_token']
     context = {'OAuth': token}
     return render(request, 'application/profile_edit.html', context)
+
+def profile(request):
+    return render(request, 'application/profile.html')
