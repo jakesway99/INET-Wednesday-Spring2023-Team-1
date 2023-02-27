@@ -11,9 +11,10 @@ def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
 
     token_dict = client_credentials_manager.get_access_token()
-    token = token_dict['access_token']
-    context = {'OAuth': token}
-    return render(request, 'application/profile_edit.html', context)
+    token = token_dict["access_token"]
+    context = {"OAuth": token}
+    return render(request, "application/profile_edit.html", context)
+
 
 def profile(request):
-    return render(request, 'application/profile.html')
+    return render(request, "application/profile.html")
