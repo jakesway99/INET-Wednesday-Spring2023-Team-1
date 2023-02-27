@@ -236,7 +236,11 @@
             display: flex;
             flex-direction: row;
             flex-grow: 1;
+            height:100px; 
+            width:100%;
             padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .left-column {
@@ -296,66 +300,83 @@
             color: white;
             text-shadow: 2px 3px 3px black;
             font-family: Verdana;
-            position: absolute;
+            /* position: absolute;
             right: 175px;
-            bottom: 630px;
-            z-index: 1000;
+            bottom: 630px; */
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: 30px;
+            bottom: 0px;
+            z-index: 1005;
         }
 
         .img1 img {
-            position: absolute;
-            right: 280px;
-            bottom: 380px;
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: 135px;
+            bottom: 20px;
             width: 250px;
             height: 250px;        
             clip-path: path(var(--badge1));
         }
         .img2 img {
-            position: absolute;
-            right: 130px;
-            bottom: 340px;
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: -160px;
+            bottom: 190px;
             width: 190px;
             height: 190px;
             z-index: 1000;
             clip-path: path(var(--badge2));
         }
         .img3 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
             border: 8px;
             border-color:#ffafcc;
             border-style:solid;
-            position: absolute;
-            right: 380px;
-            bottom: -30px;
+            right: 235px;
+            bottom: -200px;
             z-index: 1000;
             
         }
         .img4 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
             border: 8px;
             border-color:#bde0fe;
             border-style:solid;
-            position: absolute;
-            right: 260px;
-            bottom: -80px;
+            right: -45px;
+            bottom: -60px;
             z-index: 1005;
             
         }
         .img5 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
             border: 8px;
             border-color:#a2d2ff;
             border-style:solid;
-            position: absolute;
-            right: 130px;
-            bottom: -30px;
+            right: -20px;
+            bottom: -10px;
             z-index: 1000;
             
         }
         .list-group {
-            position: absolute;
-            right: 130px;
-            bottom: 150px;
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: -15px;
+            bottom: 420px;
             font-size: 20px;
             font-family: Verdana;
-            width: 28%;
+            width: 100%;
             text-shadow: 2px 2px 2px white;
             border-style: double;
             border-width: 8px;
@@ -539,6 +560,36 @@
                             </div>
                         </div>
                       </li>
+                      <div>
+                            <h4>A song everyone should listen to</h4>
+                            <div class="answer">
+                                <div class="box">What a Wonderful World - Louis Armstrong</div>
+                            </div>
+                        </div>
+                        <li>
+                            <div>
+                                <h4>Your go to Karaoke Song</h4>
+                                <div class="answer">
+                                    <div class="box">Don't Stop Believin - Journey</div>
+                                </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div>
+                                <h4>Your go to Karaoke Song</h4>
+                                <div class="answer">
+                                    <div class="box">Don't Stop Believin - Journey</div>
+                                </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div>
+                                <h4>Your go to Karaoke Song</h4>
+                                <div class="answer">
+                                    <div class="box">Don't Stop Believin - Journey</div>
+                                </div>
+                            </div>
+                          </li>
                     </ul>
                   </div>
                   <div class="right-column">
