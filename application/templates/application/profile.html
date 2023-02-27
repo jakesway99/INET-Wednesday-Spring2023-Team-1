@@ -2,7 +2,13 @@
 <html>
 <head>
 	<title>Profile Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 	<style>
+        :root {
+            --badge1: "M125 0L106.292 20.4271L81.5938 7.54167L71.0938 33.0417L43.4167 29.25L42.4167 56.75L15.0938 62.5L23.6667 88.6771L0 103.292L17.1771 125.01L0 146.708L23.6667 161.323L15.0938 187.5L42.4167 193.26L43.4167 220.75L71.0938 216.969L81.5938 242.469L106.292 229.583L125 250L143.719 229.583L168.406 242.469L178.927 216.969L206.594 220.75L207.594 193.26L234.917 187.5L226.333 161.323L250 146.708L232.823 125.01L250 103.292L226.333 88.6771L234.917 62.5L207.594 56.75L206.594 29.25L178.927 33.0417L168.406 7.54167L143.719 20.4271L125 0Z";
+            --badge2: "M83.117 3.72879C90.1867 -1.24293 99.8055 -1.24293 106.883 3.72879C123.841 15.6514 120.199 14.5114 141.202 14.4481C149.974 14.4164 157.756 19.8473 160.432 27.8749C166.869 47.0888 164.604 44.12 181.641 55.9318C188.759 60.864 191.735 69.6516 188.988 77.6554C182.449 96.7902 182.417 93.1168 188.988 112.339C191.735 120.342 188.759 129.13 181.641 134.062C164.612 145.874 166.869 142.905 160.432 162.119C157.756 170.147 149.974 175.578 141.202 175.554C120.191 175.483 123.841 174.343 106.883 186.265C99.8055 191.245 90.1867 191.245 83.117 186.265C66.1513 174.351 69.8009 175.475 48.7977 175.554C40.0259 175.578 32.2437 170.147 29.5679 162.119C23.1394 142.881 25.3482 145.858 8.35088 134.062C1.24161 129.13 -1.7351 120.342 1.01202 112.339C7.5592 93.196 7.58295 96.8773 1.01202 77.6554C-1.7351 69.6516 1.24161 60.864 8.35088 55.9318C25.3403 44.1438 23.1315 47.1284 29.5679 27.8749C32.2437 19.8473 40.0259 14.4164 48.7977 14.4481C69.7455 14.5114 66.0563 15.7227 83.117 3.72879Z";
+        }
+
 		body {
 			margin: 0;
 			padding: 0;
@@ -230,7 +236,11 @@
             display: flex;
             flex-direction: row;
             flex-grow: 1;
+            height:100px; 
+            width:100%;
             padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .left-column {
@@ -283,7 +293,96 @@
             height:100%;
             padding-right: 27px;
             border: 2px solid black;
+            background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
         }
+
+        .image-frame h1 {
+            color: white;
+            text-shadow: 2px 3px 3px black;
+            font-family: Verdana;
+            /* position: absolute;
+            right: 175px;
+            bottom: 630px; */
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: 30px;
+            bottom: 0px;
+            z-index: 1005;
+        }
+
+        .img1 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: 135px;
+            bottom: 20px;
+            width: 250px;
+            height: 250px;        
+            clip-path: path(var(--badge1));
+        }
+        .img2 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: -160px;
+            bottom: 190px;
+            width: 190px;
+            height: 190px;
+            z-index: 1000;
+            clip-path: path(var(--badge2));
+        }
+        .img3 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            border: 8px;
+            border-color:#ffafcc;
+            border-style:solid;
+            right: 235px;
+            bottom: -200px;
+            z-index: 1000;
+            
+        }
+        .img4 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            border: 8px;
+            border-color:#bde0fe;
+            border-style:solid;
+            right: -45px;
+            bottom: -60px;
+            z-index: 1005;
+            
+        }
+        .img5 img {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            border: 8px;
+            border-color:#a2d2ff;
+            border-style:solid;
+            right: -20px;
+            bottom: -10px;
+            z-index: 1000;
+            
+        }
+        .list-group {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            right: -15px;
+            bottom: 420px;
+            font-size: 20px;
+            font-family: Verdana;
+            width: 100%;
+            text-shadow: 2px 2px 2px white;
+            border-style: double;
+            border-width: 8px;
+            border-color: white;
+        }
+
 
         .image-frame img {
             width: 30%;
@@ -325,6 +424,7 @@
 	</style>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 	<div class="container">
 		<div class="left">
 			<h1>
@@ -460,15 +560,38 @@
                             </div>
                         </div>
                       </li>
+                
                     </ul>
                   </div>
                   <div class="right-column">
                     <div class="image-frame">
-                      <img src="https://via.placeholder.com/80x80">
-                      <img src="https://via.placeholder.com/80x80">
-                      <img src="https://via.placeholder.com/80x80">
-                      <img src="https://via.placeholder.com/80x80">
-                      <img src="https://via.placeholder.com/80x80">
+                        <h1>Your Top Artists</h1>
+                        <div class="artist-frame1">
+                            <div class="img1">
+                                <img src="https://i.iheart.com/v3/re/new_assets/635029f8aee0f4b0e56f9a45?ops=contain(1480,0)" style="width:250px;height:250px;">
+                            </div>
+                        </div>
+                        <div class="artist-frame2">
+                            <div class="img2">
+                                <img src="https://media.pitchfork.com/photos/5c361b06a53f2f2c86750925/1:1/w_600/Maggie%20Rogers_Heard%20it%20in%20a%20past%20life.jpg" style="width:190px;height:190px;">
+                            </div>
+                        </div>
+                        <div class="img3">
+                            <img src="https://cdn.vox-cdn.com/thumbor/cUUdVnTXrleRNqbV-9JloWAleSI=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/19535833/thumb_clean.jpg" style="width:150px;height:150px;">
+                        </div>
+                        <div class="img4">
+                            <img src="https://images.pristineauction.com/161/1612663/share_1599832063-Lil-Nas-X-Signed-12x12-Old-Town-Road-Album-Cover-PSA-Hologram-PristineAuction.com.jpg" style="width:150px;height:150px;">
+                        </div>
+                        <div class="img5">
+                            <img src="https://media.pitchfork.com/photos/5c6daa5ea042db4303a2fa85/1:1/w_600/Hozier_WastelandBaby.jpg" style="width:150px;height:150px;">
+                        </div>
+                        <ol class="list-group list-group-numbered">
+                            <li style="background-color:#cdb4db"class="list-group-item">Taylor Swift</li>
+                            <li style="background-color:#ffc8dd;"class="list-group-item">Maggie Rogers</li>
+                            <li style="background-color:#ffafcc;"class="list-group-item">Harry Styles</li>
+                            <li style="background-color:#bde0fe;"class="list-group-item">Lil Nas X</li>
+                            <li style="background-color:#a2d2ff;"class="list-group-item">Hozier</li>
+                          </ol> 
                     </div>
                   </div>
                 </div>
