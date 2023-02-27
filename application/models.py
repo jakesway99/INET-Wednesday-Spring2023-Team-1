@@ -21,7 +21,7 @@ class FavoriteSong(models.Model):
 
 
 class FavoriteArtist(models.Model):
-    user= models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     artist1_id = models.CharField(max_length=50)
     artist1_name = models.CharField(max_length=300)
     artist2_id = models.CharField(max_length=50)
