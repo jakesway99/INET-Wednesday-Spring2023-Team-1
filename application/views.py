@@ -23,16 +23,13 @@ def profile_edit(request):
     curr_user = User.objects.get(pk=1)
     if request.method == "POST":
         if "song1_id" in request.POST:
-            if FavoriteSong.objects.filter(
-                pk=curr_user.pk
-            ):  # check if favorite song object exists for user
+            if FavoriteSong.objects.filter(pk=curr_user.pk):  # check if favorite song object exists for user
                 song_instance = FavoriteSong.objects.get(pk=curr_user.pk)
                 form = SongEdit(request.POST, request.FILES, instance=song_instance)
             else:
                 form = SongEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
@@ -40,7 +37,7 @@ def profile_edit(request):
 
         elif "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
-                pk=curr_user.pk
+                    pk=curr_user.pk
             ):  # check if favorite song object exists for user
                 album_instance = FavoriteAlbum.objects.get(pk=curr_user.pk)
                 form = AlbumEdit(request.POST, request.FILES, instance=album_instance)
@@ -48,7 +45,6 @@ def profile_edit(request):
                 form = AlbumEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
@@ -56,7 +52,7 @@ def profile_edit(request):
 
         else:
             if FavoriteArtist.objects.filter(
-                pk=curr_user.pk
+                    pk=curr_user.pk
             ):  # check if favorite song object exists for user
                 artist_instance = FavoriteArtist.objects.get(pk=curr_user.pk)
                 form = ArtistEdit(request.POST, request.FILES, instance=artist_instance)
@@ -64,7 +60,6 @@ def profile_edit(request):
                 form = ArtistEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
