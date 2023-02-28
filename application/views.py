@@ -32,7 +32,6 @@ def profile_edit(request):
                 form = SongEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
@@ -48,7 +47,6 @@ def profile_edit(request):
                 form = AlbumEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
@@ -64,7 +62,6 @@ def profile_edit(request):
                 form = ArtistEdit(request.POST, request.FILES)
                 form.user = curr_user
 
-            print(request.FILES)
             if form.is_valid():
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user

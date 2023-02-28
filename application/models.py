@@ -7,7 +7,7 @@ class User(models.Model):
 
 
 class FavoriteSong(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     song1_id = models.CharField(max_length=50)
     song1_name_artist = models.CharField(max_length=300)
     song2_id = models.CharField(max_length=50)
@@ -21,7 +21,7 @@ class FavoriteSong(models.Model):
 
 
 class FavoriteArtist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     artist1_id = models.CharField(max_length=50)
     artist1_name = models.CharField(max_length=300)
     artist2_id = models.CharField(max_length=50)
@@ -35,7 +35,7 @@ class FavoriteArtist(models.Model):
 
 
 class FavoriteAlbum(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     album1_id = models.CharField(max_length=50)
     album1_name_artist = models.CharField(max_length=300)
     album2_id = models.CharField(max_length=50)
