@@ -193,7 +193,12 @@
 			justify-content: center;
             margin-top:20px;
             padding: 10px;
-            width:100%
+            width: 100%
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
         }
 
         .discover-events-button {
@@ -282,6 +287,40 @@
             align-items: center;
             width: 60%;
 
+        }
+
+        .bottom-column {    
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 70%;
+            border: 2px solid rgb(42, 2, 38);
+            padding: 10px;
+            margin: 0 auto;
+        }
+
+        .bottom-column h2 {
+            font-weight: bold;
+            font-family: Verdana;
+            color: darkred;
+			margin: 0;
+            padding: 5px;
+			text-align: center;
+        }
+        
+        .bottom-column ol {
+            font-size: 20px;
+            font-family: Verdana;
+            width: 100%;
+            text-shadow: 2px 2px 2px white;
+        }
+        
+        .bottom-column ol li {
+            color: darkred;
+            padding: 5px;
+            margin-right: 25px;
         }
 
         .image-frame {
@@ -508,8 +547,10 @@
                     </div>
                 </div>
               </div>
+              <div class="footer">
               <div class="discover-events-wrapper">
                 <button class="discover-events-button">Discover Events</button>
+            </div>
               </div>
 		    </div>
             <div class="right-section">
@@ -595,8 +636,20 @@
                     </div>
                   </div>
                 </div>
-                <div class="discover-events-wrapper">
-                    <button class="discover-events-button">Discover People</button>
+                <div class="bottom-column">
+                    <h2>Your Top Songs</h2>
+                    <ol>
+                        <li style="background-color:#cdb4db;">Lavender Haze - Taylor Swift</li>
+                        <li style="background-color:#ffc8dd;">Grapejuice - Harry Styles</li>
+                        <li style="background-color:#ffafcc;">About You - The 1975</li>
+                        <li style="background-color:#bde0fe;">Midnight Rain - Taylor Swift</li>
+                        <li style="background-color:#a2d2ff;">I Feel It Coming - The Weeknd, Daft Punk</li>
+                    </ol>
+                </div>
+                <div class="footer">
+                    <div class="discover-events-wrapper">
+                        <button class="discover-events-button">Discover People</button>
+                    </div>
                 </div>
               </div>
 	</div>
