@@ -111,30 +111,24 @@
   });
 
 
-  var allGenres = [
-    {% for genre in genre_list %}
-        "{{genre.genre_name}}",
-    {% endfor %}
-  ];
-    
   $( "#id_genre1" ).autocomplete({
-    source: allGenres,
+    source: getGenreList,
   });
   
   $( "#id_genre2" ).autocomplete({
-    source: allGenres,
+    source: getGenreList,
   });
   
   $( "#id_genre3" ).autocomplete({
-    source: allGenres,
+    source: getGenreList,
   });
   
   $( "#id_genre4" ).autocomplete({
-    source: allGenres,
+    source: getGenreList,
   });
   
   $( "#id_genre5" ).autocomplete({
-    source: allGenres,
+    source: getGenreList,
   });
 
     
@@ -310,6 +304,19 @@
 
     };    
 
+    function getGenreList(request, response) {
+      var genreArray = [
+        {% for genre in genre_list %}
+          "{{genre.genre_name}}",
+        {% endfor %}
+      ];
+
+      <!--Show only first 25 jquery autocomplete results-->
+      
+      var results = $.ui.autocomplete.filter(genreArray, request.term);
+
+      response(results.slice(0, 25));
+    };
 
 });
   </script>   
@@ -352,8 +359,6 @@
 
     </style>
     </div>
-
-
 
 </body>
 </html>
