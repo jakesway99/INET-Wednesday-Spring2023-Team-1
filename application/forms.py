@@ -125,13 +125,6 @@ class ArtistEdit(ModelForm):
             "artist4_name",
             "artist5_name",
         )
-        widgets = {
-            "artist1_id": forms.HiddenInput(),
-            "artist2_id": forms.HiddenInput(),
-            "artist3_id": forms.HiddenInput(),
-            "artist4_id": forms.HiddenInput(),
-            "artist5_id": forms.HiddenInput(),
-        }
 
 
 class AlbumEdit(ModelForm):
@@ -192,10 +185,54 @@ class AlbumEdit(ModelForm):
             "album4_name_artist",
             "album5_name_artist",
         )
-        widgets = {
-            "album1_id": forms.HiddenInput(),
-            "album2_id": forms.HiddenInput(),
-            "album3_id": forms.HiddenInput(),
-            "album4_id": forms.HiddenInput(),
-            "album5_id": forms.HiddenInput(),
-        }
+
+
+class GenreEdit(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(GenreEdit, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-0.2"
+        self.helper.field_class = "col-lg"
+        self.helper.add_input(Submit("submit", "Submit"))
+
+        self.helper.layout = Layout(
+            Fieldset("<strong>Enter Your Top 5 Genres: </strong> "),
+            Field(
+                "genre1",
+                placeholder="1. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "genre2",
+                placeholder="2. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "genre3",
+                placeholder="3. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "genre4",
+                placeholder="4. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "genre5",
+                placeholder="5. ",
+                css_class="form-control form-control-lg",
+            ),
+        )
+        self.helper.form_show_labels = False
+
+    class Meta:
+        model = FavoriteGenre
+        fields = (
+            "genre1",
+            "genre2",
+            "genre3",
+            "genre4",
+            "genre5",
+        )
