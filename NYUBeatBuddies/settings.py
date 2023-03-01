@@ -24,12 +24,12 @@ load_dotenv(dotenv_path)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "dfjghdfjh345hj", "nyubeatbuddies.com", "www.nyubeatbuddies.com")
+SECRET_KEY = os.environ.get("SECRET_KEY", "dfjghdfjh345hj")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["nbb-env.eba-qmhnyae3.us-west-2.elasticbeanstalk.com", "127.0.0.1"]
+ALLOWED_HOSTS = ["nbb-env.eba-qmhnyae3.us-west-2.elasticbeanstalk.com", "127.0.0.1","nyubeatbuddies.com", "www.nyubeatbuddies.com"]
 
 # Application definition
 
