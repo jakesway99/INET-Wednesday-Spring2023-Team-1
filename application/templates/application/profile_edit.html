@@ -109,6 +109,28 @@
     select: saveArtOnClick5,
     change: selectOnly, 
   });
+
+
+  $( "#id_genre1" ).autocomplete({
+    source: getGenreList,
+  });
+  
+  $( "#id_genre2" ).autocomplete({
+    source: getGenreList,
+  });
+  
+  $( "#id_genre3" ).autocomplete({
+    source: getGenreList,
+  });
+  
+  $( "#id_genre4" ).autocomplete({
+    source: getGenreList,
+  });
+  
+  $( "#id_genre5" ).autocomplete({
+    source: getGenreList,
+  });
+
     
     accessToken = auths;
     function selectOnly(event, ui) { if (!ui.item) { $(this).val(''); } };
@@ -281,6 +303,21 @@
       $("#id_artist5_name").val(ui.item.label);
 
     };    
+
+    function getGenreList(request, response) {
+      var genreArray = [
+        {% for genre in genre_list %}
+          "{{genre.genre_name}}",
+        {% endfor %}
+      ];
+
+      <!--Show only first 25 jquery autocomplete results-->
+      
+      var results = $.ui.autocomplete.filter(genreArray, request.term);
+
+      response(results.slice(0, 25));
+    };
+
 });
   </script>   
     <link href=  
@@ -312,27 +349,16 @@
       .asteriskField {display: none;}
       .form-group {margin-bottom: 0.5rem};
 
+    </style>
+
+    {% crispy genre_form %}
+
+    <style>
+      .asteriskField {display: none;}
+      .form-group {margin-bottom: 0.5rem};
 
     </style>
     </div>
 
-
-
-
-<script>
-<!--delete later, these aren't necessary just for buttons-->
-function showTrackIDs() {
-  var x = document.getElementById("songID1").value;
-  document.getElementById("trk1").innerHTML = x;
-};
-function showAlbumIDs() {
-  var x = document.getElementById("albumID1").value;
-  document.getElementById("alb1").innerHTML = x;
-};
-function showArtistIDs() {
-  var x = document.getElementById("artistID1").value;
-  document.getElementById("art1").innerHTML = x;
-};
-</script>
 </body>
 </html>
