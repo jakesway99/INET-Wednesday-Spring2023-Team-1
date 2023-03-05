@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0010_favoritegenre_genrelist'),
+        ("application", "0010_favoritegenre_genrelist"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='genrelist',
-            old_name='genre',
-            new_name='genre_name',
+            model_name="genrelist",
+            old_name="genre",
+            new_name="genre_name",
         ),
     ]

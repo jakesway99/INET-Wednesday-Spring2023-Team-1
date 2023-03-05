@@ -1,8 +1,7 @@
-from django import forms
 from django.forms import ModelForm
-from .models import *
+from .models import FavoriteSong, FavoriteArtist, FavoriteAlbum, FavoriteGenre
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field, HTML
+from crispy_forms.layout import Layout, Submit, Fieldset, Field
 
 
 class SongEdit(ModelForm):
@@ -13,7 +12,7 @@ class SongEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Edit"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Songs: </strong> "),
@@ -74,7 +73,7 @@ class ArtistEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Edit"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Artists: </strong> "),
@@ -135,7 +134,7 @@ class AlbumEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Edit"))
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Albums: </strong> "),
             Field(
@@ -195,7 +194,7 @@ class GenreEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Edit"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Genres: </strong> "),
