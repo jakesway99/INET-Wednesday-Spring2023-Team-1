@@ -5,29 +5,50 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0009_alter_favoritealbum_user_alter_favoriteartist_user'),
+        ("application", "0009_alter_favoritealbum_user_alter_favoriteartist_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GenreList',
+            name="GenreList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='FavoriteGenre',
+            name="FavoriteGenre",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre1', models.CharField(max_length=300)),
-                ('genre2', models.CharField(max_length=300)),
-                ('genre3', models.CharField(max_length=300)),
-                ('genre4', models.CharField(max_length=300)),
-                ('genre5', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='application.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre1", models.CharField(max_length=300)),
+                ("genre2", models.CharField(max_length=300)),
+                ("genre3", models.CharField(max_length=300)),
+                ("genre4", models.CharField(max_length=300)),
+                ("genre5", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="application.user",
+                    ),
+                ),
             ],
         ),
     ]
