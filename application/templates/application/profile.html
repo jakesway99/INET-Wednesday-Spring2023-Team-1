@@ -60,8 +60,8 @@
 		.left .matches {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
-			justify-content: center;
+			align-items: baseline;
+			justify-content: start;
 		}
 
 		.left .match {
@@ -111,6 +111,7 @@
         .left input[type="text"]:focus {
             outline: none;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            justify-content: flex-start;
         }
 
         .messages-section {
@@ -520,28 +521,32 @@
 				</div>
 			</h1>
 			<h2>Matches</h2>
-			<div class="matches">
-				<div class="match">
-					<img src="https://via.placeholder.com/130x130" alt="Match 1">
-					<p>Match 1</p>
-				</div>
-				<div class="match">
-					<img src="https://via.placeholder.com/130x130" alt="Match 2">
-					<p>Match 2</p>
-				</div>
-				<div class="match">
-					<img src="https://via.placeholder.com/130x130" alt="Match 3">
-					<p>Match 3</p>
-				</div>
-				<div class="match">
-					<img src="https://via.placeholder.com/130x130" alt="Match 4">
-					<p>Match 4</p>
-				</div>
-				<div class="match">
-					<img src="https://via.placeholder.com/130x130" alt="Match 5">
-					<p>Match 5</p>
-				</div>
-			</div>
+            <div style="border:1px;width:400px;height:300px;overflow-y:hidden;overflow-x:scroll;">
+                <p style="width:250%;">
+                    <div class="matches">
+                        <div class="match">
+                            <img src="https://via.placeholder.com/130x130" alt="Match 1">
+                            <p>Match 1</p>
+                        </div>
+                        <div class="match">
+                            <img src="https://via.placeholder.com/130x130" alt="Match 2">
+                            <p>Match 2</p>
+                        </div>
+                        <div class="match">
+                            <img src="https://via.placeholder.com/130x130" alt="Match 3">
+                            <p>Match 3</p>
+                        </div>
+                        <div class="match">
+                            <img src="https://via.placeholder.com/130x130" alt="Match 4">
+                            <p>Match 4</p>
+                        </div>
+                        <div class="match">
+                            <img src="https://via.placeholder.com/130x130" alt="Match 5">
+                            <p>Match 5</p>
+                        </div>
+                    </div>
+                </p>
+                </div>
             <h3>Search Matches</h3>
             <div class="search-container">
                 <input type="text" placeholder="Search for matches...">

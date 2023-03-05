@@ -5,6 +5,9 @@ class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
 
+    def __str__(self):
+        return f"{self.first_name + ' ' + self.last_name}"
+
 
 class FavoriteSong(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -46,3 +49,19 @@ class FavoriteAlbum(models.Model):
     album4_name_artist = models.CharField(max_length=300)
     album5_id = models.CharField(max_length=50)
     album5_name_artist = models.CharField(max_length=300)
+
+
+class GenreList(models.Model):
+    genre_name = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.genre_name}"
+
+
+class FavoriteGenre(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    genre1 = models.CharField(max_length=300)
+    genre2 = models.CharField(max_length=300)
+    genre3 = models.CharField(max_length=300)
+    genre4 = models.CharField(max_length=300)
+    genre5 = models.CharField(max_length=300)

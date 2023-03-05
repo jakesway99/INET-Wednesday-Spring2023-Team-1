@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from bs4 import BeautifulSoup
 
+
 class HomeTestCase(TestCase):
     def setUp(self):
         self.client = Client()
