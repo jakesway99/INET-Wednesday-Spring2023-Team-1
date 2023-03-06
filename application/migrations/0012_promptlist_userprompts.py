@@ -5,34 +5,55 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0011_rename_genre_genrelist_genre_name'),
+        ("application", "0011_rename_genre_genrelist_genre_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PromptList',
+            name="PromptList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prompt', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("prompt", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='UserPrompts',
+            name="UserPrompts",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prompt1', models.CharField(max_length=300)),
-                ('prompt2', models.CharField(max_length=300)),
-                ('prompt3', models.CharField(max_length=300)),
-                ('prompt4', models.CharField(max_length=300)),
-                ('prompt5', models.CharField(max_length=300)),
-                ('response1', models.CharField(max_length=300)),
-                ('response2', models.CharField(max_length=300)),
-                ('response3', models.CharField(max_length=300)),
-                ('response4', models.CharField(max_length=300)),
-                ('response5', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='application.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("prompt1", models.CharField(max_length=300)),
+                ("prompt2", models.CharField(max_length=300)),
+                ("prompt3", models.CharField(max_length=300)),
+                ("prompt4", models.CharField(max_length=300)),
+                ("prompt5", models.CharField(max_length=300)),
+                ("response1", models.CharField(max_length=300)),
+                ("response2", models.CharField(max_length=300)),
+                ("response3", models.CharField(max_length=300)),
+                ("response4", models.CharField(max_length=300)),
+                ("response5", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="application.user",
+                    ),
+                ),
             ],
         ),
     ]

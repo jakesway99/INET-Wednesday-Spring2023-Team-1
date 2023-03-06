@@ -1,9 +1,15 @@
 from django import forms
 from django.forms import ModelForm
-from .models import FavoriteSong, FavoriteArtist, FavoriteAlbum, FavoriteGenre, UserPrompts
+from .models import (
+    FavoriteSong,
+    FavoriteArtist,
+    FavoriteAlbum,
+    FavoriteGenre,
+    UserPrompts,
+)
 from .models import PromptList
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field
+from crispy_forms.layout import Layout, Submit, Fieldset, Field, Div
 
 
 class SongEdit(ModelForm):
@@ -254,62 +260,84 @@ class PromptEdit(ModelForm):
         super(PromptEdit, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-0.2"
-        self.helper.field_class = "col-lg"
         self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
-            Fieldset("<strong>Select Prompts and Choose Responses: </strong> "),
-            Field(
-                "prompt1",
-                placeholder="1. ",
-                css_class="form-select form-control-lg custom-select-lg",
+            Fieldset("<strong>Select Prompts and Enter Responses: </strong> "),
+            Div(
+                Div(
+                    Field("prompt1", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response1",
+                        placeholder="Song 1:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
             ),
-            Field(
-                "response1",
-                placeholder="Song 1. ",
-                css_class="form-control form-control-lg",
+            Div(
+                Div(
+                    Field("prompt2", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response2",
+                        placeholder="Song 2:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
             ),
-            Field(
-                "prompt2",
-                placeholder="2. ",
-                css_class="form-select form-control-lg custom-select-lg",
+            Div(
+                Div(
+                    Field("prompt3", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response3",
+                        placeholder="Song 3:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
             ),
-            Field(
-                "response2",
-                placeholder="Song 2. ",
-                css_class="form-control form-control-lg",
+            Div(
+                Div(
+                    Field("prompt4", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response4",
+                        placeholder="Song 4:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
             ),
-            Field(
-                "prompt3",
-                placeholder="3. ",
-                css_class="form-select form-control-lg custom-select-lg",
-            ),
-            Field(
-                "response3",
-                placeholder="Song 3. ",
-                css_class="form-control form-control-lg",
-            ),
-            Field(
-                "prompt4",
-                placeholder="4. ",
-                css_class="form-select form-control-lg custom-select-lg",
-            ),
-            Field(
-                "response4",
-                placeholder="Song 4. ",
-                css_class="form-control form-control-lg",
-            ),
-            Field(
-                "prompt5",
-                placeholder="5. ",
-                css_class="form-select form-control-lg custom-select-lg",
-            ),
-            Field(
-                "response5",
-                placeholder="Song 5. ",
-                css_class="form-control form-control-lg",
+            Div(
+                Div(
+                    Field("prompt5", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response5",
+                        placeholder="Song 5: ",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
             ),
         )
         self.helper.form_show_labels = False

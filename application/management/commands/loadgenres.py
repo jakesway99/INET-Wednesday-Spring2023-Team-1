@@ -4,7 +4,9 @@ from application.models import GenreList
 
 
 class Command(BaseCommand):
-    help = "Load a genres csv file into the database. use --path to specify the directory"
+    help = (
+        "Load a genres csv file into the database. use --path to specify the directory"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument("--path", type=str)
