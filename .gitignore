@@ -19,7 +19,6 @@ application/migrations/__pycache__/
 local_settings.py
 db.sqlite3
 media
-static
 
 # Secret key file
 secret_key.txt
