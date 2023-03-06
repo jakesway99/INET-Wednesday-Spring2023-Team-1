@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "nyubeatbuddies.com",
     "www.nyubeatbuddies.com",
-    "bb-test3.eba-zgsammxj.us-west-2.elasticbeanstalk.com",
+    "nyubeatbuddies-env.eba-vkfe3kpa.us-west-2.elasticbeanstalk.com",
 ]
 
 # Application definition
