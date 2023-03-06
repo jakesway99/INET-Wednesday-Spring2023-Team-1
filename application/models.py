@@ -65,3 +65,24 @@ class FavoriteGenre(models.Model):
     genre3 = models.CharField(max_length=300)
     genre4 = models.CharField(max_length=300)
     genre5 = models.CharField(max_length=300)
+
+
+class PromptList(models.Model):
+    prompt = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.prompt}"
+
+
+class UserPrompts(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    prompt1 = models.CharField(max_length=300)
+    prompt2 = models.CharField(max_length=300)
+    prompt3 = models.CharField(max_length=300)
+    prompt4 = models.CharField(max_length=300)
+    prompt5 = models.CharField(max_length=300)
+    response1 = models.CharField(max_length=300)
+    response2 = models.CharField(max_length=300)
+    response3 = models.CharField(max_length=300)
+    response4 = models.CharField(max_length=300)
+    response5 = models.CharField(max_length=300)

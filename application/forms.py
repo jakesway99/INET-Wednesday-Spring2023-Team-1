@@ -12,7 +12,7 @@ class SongEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Edit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Songs: </strong> "),
@@ -73,7 +73,7 @@ class ArtistEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Edit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Artists: </strong> "),
@@ -134,7 +134,7 @@ class AlbumEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Edit"))
+        self.helper.add_input(Submit("submit", "Save"))
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Albums: </strong> "),
             Field(
@@ -194,7 +194,7 @@ class GenreEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Edit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Genres: </strong> "),
