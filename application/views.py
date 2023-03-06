@@ -24,8 +24,8 @@ def profile_edit(request):
     curr_user = User.objects.get(pk=1)
     user_fav_songs = FavoriteSong.objects.get(user=curr_user)
     user_fav_artists = FavoriteArtist.objects.get(user=curr_user)
-    user_fav_albums = FavoriteAlbum.objects.get(user=curr_user)
-    user_fav_genres = FavoriteGenre.objects.get(user=curr_user)
+    top_albums = FavoriteAlbum.objects.get(user=curr_user)
+    top_genres = FavoriteGenre.objects.get(user=curr_user)
 
     initial_songs = {
         "song1_name_artist": user_fav_songs.song1_name_artist,
@@ -54,24 +54,24 @@ def profile_edit(request):
     }
 
     initial_albums = {
-        "album1_name_artist": user_fav_albums.album1_name_artist,
-        "album2_name_artist": user_fav_albums.album2_name_artist,
-        "album3_name_artist": user_fav_albums.album3_name_artist,
-        "album4_name_artist": user_fav_albums.album4_name_artist,
-        "album5_name_artist": user_fav_albums.album5_name_artist,
-        "album1_id": user_fav_albums.album1_id,
-        "album2_id": user_fav_albums.album2_id,
-        "album3_id": user_fav_albums.album3_id,
-        "album4_id": user_fav_albums.album4_id,
-        "album5_id": user_fav_albums.album5_id,
+        "album1_name_artist": top_albums.album1_name_artist,
+        "album2_name_artist": top_albums.album2_name_artist,
+        "album3_name_artist": top_albums.album3_name_artist,
+        "album4_name_artist": top_albums.album4_name_artist,
+        "album5_name_artist": top_albums.album5_name_artist,
+        "album1_id": top_albums.album1_id,
+        "album2_id": top_albums.album2_id,
+        "album3_id": top_albums.album3_id,
+        "album4_id": top_albums.album4_id,
+        "album5_id": top_albums.album5_id,
     }
 
     initial_genres = {
-        "genre1": user_fav_genres.genre1,
-        "genre2": user_fav_genres.genre2,
-        "genre3": user_fav_genres.genre3,
-        "genre4": user_fav_genres.genre4,
-        "genre5": user_fav_genres.genre5,
+        "genre1": top_genres.genre1,
+        "genre2": top_genres.genre2,
+        "genre3": top_genres.genre3,
+        "genre4": top_genres.genre4,
+        "genre5": top_genres.genre5,
     }
     if request.method == "GET":
         context = {
@@ -188,4 +188,71 @@ def profile_edit(request):
 
 
 def profile(request):
-    return render(request, "application/profile.html")
+    client_credentials_manager = SpotifyClientCredentials()
+    token_dict = client_credentials_manager.get_access_token()
+    token = token_dict["access_token"]
+
+    curr_user = User.objects.get(pk=1)
+    top_artists = FavoriteArtist.objects.get(user=curr_user)
+    top_songs = FavoriteSong.objects.get(user=curr_user)
+    top_albums = FavoriteAlbum.objects.get(user=curr_user)
+    top_genres = FavoriteGenre.objects.get(user=curr_user)
+
+
+    
+    context = {
+        # artists_list:
+        "artist1_name": top_artists.artist1_name,
+        "artist2_name": top_artists.artist2_name,
+        "artist3_name": top_artists.artist3_name,
+        "artist4_name": top_artists.artist4_name,
+        "artist5_name": top_artists.artist5_name,
+        "artist1_id": top_artists.artist1_id,
+        "artist2_id": top_artists.artist2_id,
+        "artist3_id": top_artists.artist3_id,
+        "artist4_id": top_artists.artist4_id,
+        "artist5_id": top_artists.artist5_id,
+
+        # songs_list:
+        "song1_name_artist": top_songs.song1_name_artist,
+        "song2_name_artist": top_songs.song2_name_artist,
+        "song3_name_artist": top_songs.song3_name_artist,
+        "song4_name_artist": top_songs.song4_name_artist,
+        "song5_name_artist": top_songs.song5_name_artist,
+        "song1_id": top_songs.song1_id,
+        "song2_id": top_songs.song2_id,
+        "song3_id": top_songs.song3_id,
+        "song4_id": top_songs.song4_id,
+        "song5_id": top_songs.song5_id,
+
+        # albums_list:
+        "album1_name_artist": top_albums.album1_name_artist,
+        "album2_name_artist": top_albums.album2_name_artist,
+        "album3_name_artist": top_albums.album3_name_artist,
+        "album4_name_artist": top_albums.album4_name_artist,
+        "album5_name_artist": top_albums.album5_name_artist,
+        "album1_id": top_albums.album1_id,
+        "album2_id": top_albums.album2_id,
+        "album3_id": top_albums.album3_id,
+        "album4_id": top_albums.album4_id,
+        "album5_id": top_albums.album5_id,
+
+        # genres_list:
+        "genre1": top_genres.genre1,
+        "genre2": top_genres.genre2,
+        "genre3": top_genres.genre3,
+        "genre4": top_genres.genre4,
+        "genre5": top_genres.genre5,
+
+        #artist_images_list:
+        "artist1_image_url": " ",
+        "artist2_image_url": " ",
+        "artist3_image_url": " ",
+        "artist4_image_url": " ",
+        "artist5_image_url": " ",
+
+
+    }
+        
+    
+    return render(request, "application/profile.html", context)
