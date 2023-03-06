@@ -1,5 +1,7 @@
+from django import forms
 from django.forms import ModelForm
-from .models import FavoriteSong, FavoriteArtist, FavoriteAlbum, FavoriteGenre
+from .models import FavoriteSong, FavoriteArtist, FavoriteAlbum, FavoriteGenre, UserPrompts
+from .models import PromptList
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Fieldset, Field
 
@@ -234,4 +236,95 @@ class GenreEdit(ModelForm):
             "genre3",
             "genre4",
             "genre5",
+        )
+
+
+class PromptEdit(ModelForm):
+    prompt_choices = [("", "Choose a prompt")]
+    all_prompts = PromptList.objects.all()
+    for choice in all_prompts:
+        prompt_choices.append((choice.prompt, choice.prompt))
+    prompt1 = forms.ChoiceField(choices=prompt_choices)
+    prompt2 = forms.ChoiceField(choices=prompt_choices)
+    prompt3 = forms.ChoiceField(choices=prompt_choices)
+    prompt4 = forms.ChoiceField(choices=prompt_choices)
+    prompt5 = forms.ChoiceField(choices=prompt_choices)
+
+    def __init__(self, *args, **kwargs):
+        super(PromptEdit, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-0.2"
+        self.helper.field_class = "col-lg"
+        self.helper.add_input(Submit("submit", "Save"))
+
+        self.helper.layout = Layout(
+            Fieldset("<strong>Select Prompts and Choose Responses: </strong> "),
+            Field(
+                "prompt1",
+                placeholder="1. ",
+                css_class="form-select form-control-lg custom-select-lg",
+            ),
+            Field(
+                "response1",
+                placeholder="Song 1. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "prompt2",
+                placeholder="2. ",
+                css_class="form-select form-control-lg custom-select-lg",
+            ),
+            Field(
+                "response2",
+                placeholder="Song 2. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "prompt3",
+                placeholder="3. ",
+                css_class="form-select form-control-lg custom-select-lg",
+            ),
+            Field(
+                "response3",
+                placeholder="Song 3. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "prompt4",
+                placeholder="4. ",
+                css_class="form-select form-control-lg custom-select-lg",
+            ),
+            Field(
+                "response4",
+                placeholder="Song 4. ",
+                css_class="form-control form-control-lg",
+            ),
+            Field(
+                "prompt5",
+                placeholder="5. ",
+                css_class="form-select form-control-lg custom-select-lg",
+            ),
+            Field(
+                "response5",
+                placeholder="Song 5. ",
+                css_class="form-control form-control-lg",
+            ),
+        )
+        self.helper.form_show_labels = False
+
+    class Meta:
+        model = UserPrompts
+        fields = (
+            "prompt1",
+            "prompt2",
+            "prompt3",
+            "prompt4",
+            "prompt5",
+            "response1",
+            "response2",
+            "response3",
+            "response4",
+            "response5",
         )
