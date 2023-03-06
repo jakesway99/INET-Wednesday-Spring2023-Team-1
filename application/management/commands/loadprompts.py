@@ -1,11 +1,12 @@
 import csv
 from django.core.management import BaseCommand
-from application.models import GenreList
+from application.models import PromptList
 
 
 class Command(BaseCommand):
     help = (
-        "Load a genres csv file into the database. use --path to specify the directory"
+        "Load a music prompts csv file into the database. "
+        "use --path to specify the directory"
     )
 
     def add_arguments(self, parser):
@@ -16,4 +17,4 @@ class Command(BaseCommand):
         with open(path, "rt") as f:
             reader = csv.reader(f, dialect="excel")
             for row in reader:
-                GenreList.objects.create(genre_name=row[0])
+                PromptList.objects.create(prompt=row[0])
