@@ -31,4 +31,9 @@ deploy:
   env: "nbb-env"
   bucket_name: "elasticbeanstalk-us-west-2-632586137667"
   on:
-    branch: main
+    repo: gcivil-nyu-org/INET-Wednesday-Spring2023-Team-1
+    branch:
+      - main
+
+after_deploy:
+  - rm db.sqlite3
