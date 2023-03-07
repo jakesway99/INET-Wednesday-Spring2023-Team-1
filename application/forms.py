@@ -1,8 +1,15 @@
 from django import forms
 from django.forms import ModelForm
-from .models import *
+from .models import (
+    FavoriteSong,
+    FavoriteArtist,
+    FavoriteAlbum,
+    FavoriteGenre,
+    UserPrompts,
+)
+from .models import PromptList
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field, HTML
+from crispy_forms.layout import Layout, Submit, Fieldset, Field, Div
 
 
 class SongEdit(ModelForm):
@@ -13,7 +20,7 @@ class SongEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Songs: </strong> "),
@@ -74,7 +81,7 @@ class ArtistEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Artists: </strong> "),
@@ -135,7 +142,7 @@ class AlbumEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Save"))
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Albums: </strong> "),
             Field(
@@ -195,7 +202,7 @@ class GenreEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(Submit("submit", "Save"))
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Genres: </strong> "),
@@ -235,4 +242,117 @@ class GenreEdit(ModelForm):
             "genre3",
             "genre4",
             "genre5",
+        )
+
+
+class PromptEdit(ModelForm):
+    prompt_choices = [("", "Choose a prompt")]
+    all_prompts = PromptList.objects.all()
+    for choice in all_prompts:
+        prompt_choices.append((choice.prompt, choice.prompt))
+    prompt1 = forms.ChoiceField(choices=prompt_choices)
+    prompt2 = forms.ChoiceField(choices=prompt_choices)
+    prompt3 = forms.ChoiceField(choices=prompt_choices)
+    prompt4 = forms.ChoiceField(choices=prompt_choices)
+    prompt5 = forms.ChoiceField(choices=prompt_choices)
+
+    def __init__(self, *args, **kwargs):
+        super(PromptEdit, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.add_input(Submit("submit", "Save"))
+
+        self.helper.layout = Layout(
+            Fieldset("<strong>Select Prompts and Enter Responses: </strong> "),
+            Div(
+                Div(
+                    Field("prompt1", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response1",
+                        placeholder="Song 1:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
+            ),
+            Div(
+                Div(
+                    Field("prompt2", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response2",
+                        placeholder="Song 2:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
+            ),
+            Div(
+                Div(
+                    Field("prompt3", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response3",
+                        placeholder="Song 3:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
+            ),
+            Div(
+                Div(
+                    Field("prompt4", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response4",
+                        placeholder="Song 4:",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
+            ),
+            Div(
+                Div(
+                    Field("prompt5", css_class="form-group custom-select-lg"),
+                    css_class="col",
+                ),
+                Div(
+                    Field(
+                        "response5",
+                        placeholder="Song 5: ",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                css_class="form-row",
+            ),
+        )
+        self.helper.form_show_labels = False
+
+    class Meta:
+        model = UserPrompts
+        fields = (
+            "prompt1",
+            "prompt2",
+            "prompt3",
+            "prompt4",
+            "prompt5",
+            "response1",
+            "response2",
+            "response3",
+            "response4",
+            "response5",
         )
