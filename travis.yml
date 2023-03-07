@@ -1,0 +1,34 @@
+language: python
+
+python:
+  - "3.8"
+
+
+install:
+   - pip install -r requirements.txt
+
+before_script:
+  - python manage.py migrate
+
+after_script:
+  - coveralls
+
+script:
+  # Run Black formatter
+  - black --check .
+
+  # Run Flake8 linter
+  - flake8 .
+  # Run Django tests
+  - coverage run manage.py test
+  
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: "us-west-2"
+  app: "nbb"
+  env: "nbb-env"
+  bucket_name: "elasticbeanstalk-us-west-2-632586137667"
+  on:
+    branch: main
