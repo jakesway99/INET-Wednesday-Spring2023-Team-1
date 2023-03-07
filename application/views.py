@@ -100,19 +100,19 @@ def profile_edit(request):
         initial_genres = {}
 
     if UserPrompts.objects.filter(user=curr_user):
-        user_prompts = UserPrompts.objects.get(user=curr_user)
+        profile_prompts = UserPrompts.objects.get(user=curr_user)
 
         initial_prompts = {
-            "prompt1": user_prompts.prompt1,
-            "prompt2": user_prompts.prompt2,
-            "prompt3": user_prompts.prompt3,
-            "prompt4": user_prompts.prompt4,
-            "prompt5": user_prompts.prompt5,
-            "response1": user_prompts.response1,
-            "response2": user_prompts.response2,
-            "response3": user_prompts.response3,
-            "response4": user_prompts.response4,
-            "response5": user_prompts.response5,
+            "prompt1": profile_prompts.prompt1,
+            "prompt2": profile_prompts.prompt2,
+            "prompt3": profile_prompts.prompt3,
+            "prompt4": profile_prompts.prompt4,
+            "prompt5": profile_prompts.prompt5,
+            "response1": profile_prompts.response1,
+            "response2": profile_prompts.response2,
+            "response3": profile_prompts.response3,
+            "response4": profile_prompts.response4,
+            "response5": profile_prompts.response5,
         }
     else:
         initial_prompts = {}
@@ -269,6 +269,7 @@ def profile(request):
     top_songs = FavoriteSong.objects.get(user=curr_user)
     top_albums = FavoriteAlbum.objects.get(user=curr_user)
     top_genres = FavoriteGenre.objects.get(user=curr_user)
+    profile_prompts = UserPrompts.objects.get(user=curr_user)
 
     context = {
         # artists_list:
@@ -316,6 +317,17 @@ def profile(request):
         "artist3_image_url": get_pic(top_artists.artist3_id, spotify),
         "artist4_image_url": get_pic(top_artists.artist4_id, spotify),
         "artist5_image_url": get_pic(top_artists.artist5_id, spotify),
+        # user prompts and answers:
+        "prompt1": profile_prompts.prompt1,
+        "prompt2": profile_prompts.prompt2,
+        "prompt3": profile_prompts.prompt3,
+        "prompt4": profile_prompts.prompt4,
+        "prompt5": profile_prompts.prompt5,
+        "response1": profile_prompts.response1,
+        "response2": profile_prompts.response2,
+        "response3": profile_prompts.response3,
+        "response4": profile_prompts.response4,
+        "response5": profile_prompts.response5,
     }
 
     return render(request, "application/profile.html", context)
