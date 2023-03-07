@@ -277,12 +277,16 @@
 
             .left-column {
                 width: 40%;
+                padding-right:10px;
             }
+
 
             .left-column h3 {
                 color: black;
                 font-weight: bold;
                 font-size: 24px;
+                padding-top: 10px;
+
             }
 
             .left-column h4 {
@@ -324,7 +328,9 @@
                 justify-content: center;
                 align-items: center;
                 width: 100%;
-                padding-right: 20px;
+                padding:10px;
+                border: 2px solid rgb(42, 2, 38);
+           
             }
 
             .songs-column h3 {
@@ -636,21 +642,17 @@
                 <div class="right-section-content">
                     <div class="right-section-top">
                         <div class="left-column">
+                            <div class="songs-column">
+                                <h3>Your Top Songs</h3>
+                                <ul>
+                                    <li style="background-color:#cdb4db;">{{song1_name_artist}}</li>
+                                    <li style="background-color:#ffc8dd;">{{song2_name_artist}}</li>
+                                    <li style="background-color:#ffafcc;">{{song3_name_artist}}</li>
+                                    <li style="background-color:#bde0fe;">{{song4_name_artist}}</li>
+                                    <li style="background-color:#a2d2ff;">{{song5_name_artist}}</li>
+                                </ul>
+                            </div>
                             <ul>
-                                <li>
-                                    <div id="favorite-genres">
-                                        <h3>Favorite Genres</h3>
-                                        <div class="genre-buttons">
-                                            <button class="genre1">{{genre1}}</button>
-                                            <button class="genre2">{{genre2}}</button>
-                                        </div>
-                                        <div class="genre-buttons">
-                                            <button class="genre3">{{genre3}}</button>
-                                            <button class="genre4">{{genre4}}</button>
-                                            <button class="genre5">{{genre5}}</button>
-                                        </div>
-                                    </div>
-                                </li>
                                 <div>
                                     <h3>About you</h3>
                                 </div>
@@ -696,16 +698,20 @@
                                     </div>
                                 </li>
                             </ul>
-                            <div class="songs-column">
-                                <h3>Your Top Songs</h3>
-                                <ul>
-                                    <li style="background-color:#cdb4db;">{{song1_name_artist}}</li>
-                                    <li style="background-color:#ffc8dd;">{{song2_name_artist}}</li>
-                                    <li style="background-color:#ffafcc;">{{song3_name_artist}}</li>
-                                    <li style="background-color:#bde0fe;">{{song4_name_artist}}</li>
-                                    <li style="background-color:#a2d2ff;">{{song5_name_artist}}</li>
-                                </ul>
-                            </div>
+                            <ul>
+                                <div id="favorite-genres">
+                                    <h3>Favorite Genres</h3>
+                                    <div class="genre-buttons">
+                                        <button class="genre1">{{genre1}}</button>
+                                        <button class="genre2">{{genre2}}</button>
+                                    </div>
+                                    <div class="genre-buttons">
+                                        <button class="genre3">{{genre3}}</button>
+                                        <button class="genre4">{{genre4}}</button>
+                                        <button class="genre5">{{genre5}}</button>
+                                    </div>
+                                </div>
+                            </ul>
                         </div>
                         <div class="right-column">
                             <div class="image-frame">
