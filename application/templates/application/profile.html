@@ -65,6 +65,11 @@
                 flex-direction: row;
                 align-items: baseline;
                 justify-content: start;
+                border: 1px;
+                width: 400px;
+                min-height: 120px;
+                overflow-y: hidden;
+                overflow-x: scroll;
             }
 
             .left .match {
@@ -611,7 +616,6 @@
                     </div>
                 </h1>
                 <h2>Matches</h2>
-                <div style="border:1px;width:400px;height:fit-content;overflow-y:hidden;overflow-x:scroll;">
                     <div class="matches">
                         <div class="match">
                             <img src="https://via.placeholder.com/130x130" alt="Match 1">
@@ -634,7 +638,6 @@
                             <p>Match 5</p>
                         </div>
                     </div>
-                </div>
                 <h3>Search Matches</h3>
                 <div class="search-container">
                     <input type="text" placeholder="Search for matches...">
