@@ -15,7 +15,7 @@
                 margin: 0;
                 padding: 0;
                 font-family: Arial, sans-serif;
-                background-color: #f1f1f1;
+                background-color: #f1f1f1;                
             }
 
             .container {
@@ -27,6 +27,7 @@
                 max-width: none;
                 width: 100%;
                 padding: 0;
+                background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%);
             }
 
             .left {
@@ -35,7 +36,7 @@
                 align-items: flex-start;
                 justify-content: flex-start;
                 padding-left: 20px;
-                background-color: #fff;
+                background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%);
             }
 
             .left h1 {
@@ -43,6 +44,7 @@
                 margin: 0;
                 display: flex;
                 align-items: center;
+                padding: 10px;
             }
 
             .left .profile-picture {
@@ -197,7 +199,6 @@
             .discover-events-wrapper {
                 padding: 4px;
                 width: 100%;
-                background-color: #ffff;
                 display: inline-block;
                 margin: 0 auto;
                 display: flex;
@@ -209,7 +210,6 @@
                 flex-shrink: 0;
                 position: sticky;
                 bottom: 0;
-                background-color: blue;
                 height: fit-content;
                 width: 100%;
                 display: flex;
@@ -234,7 +234,6 @@
             }
 
             .right-section {
-                background-color: #ffffff;
                 border-left: 4px solid #e6e6e6;
                 min-height: 100hv;
                 width: 100%;
@@ -243,6 +242,7 @@
                 padding-left: 20px;
                 padding-right: 20px;
                 padding-top: 20px;
+                background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%);
             }
 
             .edit-profile {
@@ -358,12 +358,44 @@
                 display: flex;
                 flex-direction: row;
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-evenly;
                 align-items: center;
-                width: 70%;
+                width: 100%;
                 border: 2px solid rgb(42, 2, 38);
                 padding: 10px;
                 margin: 0 auto;
+                background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
+            }
+
+            .album-image {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                padding: 30px;
+                justify-content: space-evenly;           
+            }
+
+            .album-list {
+                display: flex;
+                flex-wrap: wrap;
+                position: relative;
+                font-size: 20px;
+                font-family: Verdana;
+                width: 50%;
+                text-shadow: 2px 2px 2px white;
+                border-style: double;
+                border-width: 8px;
+                border-color: white;
+            }
+
+            .album-image img {
+                position: relative;
+                border: 8px;
+                border-color: #a7b6c3;
+                border-style: solid;     
+                width: 30%;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
 
             .bottom-column h2 {
@@ -371,8 +403,9 @@
                 font-family: Verdana;
                 color: darkred;
                 margin: 0;
-                padding: 5px;
+                padding: 10px;
                 text-align: center;
+                width: 100%;
             }
 
             .bottom-column ol {
@@ -747,14 +780,35 @@
                         </div>
                     </div>
                     <div class="bottom-column">
+                        <div class="album-image">
+                            <div>
+                                <img src={{album1_image_url}} style="width:150px;height:150px;">
+                            </div>
+                            <div>
+                                <img src={{album2_image_url}} style="width:150px;height:150px;">
+                            </div>  
+                        </div>   
+                        <div class="album-list album-list-numbered">
                         <h2>Your Top Albums</h2>
                         <ol>
-                            <li style="background-color:#cdb4db;">{{album1_name_artist}}</li>
-                            <li style="background-color:#ffc8dd;">{{album2_name_artist}}</li>
-                            <li style="background-color:#ffafcc;">{{album3_name_artist}}</li>
-                            <li style="background-color:#bde0fe;">{{album4_name_artist}}</li>
-                            <li style="background-color:#a2d2ff;">{{album5_name_artist}}</li>
+                            <li style="background-color:#cdb4db;" class="album-list-item">{{album1_name_artist}}</li>
+                            <li style="background-color:#ffc8dd;" class="lalbum-list-item">{{album2_name_artist}}</li>
+                            <li style="background-color:#ffafcc;" class="album-list-item">{{album3_name_artist}}</li>
+                            <li style="background-color:#bde0fe;" class="album-list-item">{{album4_name_artist}}</li>
+                            <li style="background-color:#a2d2ff;" class="album-list-item">{{album5_name_artist}}</li>
                         </ol>
+                        </div>
+                        <div class="album-image">
+                            <div class="img3">
+                                <img src={{album3_image_url}} style="width:150px;height:150px;">
+                            </div>
+                            <div class="img4">
+                                <img src={{album4_image_url}} style="width:150px;height:150px;">
+                            </div>
+                            <div class="img5">
+                                <img src={{album5_image_url}} style="width:150px;height:150px;">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="footer">
