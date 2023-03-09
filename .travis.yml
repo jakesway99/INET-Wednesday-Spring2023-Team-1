@@ -22,7 +22,6 @@ script:
   # Run Django tests
   - coverage run manage.py test
   
-  
 deploy:
   provider: elasticbeanstalk
   access_key_id: $AWS_ACCESS_KEY_ID
