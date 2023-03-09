@@ -209,6 +209,7 @@ def profile_edit(request):
                 "artist_form": ArtistEdit(None, initial=initial_artists),
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
+                "prompt_form": PromptEdit(initial=initial_prompts),
                 "genre_list": genres,
             }
 
