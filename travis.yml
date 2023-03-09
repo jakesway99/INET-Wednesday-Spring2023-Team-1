@@ -33,7 +33,7 @@ deploy:
   on:
     repo: gcivil-nyu-org/INET-Wednesday-Spring2023-Team-1
     branch:
-      - main
+      - develop
 
 after_deploy:
   - rm db.sqlite3
