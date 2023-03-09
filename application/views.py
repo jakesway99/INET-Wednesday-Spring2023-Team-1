@@ -20,6 +20,13 @@ def get_pic(artist_id, spotify):
     return img_url
 
 
+def get_album_pic(album_id, spotify):
+    album = spotify.album(album_id)
+    images = album["images"]
+    img_url = images[1]["url"]
+    return img_url
+
+
 def home(request):
     return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
 
@@ -202,6 +209,7 @@ def profile_edit(request):
                 "artist_form": ArtistEdit(None, initial=initial_artists),
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
+                "prompt_form": PromptEdit(initial=initial_prompts),
                 "genre_list": genres,
             }
 
@@ -317,6 +325,12 @@ def profile(request):
         "artist3_image_url": get_pic(top_artists.artist3_id, spotify),
         "artist4_image_url": get_pic(top_artists.artist4_id, spotify),
         "artist5_image_url": get_pic(top_artists.artist5_id, spotify),
+        # album_images_list:
+        "album1_image_url": get_album_pic(top_albums.album1_id, spotify),
+        "album2_image_url": get_album_pic(top_albums.album2_id, spotify),
+        "album3_image_url": get_album_pic(top_albums.album3_id, spotify),
+        "album4_image_url": get_album_pic(top_albums.album4_id, spotify),
+        "album5_image_url": get_album_pic(top_albums.album5_id, spotify),
         # user prompts and answers:
         "prompt1": profile_prompts.prompt1,
         "prompt2": profile_prompts.prompt2,
