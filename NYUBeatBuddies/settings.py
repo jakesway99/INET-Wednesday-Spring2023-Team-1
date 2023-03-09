@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 from pathlib import Path
 from dotenv import load_dotenv
+import sys
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,7 @@ load_dotenv(dotenv_path)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "dfjghdfjh345hj")
+SECRET_KEY = os.environ.get("SECRET_KEY", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,6 +36,7 @@ ALLOWED_HOSTS = [
     "nyubeatbuddies.com",
     "www.nyubeatbuddies.com",
     "nyubeatbuddies-env.eba-vkfe3kpa.us-west-2.elasticbeanstalk.com",
+    "dev.nyubeatbuddies.com"
 ]
 
 # Application definition
@@ -92,6 +94,17 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+if os.environ['DATABASE_NAME'] and "test" not in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("TEST_DATABASE_NAME", ""),
+        "USER": os.environ.get("TEST_DATABASE_USER", ""),
+        "PASSWORD": os.environ.get("TEST_DATABASE_PASSWORD", ""),
+        "HOST": os.environ.get("TEST_DATABASE_HOST", ""),
+        "PORT": "5432",
+        "TEST": {"NAME": os.environ.get("TEST_DATABASE_NAME")},
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
