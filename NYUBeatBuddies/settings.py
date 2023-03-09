@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
     "nyubeatbuddies.com",
     "www.nyubeatbuddies.com",
     "nyubeatbuddies-env.eba-vkfe3kpa.us-west-2.elasticbeanstalk.com",
-    "dev.nyubeatbuddies.com"
+    "dev.nyubeatbuddies.com",
 ]
 
 # Application definition
@@ -95,7 +95,7 @@ DATABASES = {
     }
 }
 
-if os.environ['DATABASE_NAME'] and "test" not in sys.argv:
+if os.environ.get("DATABASE_NAME", None) is not None and "test" not in sys.argv:
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("TEST_DATABASE_NAME", ""),
