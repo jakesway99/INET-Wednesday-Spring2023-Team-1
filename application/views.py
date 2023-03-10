@@ -1,9 +1,22 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+# email
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
+
+# spotify api package
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit
+
+from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit, NewUserForm
 from .models import (
-    User,
     FavoriteSong,
     FavoriteGenre,
     FavoriteAlbum,
@@ -27,19 +40,7 @@ def get_album_pic(album_id, spotify):
     return img_url
 
 
-def home(request):
-    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
-
-
-def profile_edit(request):
-    client_credentials_manager = SpotifyClientCredentials()
-    token_dict = client_credentials_manager.get_access_token()
-    token = token_dict["access_token"]
-
-    genres = GenreList.objects.all()
-
-    curr_user = User.objects.get(pk=1)
-
+def get_favorite_data(curr_user, spotify="", get_pics=False):
     if FavoriteSong.objects.filter(
         user=curr_user
     ):  # pre-populate edit form if data exists
@@ -123,6 +124,66 @@ def profile_edit(request):
         }
     else:
         initial_prompts = {}
+    if get_pics:
+        if initial_artists == {}:  # get artist artwork
+            artist_imgs = {}
+        else:
+            artist_imgs = {
+                # artist_images_list:
+                "artist1_image_url": get_pic(initial_artists["artist1_id"], spotify),
+                "artist2_image_url": get_pic(initial_artists["artist2_id"], spotify),
+                "artist3_image_url": get_pic(initial_artists["artist3_id"], spotify),
+                "artist4_image_url": get_pic(initial_artists["artist4_id"], spotify),
+                "artist5_image_url": get_pic(initial_artists["artist5_id"], spotify),
+            }
+            # album_images_list:
+        if initial_albums == {}:
+            album_imgs = {}
+        else:
+            album_imgs = {
+                "album1_image_url": get_album_pic(initial_albums["album1_id"], spotify),
+                "album2_image_url": get_album_pic(initial_albums["album2_id"], spotify),
+                "album3_image_url": get_album_pic(initial_albums["album3_id"], spotify),
+                "album4_image_url": get_album_pic(initial_albums["album4_id"], spotify),
+                "album5_image_url": get_album_pic(initial_albums["album5_id"], spotify),
+            }
+    else:
+        artist_imgs = {}
+        album_imgs = []
+
+    return (
+        initial_songs,
+        initial_artists,
+        initial_albums,
+        initial_genres,
+        initial_prompts,
+        artist_imgs,
+        album_imgs,
+    )
+
+
+def home(request):
+    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
+
+
+@login_required
+def profile_edit(request):
+    client_credentials_manager = SpotifyClientCredentials()
+    token_dict = client_credentials_manager.get_access_token()
+    token = token_dict["access_token"]
+
+    genres = GenreList.objects.all()
+
+    curr_user = request.user
+    (
+        initial_songs,
+        initial_artists,
+        initial_albums,
+        initial_genres,
+        initial_prompts,
+        _,
+        _,
+    ) = get_favorite_data(curr_user, False)
 
     if request.method == "GET":
         context = {
@@ -269,79 +330,102 @@ def profile_edit(request):
     return render(request, "application/profile_edit.html", context)
 
 
+@login_required
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
-    curr_user = User.objects.get(pk=1)
-    top_artists = FavoriteArtist.objects.get(user=curr_user)
-    top_songs = FavoriteSong.objects.get(user=curr_user)
-    top_albums = FavoriteAlbum.objects.get(user=curr_user)
-    top_genres = FavoriteGenre.objects.get(user=curr_user)
-    profile_prompts = UserPrompts.objects.get(user=curr_user)
+    curr_user = request.user
 
-    context = {
-        # artists_list:
-        "artist1_name": top_artists.artist1_name,
-        "artist2_name": top_artists.artist2_name,
-        "artist3_name": top_artists.artist3_name,
-        "artist4_name": top_artists.artist4_name,
-        "artist5_name": top_artists.artist5_name,
-        "artist1_id": top_artists.artist1_id,
-        "artist2_id": top_artists.artist2_id,
-        "artist3_id": top_artists.artist3_id,
-        "artist4_id": top_artists.artist4_id,
-        "artist5_id": top_artists.artist5_id,
-        # songs_list:
-        "song1_name_artist": top_songs.song1_name_artist,
-        "song2_name_artist": top_songs.song2_name_artist,
-        "song3_name_artist": top_songs.song3_name_artist,
-        "song4_name_artist": top_songs.song4_name_artist,
-        "song5_name_artist": top_songs.song5_name_artist,
-        "song1_id": top_songs.song1_id,
-        "song2_id": top_songs.song2_id,
-        "song3_id": top_songs.song3_id,
-        "song4_id": top_songs.song4_id,
-        "song5_id": top_songs.song5_id,
-        # albums_list:
-        "album1_name_artist": top_albums.album1_name_artist,
-        "album2_name_artist": top_albums.album2_name_artist,
-        "album3_name_artist": top_albums.album3_name_artist,
-        "album4_name_artist": top_albums.album4_name_artist,
-        "album5_name_artist": top_albums.album5_name_artist,
-        "album1_id": top_albums.album1_id,
-        "album2_id": top_albums.album2_id,
-        "album3_id": top_albums.album3_id,
-        "album4_id": top_albums.album4_id,
-        "album5_id": top_albums.album5_id,
-        # genres_list:
-        "genre1": top_genres.genre1,
-        "genre2": top_genres.genre2,
-        "genre3": top_genres.genre3,
-        "genre4": top_genres.genre4,
-        "genre5": top_genres.genre5,
-        # artist_images_list:
-        "artist1_image_url": get_pic(top_artists.artist1_id, spotify),
-        "artist2_image_url": get_pic(top_artists.artist2_id, spotify),
-        "artist3_image_url": get_pic(top_artists.artist3_id, spotify),
-        "artist4_image_url": get_pic(top_artists.artist4_id, spotify),
-        "artist5_image_url": get_pic(top_artists.artist5_id, spotify),
-        # album_images_list:
-        "album1_image_url": get_album_pic(top_albums.album1_id, spotify),
-        "album2_image_url": get_album_pic(top_albums.album2_id, spotify),
-        "album3_image_url": get_album_pic(top_albums.album3_id, spotify),
-        "album4_image_url": get_album_pic(top_albums.album4_id, spotify),
-        "album5_image_url": get_album_pic(top_albums.album5_id, spotify),
-        # user prompts and answers:
-        "prompt1": profile_prompts.prompt1,
-        "prompt2": profile_prompts.prompt2,
-        "prompt3": profile_prompts.prompt3,
-        "prompt4": profile_prompts.prompt4,
-        "prompt5": profile_prompts.prompt5,
-        "response1": profile_prompts.response1,
-        "response2": profile_prompts.response2,
-        "response3": profile_prompts.response3,
-        "response4": profile_prompts.response4,
-        "response5": profile_prompts.response5,
-    }
-
+    (
+        initial_songs,
+        initial_artists,
+        initial_albums,
+        initial_genres,
+        initial_prompts,
+        artist_art,
+        album_art,
+    ) = get_favorite_data(curr_user, spotify, True)
+    context = {}
+    context.update(initial_songs)
+    context.update(initial_artists)
+    context.update(initial_albums)
+    context.update(initial_genres)
+    context.update(initial_prompts)
+    context.update(artist_art)
+    context.update(album_art)
     return render(request, "application/profile.html", context)
+
+
+def activateEmail(request, user, to_email):
+    mail_subject = "Activate your user account."
+    message = render_to_string(
+        "application/activate_acct_template.html",
+        {
+            "user": user.username,
+            "domain": get_current_site(request).domain,
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "token": account_activation_token.make_token(user),
+            "protocol": "https" if request.is_secure() else "http",
+        },
+    )
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        msg = (
+            f"Dear {user}, please go to your inbox at {to_email} and click on "
+            f"the activation link to confirm and complete the registration. "
+            f"Note: Check your spam folder"
+        )
+        messages.success(request, msg)
+    else:
+        msg = (
+            f"Problem sending confirmation email to {to_email}, "
+            f"check if you typed it correctly."
+        )
+        messages.error(request, msg)
+
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(
+            request,
+            "Thank you for your email confirmation. Now you can login your account.",
+        )
+        return redirect("login")
+    else:
+        messages.error(request, "Activation link is invalid!")
+
+    return redirect("home")
+
+
+def register_request(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            activateEmail(request, user, form.cleaned_data.get("email"))
+            return redirect("login")
+
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+    else:
+        form = NewUserForm()
+
+    return render(
+        request=request,
+        template_name="application/register.html",
+        context={"form": form},
+    )

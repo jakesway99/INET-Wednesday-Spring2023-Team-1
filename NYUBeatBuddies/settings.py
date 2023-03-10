@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -141,7 +140,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT is for collectstatic
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = ('static',)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -150,3 +151,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # for django crispy forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# login URL
+LOGIN_URL = "/application/login"
+LOGIN_REDIRECT_URL = "profile"
+
+# email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_FROM = "nyubeatbuddies@gmail.com"
+EMAIL_HOST_USER = "nyubeatbuddies@gmail.com"
+EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PASSWORD_RESET_TIMEOUT = 14400
