@@ -1,9 +1,22 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+# email
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
+# spotify api package
+
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit
+
+from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit, NewUserForm
 from .models import (
-    User,
     FavoriteSong,
     FavoriteGenre,
     FavoriteAlbum,
@@ -31,6 +44,7 @@ def home(request):
     return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
 
 
+@login_required
 def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
@@ -38,10 +52,10 @@ def profile_edit(request):
 
     genres = GenreList.objects.all()
 
-    curr_user = User.objects.get(pk=1)
+    curr_user = request.user
 
     if FavoriteSong.objects.filter(
-        user=curr_user
+            user=curr_user
     ):  # pre-populate edit form if data exists
         user_fav_songs = FavoriteSong.objects.get(user=curr_user)
 
@@ -138,7 +152,7 @@ def profile_edit(request):
     elif request.method == "POST":
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
-                user=curr_user
+                    user=curr_user
             ):
                 model_instance = FavoriteSong.objects.get(user=curr_user)
                 form = SongEdit(request.POST, request.FILES, instance=model_instance)
@@ -165,7 +179,7 @@ def profile_edit(request):
 
         elif "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteAlbum.objects.get(user=curr_user)
                 form = AlbumEdit(request.POST, request.FILES, instance=model_instance)
@@ -190,7 +204,7 @@ def profile_edit(request):
 
         elif "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteGenre.objects.get(user=curr_user)
                 form = GenreEdit(request.POST, request.FILES, instance=model_instance)
@@ -215,7 +229,7 @@ def profile_edit(request):
 
         elif "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteArtist.objects.get(user=curr_user)
                 form = ArtistEdit(request.POST, request.FILES, instance=model_instance)
@@ -241,7 +255,7 @@ def profile_edit(request):
             }
         elif "response1" in request.POST:
             if UserPrompts.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = UserPrompts.objects.get(user=curr_user)
                 form = PromptEdit(request.POST, request.FILES, instance=model_instance)
@@ -268,11 +282,11 @@ def profile_edit(request):
 
     return render(request, "application/profile_edit.html", context)
 
-
+@login_required
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
-    curr_user = User.objects.get(pk=1)
+    curr_user = request.user
     top_artists = FavoriteArtist.objects.get(user=curr_user)
     top_songs = FavoriteSong.objects.get(user=curr_user)
     top_albums = FavoriteAlbum.objects.get(user=curr_user)
@@ -345,3 +359,64 @@ def profile(request):
     }
 
     return render(request, "application/profile.html", context)
+
+
+def activateEmail(request, user, to_email):
+    mail_subject = 'Activate your user account.'
+    message = render_to_string('application/activate_acct_template.html', {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        'protocol': 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{to_email}</b> inbox and click on \
+            received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
+    else:
+        messages.error(request, f'Problem sending confirmation email to {to_email}, check if you typed it correctly.')
+
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        return redirect('login')
+    else:
+        messages.error(request, 'Activation link is invalid!')
+
+    return redirect('home')
+
+
+def register_request(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            activateEmail(request, user, form.cleaned_data.get('email'))
+            return redirect('login')
+
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+    else:
+        form = NewUserForm()
+
+    return render(
+        request=request,
+        template_name="application/register.html",
+        context={"form": form}
+    )
