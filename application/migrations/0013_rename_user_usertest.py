@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0012_promptlist_userprompts'),
+        ("application", "0012_promptlist_userprompts"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='User',
-            new_name='usertest',
+            old_name="User",
+            new_name="usertest",
         ),
     ]
