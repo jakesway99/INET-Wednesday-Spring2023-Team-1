@@ -34,6 +34,3 @@ deploy:
     repo: gcivil-nyu-org/INET-Wednesday-Spring2023-Team-1
     branch:
       - $BRANCH_NAME
-
-after_deploy:
-  - # rm db.sqlite3

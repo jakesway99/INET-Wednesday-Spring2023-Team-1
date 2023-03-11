@@ -94,15 +94,14 @@ DATABASES = {
     }
 }
 
-if os.environ.get("DATABASE_NAME", None) is not None and "test" not in sys.argv:
+if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
     DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("DATABASE_NAME", ""),
         "USER": os.environ.get("DATABASE_USER", ""),
         "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
         "HOST": os.environ.get("DATABASE_HOST", ""),
-        "PORT": "5432",
-        "TEST": {},
+        "PORT": 5432,
     }
 
 # Password validation
