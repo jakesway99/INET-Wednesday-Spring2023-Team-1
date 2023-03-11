@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
     "www.nyubeatbuddies.com",
     "nyubeatbuddies-env.eba-vkfe3kpa.us-west-2.elasticbeanstalk.com",
     "dev.nyubeatbuddies.com",
+    "development-nbb.us-west-2.elasticbeanstalk.com"
 ]
 
 # Application definition
@@ -96,12 +97,12 @@ DATABASES = {
 
 if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
     DATABASES["default"] = {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": os.environ.get("DATABASE_NAME", ""),
         "USER": os.environ.get("DATABASE_USER", ""),
         "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
         "HOST": os.environ.get("DATABASE_HOST", ""),
-        "PORT": "3306",
+        "PORT": "5432",
     }
 
 # Password validation
