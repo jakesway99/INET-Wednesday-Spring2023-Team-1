@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
 # spotify api package
@@ -335,6 +335,8 @@ def profile(request):
         artist_art,
         album_art,
     ) = get_favorite_data(curr_user, spotify, True)
+    if initial_artists == {} or initial_artists == {} or initial_albums == {} or initial_genres == {} or initial_prompts == {}:
+        return redirect("profile/edit")
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
