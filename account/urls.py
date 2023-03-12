@@ -5,6 +5,6 @@ urlpatterns = [
     path("login/register", views.register_request, name="register"),
     path("login", views.login_view, name="login"),
     path("activate/<uidb64>/<token>", views.activate, name="activate"),
-    path('logout/', views.logout_view, name='logout'),
+    path("logout/", views.logout_view, name="logout"),
     path("", include("django.contrib.auth.urls")),
 ]
