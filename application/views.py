@@ -1,21 +1,11 @@
-from django.shortcuts import render, HttpResponse, redirect
-from django.contrib.auth import get_user_model
-from django.contrib import messages
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
-
-# email
-from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.core.mail import EmailMessage
-from .tokens import account_activation_token
 
 # spotify api package
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit, NewUserForm
+from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit
 from .models import (
     FavoriteSong,
     FavoriteGenre,
@@ -354,78 +344,3 @@ def profile(request):
     context.update(artist_art)
     context.update(album_art)
     return render(request, "application/profile.html", context)
-
-
-def activateEmail(request, user, to_email):
-    mail_subject = "Activate your user account."
-    message = render_to_string(
-        "application/activate_acct_template.html",
-        {
-            "user": user.username,
-            "domain": get_current_site(request).domain,
-            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-            "token": account_activation_token.make_token(user),
-            "protocol": "https" if request.is_secure() else "http",
-        },
-    )
-    email = EmailMessage(mail_subject, message, to=[to_email])
-    if email.send():
-        msg = (
-            f"Dear {user}, please go to your inbox at {to_email} and click on "
-            f"the activation link to confirm and complete the registration. "
-            f"Note: Check your spam folder"
-        )
-        messages.success(request, msg)
-    else:
-        msg = (
-            f"Problem sending confirmation email to {to_email}, "
-            f"check if you typed it correctly."
-        )
-        messages.error(request, msg)
-
-
-def activate(request, uidb64, token):
-    User = get_user_model()
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-
-        messages.success(
-            request,
-            "Thank you for your email confirmation. Now you can login your account.",
-        )
-        return redirect("login")
-    else:
-        messages.error(request, "Activation link is invalid!")
-
-    return redirect("home")
-
-
-def register_request(request):
-    if request.method == "POST":
-        form = NewUserForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            activateEmail(request, user, form.cleaned_data.get("email"))
-            return redirect("login")
-
-        else:
-            for error in list(form.errors.values()):
-                messages.error(request, error)
-
-    else:
-        form = NewUserForm()
-
-    return render(
-        request=request,
-        template_name="application/register.html",
-        context={"form": form},
-    )
