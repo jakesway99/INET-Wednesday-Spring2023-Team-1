@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.urls import reverse
 
 # email
 from django.template.loader import render_to_string
@@ -9,6 +11,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
 
 from .forms import NewUserForm
 
@@ -89,11 +93,21 @@ def register_request(request):
 
 
 def login_view(request):
-    login_form = NewUserForm()
+    print("method = ", request.method )
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect(reverse('profile'))
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form': form})
 
-    return render(
-        request,
-        "registration/login.html",
-        template_name="registration/register.html",
-        context={"form": login_form},
-    )
+
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('login'))

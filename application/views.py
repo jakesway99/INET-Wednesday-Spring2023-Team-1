@@ -325,6 +325,7 @@ def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    
 
     (
         initial_songs,
@@ -345,4 +346,5 @@ def profile(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
+    context.update({'first_name': curr_user.first_name, 'last_name': curr_user.last_name})
     return render(request, "application/profile.html", context)
