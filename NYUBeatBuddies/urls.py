@@ -24,4 +24,6 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("/", RedirectView.as_view(url="account/login", permanent=True)),
     path("", RedirectView.as_view(url="account/login", permanent=True)),
+    path("account/register", RedirectView.as_view(url="account/login/register", permanent=True)),
+    path("account/register/", RedirectView.as_view(url="account/login/register", permanent=True)),
 ]
