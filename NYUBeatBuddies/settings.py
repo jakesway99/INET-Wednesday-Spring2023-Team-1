@@ -46,6 +46,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     "spotipy",
     "application",
+    "account",
     "crispy_forms",
     "crispy_bootstrap4",
     "django.contrib.admin",
@@ -96,15 +97,15 @@ DATABASES = {
     }
 }
 
-if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("DATABASE_NAME", ""),
-        "USER": os.environ.get("DATABASE_USER", ""),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
-        "HOST": os.environ.get("DATABASE_HOST", ""),
-        "PORT": "5432",
-    }
+# if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
+#    DATABASES["default"] = {
+#        "ENGINE": "django.db.backends.postgresql_psycopg2",
+#        "NAME": os.environ.get("DATABASE_NAME", ""),
+#        "USER": os.environ.get("DATABASE_USER", ""),
+#        "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
+#        "HOST": os.environ.get("DATABASE_HOST", ""),
+#        "PORT": "5432",
+#    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -154,7 +155,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # login URL
-LOGIN_URL = "/application/login"
+LOGIN_URL = "/account/login"
 LOGIN_REDIRECT_URL = "profile"
 
 # email settings
