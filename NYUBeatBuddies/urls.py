@@ -33,7 +33,7 @@ urlpatterns = [
         RedirectView.as_view(url="account/login/register", permanent=True),
     ),
     path(
-        "account/register/",
-        RedirectView.as_view(url="account/account/login/register", permanent=True),
+        "account/account/login/register",
+        RedirectView.as_view(url="account/login/register", permanent=True),
     ),
 ]
