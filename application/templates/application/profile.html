@@ -123,7 +123,6 @@
             }
 
             .messages-section {
-                /*height: 350px; */
                 width: 100%;
                 overflow-y: auto;
             }
@@ -258,11 +257,6 @@
             }
 
             .right-section-content {
-                /*display: flex;
-            flex-direction: row;
-            flex-grow: 1;
-            height:100px;
-            width:100%;*/
                 padding: 20px;
                 overflow-x: hidden;
                 overflow-y: auto;
@@ -310,6 +304,21 @@
                 font-size: 18px;
                 margin-bottom: 10px;
                 overflow: hidden;
+            }
+
+            .sidebar-profile {
+                display: flex;
+                -webkit-box-align: center;
+                align-items: center;
+                height: inherit;
+                padding: 12px;
+                transition: background-color .2s;
+            }
+
+            .sidebar-profile-name {
+                font-family: Verdana;
+                font-size: 20px;
+                font-weight: 600;
             }
 
             .right-header {
@@ -460,85 +469,43 @@
                 text-shadow: 2px 3px 3px black;
                 font-family: Verdana;
                 align-items: center;
-                /*right: 175px;
-            bottom: 630px;*/
                 display: flex;
                 flex-wrap: wrap;
                 position: relative;
-                /*right: 30px;
-            bottom: 0px;
-            z-index: 1005;*/
             }
 
             .img1 img {
-                /*display: flex;
-            flex-wrap: wrap;
-            position: relative;*/
                 right: 10px;
-                /*bottom: 20px;
-            width: 250px;
-            height: 250px;*/
                 clip-path: path(var(--badge1));
             }
 
             .img2 img {
-                /*display: flex;
-            flex-wrap: wrap;
-            position: relative;*/
                 right: -10px;
-                top: -250px;
-                /*bottom: 190px;
-            width: 190px;
-            height: 190px;
-            z-index: 1000;*/
                 clip-path: path(var(--badge2));
             }
 
             .img3 img {
-                /*display: flex;
-            flex-wrap: wrap;
-            position: relative;*/
                 border: 8px;
                 border-color: #ffafcc;
                 border-style: solid;
-                /*right: 235px;
-            bottom: -200px;
-            z-index: 1000;*/
-
             }
 
             .img4 img {
-                /*display: flex;
-            flex-wrap: wrap;
-            position: relative;*/
                 border: 8px;
                 border-color: #bde0fe;
                 border-style: solid;
-                /*right: -45px;
-            bottom: -60px;
-            z-index: 1005;*/
-
             }
 
             .img5 img {
-                /*display: flex;
-            flex-wrap: wrap;
-            position: relative;*/
                 border: 8px;
                 border-color: #a2d2ff;
                 border-style: solid;
-                /*right: -20px;
-            bottom: -10px;
-            z-index: 1000;*/
-
             }
 
             .list-group {
                 display: flex;
                 flex-wrap: wrap;
                 position: relative;
-                /*right: -15px;
-            bottom: 40px;*/
                 font-size: 20px;
                 font-family: Verdana;
                 width: 100%;
@@ -551,7 +518,6 @@
 
             .image-frame img {
                 width: 30%;
-                /*margin-bottom: 20px;*/
                 margin-left: 4px;
                 margin-right: 4px;
             }
@@ -608,13 +574,12 @@
             crossorigin="anonymous"></script>
         <div class="container">
             <div class="left">
-                <h1>
-                    <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Profile Picture">
-                    <div>
-                        <p style="margin: 0; font-size: 24px;">{{first_name}} {{last_name}}</p>
-                        <p style="margin: 0; font-size: 16px;">Maybe a status</p>
-                    </div>
-                </h1>
+                <div class="sidebar-profile">
+                    <a href="{% url 'profile' %}">
+                        <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
+                    </a>
+                    <div class="sidebar-profile-name">{{first_name}}</div>
+                </div>
                 <h2>Matches</h2>
                 <div class="matches">
                     <div class="match">
@@ -698,7 +663,7 @@
             <div class="right-section">
                 <div class="right-header">
                     <div class="logo">
-                        <h3>NYUBeatbuddies</h3>
+                        <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
                         <a href="/application/profile/edit">Edit</a>
