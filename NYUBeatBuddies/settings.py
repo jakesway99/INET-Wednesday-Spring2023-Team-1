@@ -155,8 +155,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # login URL
-LOGIN_URL = "/account/login"
-LOGIN_REDIRECT_URL = "profile"
+# LOGIN_URL = "/account/login"
+# LOGIN_REDIRECT_URL = "profile"
 
 # email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
