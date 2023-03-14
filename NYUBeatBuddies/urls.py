@@ -22,6 +22,5 @@ urlpatterns = [
     path("application/", include("application.urls")),
     path("account/", include("account.urls")),
     path("account/", include("account.urls")),
-    path("/", RedirectView.as_view(url="account/login", permanent=True)),
     path("", RedirectView.as_view(url="account/login", permanent=True)),
 ]
