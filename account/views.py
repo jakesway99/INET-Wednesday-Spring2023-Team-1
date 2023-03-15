@@ -87,14 +87,15 @@ def register_request(request):
 
     context = {}
     context["form"] = form
-    context["loginUrl"] = reverse("login")
+    context["loginUrl"] = reverse("account:login")
     return render(
         request=request, template_name="registration/register.html", context=context
     )
 
 
 def login_view(request):
-    print("method = ", request.method)
+    form = AuthenticationForm()
+    context = {"form": form}
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -103,11 +104,13 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect(reverse("profile"))
+                return redirect(reverse("application:profile"))
+            else:
+                return render(request, "registration/login.html", context)
+        else:
+            return render(request, "registration/login.html", context)
     else:
-        form = AuthenticationForm()
-        context = {"form": form}
-    return render(request, "registration/login.html", context)
+        return render(request, "registration/login.html", context)
 
 
 def logout_view(request):
