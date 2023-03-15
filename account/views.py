@@ -61,7 +61,7 @@ def activate(request, uidb64, token):
             request,
             "Thank you for your email confirmation. Now you can login your account.",
         )
-        return redirect("login")
+        return redirect("account:login")
     else:
         messages.error(request, "Activation link is invalid!")
 
@@ -76,7 +76,7 @@ def register_request(request):
             user.is_active = False
             user.save()
             activateEmail(request, user, form.cleaned_data.get("email"))
-            return redirect("login")
+            return redirect("account:login")
 
         else:
             for error in list(form.errors.values()):
