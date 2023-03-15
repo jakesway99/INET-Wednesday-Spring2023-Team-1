@@ -356,6 +356,7 @@ def profile(request):
     )
     return render(request, "application/profile.html", context)
 
+
 @login_required
 def discover(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
