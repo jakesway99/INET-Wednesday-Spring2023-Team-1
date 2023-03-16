@@ -4,8 +4,14 @@ from django.contrib.auth.decorators import login_required
 # spotify api package
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
-from .forms import SongEdit, ArtistEdit, AlbumEdit, GenreEdit, PromptEdit
+from .forms import (
+    SongEdit,
+    ArtistEdit,
+    AlbumEdit,
+    GenreEdit,
+    PromptEdit,
+    AccountSettingsForm,
+)
 from .models import (
     FavoriteSong,
     FavoriteGenre,
@@ -183,6 +189,7 @@ def profile_edit(request):
             "album_form": AlbumEdit(None, initial=initial_albums),
             "genre_form": GenreEdit(None, initial=initial_genres),
             "prompt_form": PromptEdit(None, initial=initial_prompts),
+            "account_edit": AccountSettingsForm(),
             "genre_list": genres,
         }
 
@@ -211,6 +218,7 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
+                "account_edit": AccountSettingsForm(),
                 "genre_list": genres,
             }
 
@@ -236,6 +244,7 @@ def profile_edit(request):
                 "album_form": AlbumEdit(request.POST or None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
+                "account_edit": AccountSettingsForm(),
                 "genre_list": genres,
             }
 
@@ -261,6 +270,7 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
+                "account_edit": AccountSettingsForm(),
                 "genre_list": genres,
             }
 
@@ -288,6 +298,7 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
+                "account_edit": AccountSettingsForm(),
                 "genre_list": genres,
             }
         elif "response1" in request.POST:
@@ -314,6 +325,7 @@ def profile_edit(request):
                 "prompt_form": PromptEdit(
                     request.POST or None, initial=initial_prompts
                 ),
+                "account_edit": AccountSettingsForm(),
                 "genre_list": genres,
             }
 

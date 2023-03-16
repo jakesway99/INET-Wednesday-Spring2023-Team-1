@@ -103,7 +103,18 @@
         </style>
       </div>
 
-      <div id="tabs-2">account management</div>
+      <div id="tabs-2">
+        <div class="form-group row"> <div class="aab col-0.2"></div> <div class="col-lg"> 
+          <input type="button" name="submit" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Return to Profile" class="btn btn-primary" id="submit-id-submit"> </div> </div>
+        
+        {% crispy account_edit %}
+        <style>
+          .asteriskField {display: none;};
+          .form-group {margin-bottom: 0.5rem};
+
+        </style>
+
+      </div>
     </div>
   </div>
 
