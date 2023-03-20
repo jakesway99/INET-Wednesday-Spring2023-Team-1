@@ -16,7 +16,20 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class NewUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"placeholder": "Username", "background-color": "red"}
+        )
+    )
+    email = forms.EmailField(
+        required=True, widget=forms.TextInput(attrs={"placeholder": "Email"})
+    )
+    password1 = forms.CharField(
+        widget=forms.TextInput(attrs={"placeholder": "Password"})
+    )
+    password2 = forms.CharField(
+        widget=forms.TextInput(attrs={"placeholder": "Confirm Password"})
+    )
 
     class Meta:
         model = User
@@ -386,42 +399,57 @@ class AccountSettingsForm(UserChangeForm):
 
         self.helper.layout = Layout(
             Div(
+                Fieldset("First Name"),
                 Div(
                     Field(
                         "first_name",
-                        placeholder="",
+                        placeholder="John",
+                        label="dfsf",
                         css_class="form-group form-control-lg",
                     ),
                     css_class="col",
                 ),
+                Fieldset("Last Name"),
                 Div(
                     Field(
                         "last_name",
-                        placeholder="",
+                        placeholder="Doe",
                         css_class="form-group form-control-lg",
                     ),
                     css_class="col",
                 ),
+                Fieldset("Email"),
                 Div(
                     Field(
                         "email",
-                        placeholder="",
+                        placeholder="johndoe@email.com",
                         css_class="form-group form-control-lg",
                     ),
                     css_class="col",
                 ),
+                Fieldset("Current Password"),
                 Div(
                     Field(
                         "password",
-                        placeholder="",
+                        placeholder="Current Password",
                         css_class="form-group form-control-lg",
                     ),
                     css_class="col",
                 ),
+                Fieldset("New Password"),
                 Div(
                     Field(
                         "password",
-                        placeholder="",
+                        placeholder="New Password",
+                        css_class="form-group form-control-lg",
+                    ),
+                    css_class="col",
+                ),
+                Fieldset("Confirm New Password"),
+                Div(
+                    Field(
+                        "password",
+                        placeholder="Confirm New Password",
                         css_class="form-group form-control-lg",
                     ),
                     css_class="col",
@@ -429,7 +457,7 @@ class AccountSettingsForm(UserChangeForm):
                 css_class="form-col",
             ),
         )
-        self.helper.form_show_labels = True
+        self.helper.form_show_labels = False
 
     class Meta:
         model = User

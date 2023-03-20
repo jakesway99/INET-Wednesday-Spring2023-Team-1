@@ -189,7 +189,13 @@ def profile_edit(request):
             "album_form": AlbumEdit(None, initial=initial_albums),
             "genre_form": GenreEdit(None, initial=initial_genres),
             "prompt_form": PromptEdit(None, initial=initial_prompts),
-            "account_edit": AccountSettingsForm(),
+            "account_edit": AccountSettingsForm(
+                initial={
+                    "first_name": curr_user.first_name,
+                    "last_name": curr_user.last_name,
+                    "email": curr_user.email,
+                }
+            ),
             "genre_list": genres,
         }
 
@@ -218,7 +224,13 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(),
+                "account_edit": AccountSettingsForm(
+                    initial={
+                        "first_name": curr_user.first_name,
+                        "last_name": curr_user.last_name,
+                        "email": curr_user.email,
+                    }
+                ),
                 "genre_list": genres,
             }
 
@@ -244,7 +256,13 @@ def profile_edit(request):
                 "album_form": AlbumEdit(request.POST or None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(),
+                "account_edit": AccountSettingsForm(
+                    initial={
+                        "first_name": curr_user.first_name,
+                        "last_name": curr_user.last_name,
+                        "email": curr_user.email,
+                    }
+                ),
                 "genre_list": genres,
             }
 
@@ -270,7 +288,13 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(),
+                "account_edit": AccountSettingsForm(
+                    initial={
+                        "first_name": curr_user.first_name,
+                        "last_name": curr_user.last_name,
+                        "email": curr_user.email,
+                    }
+                ),
                 "genre_list": genres,
             }
 
@@ -298,7 +322,13 @@ def profile_edit(request):
                 "album_form": AlbumEdit(None, initial=initial_albums),
                 "genre_form": GenreEdit(None, initial=initial_genres),
                 "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(),
+                "account_edit": AccountSettingsForm(
+                    initial={
+                        "first_name": curr_user.first_name,
+                        "last_name": curr_user.last_name,
+                        "email": curr_user.email,
+                    }
+                ),
                 "genre_list": genres,
             }
         elif "response1" in request.POST:
@@ -325,7 +355,13 @@ def profile_edit(request):
                 "prompt_form": PromptEdit(
                     request.POST or None, initial=initial_prompts
                 ),
-                "account_edit": AccountSettingsForm(),
+                "account_edit": AccountSettingsForm(
+                    initial={
+                        "first_name": curr_user.first_name,
+                        "last_name": curr_user.last_name,
+                        "email": curr_user.email,
+                    }
+                ),
                 "genre_list": genres,
             }
 
@@ -364,7 +400,11 @@ def profile(request):
     context.update(artist_art)
     context.update(album_art)
     context.update(
-        {"first_name": curr_user.first_name, "last_name": curr_user.last_name}
+        {
+            "first_name": curr_user.first_name,
+            "last_name": curr_user.last_name,
+            "email": curr_user.email,
+        }
     )
     return render(request, "application/profile.html", context)
 
