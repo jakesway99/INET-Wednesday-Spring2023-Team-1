@@ -1,18 +1,19 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
 from .models import (
     FavoriteSong,
     FavoriteArtist,
     FavoriteAlbum,
     FavoriteGenre,
     UserPrompts,
+    Account,
 )
 from .models import PromptList
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field, Div
+from crispy_forms.layout import Layout, Fieldset, Field, Div
 from django.contrib.auth.forms import UserCreationForm
+import datetime
 
 
 class NewUserForm(UserCreationForm):
@@ -51,7 +52,7 @@ class SongEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Songs: </strong> "),
@@ -112,7 +113,7 @@ class ArtistEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Artists: </strong> "),
@@ -173,7 +174,8 @@ class AlbumEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-lg-0"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
+
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Albums: </strong> "),
             Field(
@@ -233,7 +235,7 @@ class GenreEdit(ModelForm):
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-0.2"
         self.helper.field_class = "col-lg"
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Genres: </strong> "),
@@ -291,7 +293,7 @@ class PromptEdit(ModelForm):
         super(PromptEdit, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Fieldset("<strong>Select Prompts and Enter Responses: </strong> "),
@@ -389,81 +391,61 @@ class PromptEdit(ModelForm):
         )
 
 
-class AccountSettingsForm(UserChangeForm):
-    password = None
+class AccountSettingsForm(ModelForm):
+    curr_year = datetime.date.today().year
+    year_list = []
+    for year in range(curr_year, 1899, -1):
+        year_list.append((year, year))
+    birth_year = forms.ChoiceField(choices=year_list)
 
     def __init__(self, *args, **kwargs):
         super(AccountSettingsForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Submit("submit", "Save"))
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Div(
-                Fieldset("First Name"),
+                Fieldset("First Name:"),
                 Div(
                     Field(
                         "first_name",
                         placeholder="John",
-                        label="dfsf",
                         css_class="form-group form-control-lg",
                     ),
-                    css_class="col",
                 ),
-                Fieldset("Last Name"),
+                Fieldset("Last Name:"),
                 Div(
                     Field(
                         "last_name",
                         placeholder="Doe",
                         css_class="form-group form-control-lg",
                     ),
-                    css_class="col",
                 ),
-                Fieldset("Email"),
+                Fieldset("Year of Birth:"),
                 Div(
                     Field(
-                        "email",
-                        placeholder="johndoe@email.com",
+                        "birth_year",
+                        placeholder="YYYY",
                         css_class="form-group form-control-lg",
                     ),
-                    css_class="col",
                 ),
-                Fieldset("Current Password"),
+                Fieldset("Location:"),
                 Div(
                     Field(
-                        "password",
-                        placeholder="Current Password",
+                        "location",
+                        placeholder="Brooklyn",
                         css_class="form-group form-control-lg",
                     ),
-                    css_class="col",
                 ),
-                Fieldset("New Password"),
-                Div(
-                    Field(
-                        "password",
-                        placeholder="New Password",
-                        css_class="form-group form-control-lg",
-                    ),
-                    css_class="col",
-                ),
-                Fieldset("Confirm New Password"),
-                Div(
-                    Field(
-                        "password",
-                        placeholder="Confirm New Password",
-                        css_class="form-group form-control-lg",
-                    ),
-                    css_class="col",
-                ),
-                css_class="form-col",
             ),
         )
         self.helper.form_show_labels = False
 
     class Meta:
-        model = User
+        model = Account
         fields = (
             "first_name",
             "last_name",
-            "email",
-            "password",
+            "birth_year",
+            "location",
         )

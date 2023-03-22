@@ -13,8 +13,9 @@
 		padding:0;
 		font-family: Arial, Helvetica, sans-serif;
 		/* background: linear-gradient(120deg, #33ccff, #ff99cc); */
-		background-image: url("https://c4.wallpaperflare.com/wallpaper/3/259/587/sound-wave-simple-background-digital-art-wallpaper-thumb.jpg");
-		background-size: cover;
+		background-image: url("{% static 'account/login-background.jpg' %}");
+    	background-position: center;
+    	background-size: cover;
 		height: 100vh;
 		overflow: hidden;
 
@@ -151,6 +152,31 @@
 			border-style: solid;
 		}
 
+		.returnMessagePopUp p {
+			/* position: relative;
+    		top: 50%;
+    		left: 50%;
+			bottom: 320px;
+			width: 650px;
+    		height: 180px;
+			transform: translate(-50%, -50%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #eee6f3;
+    		border-radius: 10px;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+
+			color: white;
+			font-size: 18px;
+			text-align: center;
+			font-family: Arial, Helvetica, sans-serif;
+			font-weight: bold;
+			position: relative;
+			bottom: 50px;
+
+		}
+
 
 	</style>
 </head>
@@ -197,6 +223,23 @@
 		  </form>
 		</div>
 	</div>
+
+	<div class = "returnMessagePopUp">
+		<p id = "returnId"> {{returnMsg}} </p>
+		
+	</div>
+
 </div>
+
+<script type="text/javascript">
+	function hideDiv(element) {
+		const element = document.getElementById("returnId");
+
+		if (element.value == " ")
+			document.getElementbyId('returnId').style.display = "none";
+		else
+			document.getElementById('returnId').style.display = "block";
+	}
+</script>
 </body>
 </html>

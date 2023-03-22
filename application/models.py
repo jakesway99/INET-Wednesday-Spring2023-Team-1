@@ -1,5 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.validators import MinLengthValidator
+
+
+class Account(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    birth_year = models.CharField(max_length=4, validators=[MinLengthValidator(4)])
+    location = models.CharField(max_length=100)
 
 
 class FavoriteSong(models.Model):
