@@ -19,6 +19,7 @@ from .models import (
     FavoriteArtist,
     GenreList,
     UserPrompts,
+    Account,
 )
 
 
@@ -181,6 +182,17 @@ def profile_edit(request):
         _,
     ) = get_favorite_data(curr_user, False)
 
+    if Account.objects.filter(user=curr_user):
+        account_inst = Account.objects.get(user=curr_user)
+        initial_acct_info = {
+            "first_name": account_inst.first_name,
+            "last_name": account_inst.last_name,
+            "birth_year": account_inst.birth_year,
+            "location": account_inst.location,
+        }
+    else:
+        initial_acct_info = {}
+
     if request.method == "GET":
         context = {
             "OAuth": token,
@@ -189,13 +201,7 @@ def profile_edit(request):
             "album_form": AlbumEdit(None, initial=initial_albums),
             "genre_form": GenreEdit(None, initial=initial_genres),
             "prompt_form": PromptEdit(None, initial=initial_prompts),
-            "account_edit": AccountSettingsForm(
-                initial={
-                    "first_name": curr_user.first_name,
-                    "last_name": curr_user.last_name,
-                    "email": curr_user.email,
-                }
-            ),
+            "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
         }
 
@@ -364,7 +370,32 @@ def profile_edit(request):
                 ),
                 "genre_list": genres,
             }
+        elif "first_name" in request.POST:
+            if Account.objects.filter(
+                user=curr_user
+            ):  # check if favorite song object exists for user
+                model_instance = Account.objects.get(user=curr_user)
+                form = AccountSettingsForm(
+                    request.POST, request.FILES, instance=model_instance
+                )
+            else:
+                form = AccountSettingsForm(request.POST, request.FILES)
+                form.user = curr_user
 
+            if form.is_valid():
+                profile_update = form.save(commit=False)
+                profile_update.user = curr_user
+                profile_update.save()
+            context = {  # set request.POST to whatever form is being posted
+                "OAuth": token,
+                "song_form": SongEdit(None, initial=initial_songs),
+                "artist_form": ArtistEdit(None, initial=initial_artists),
+                "album_form": AlbumEdit(None, initial=initial_albums),
+                "genre_form": GenreEdit(None, initial=initial_genres),
+                "prompt_form": PromptEdit(None, initial=initial_prompts),
+                "account_edit": AccountSettingsForm(initial=initial_acct_info),
+                "genre_list": genres,
+            }
     return render(request, "application/profile_edit.html", context)
 
 
