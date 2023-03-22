@@ -413,7 +413,7 @@ class AccountSettingsForm(ModelForm):
                         css_class="form-group form-control-lg",
                     ),
                 ),
-                Fieldset("Last Name"),
+                Fieldset("Last Name:"),
                 Div(
                     Field(
                         "last_name",
@@ -421,7 +421,7 @@ class AccountSettingsForm(ModelForm):
                         css_class="form-group form-control-lg",
                     ),
                 ),
-                Fieldset("Year of Birth"),
+                Fieldset("Year of Birth:"),
                 Div(
                     Field(
                         "birth_year",
@@ -429,7 +429,7 @@ class AccountSettingsForm(ModelForm):
                         css_class="form-group form-control-lg",
                     ),
                 ),
-                Fieldset("Location"),
+                Fieldset("Location:"),
                 Div(
                     Field(
                         "location",
