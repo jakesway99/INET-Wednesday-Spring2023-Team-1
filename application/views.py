@@ -19,6 +19,7 @@ from .models import (
     FavoriteArtist,
     GenreList,
     UserPrompts,
+    Account,
 )
 
 
@@ -181,6 +182,17 @@ def profile_edit(request):
         _,
     ) = get_favorite_data(curr_user, False)
 
+    if Account.objects.filter(user=curr_user):
+        account_inst = Account.objects.get(user=curr_user)
+        initial_acct_info = {
+            "first_name": account_inst.first_name,
+            "last_name": account_inst.last_name,
+            "birth_year": account_inst.birth_year,
+            "location": account_inst.location,
+        }
+    else:
+        initial_acct_info = {}
+
     if request.method == "GET":
         context = {
             "OAuth": token,
@@ -189,15 +201,10 @@ def profile_edit(request):
             "album_form": AlbumEdit(None, initial=initial_albums),
             "genre_form": GenreEdit(None, initial=initial_genres),
             "prompt_form": PromptEdit(None, initial=initial_prompts),
-            "account_edit": AccountSettingsForm(
-                initial={
-                    "first_name": curr_user.first_name,
-                    "last_name": curr_user.last_name,
-                    "email": curr_user.email,
-                }
-            ),
+            "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
         }
+        return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
         if "song1_id" in request.POST:  # check which submit button was pressed on page
@@ -217,24 +224,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(request.POST or None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "album1_id" in request.POST:
+        if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -249,24 +239,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(request.POST or None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "genre1" in request.POST:
+        if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -281,24 +254,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "artist1_id" in request.POST:
+        if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -313,25 +269,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(
-                    request.POST or None, initial=initial_artists
-                ),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-        elif "response1" in request.POST:
+        if "response1" in request.POST:
             if UserPrompts.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -346,26 +284,23 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(
-                    request.POST or None, initial=initial_prompts
-                ),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
+        if "first_name" in request.POST:
+            if Account.objects.filter(
+                user=curr_user
+            ):  # check if favorite song object exists for user
+                model_instance = Account.objects.get(user=curr_user)
+                form = AccountSettingsForm(
+                    request.POST, request.FILES, instance=model_instance
+                )
+            else:
+                form = AccountSettingsForm(request.POST, request.FILES)
+                form.user = curr_user
 
-    return render(request, "application/profile_edit.html", context)
+            if form.is_valid():
+                profile_update = form.save(commit=False)
+                profile_update.user = curr_user
+                profile_update.save()
+        return redirect("application:profile")
 
 
 @login_required
@@ -373,7 +308,6 @@ def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
-
     (
         initial_songs,
         initial_artists,

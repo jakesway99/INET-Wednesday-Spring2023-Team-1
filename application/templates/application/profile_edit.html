@@ -10,21 +10,21 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>  
     
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.css' %}">
+  <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
 
   {{ OAuth|json_script:"auths" }} 
   <script>
     const auths = JSON.parse(document.getElementById('auths').textContent);
   </script>
 
-  <script src="{% static 'application/autocomplete.js' %}"></script>
+  <script src="{% static 'application/profile_edit/autocomplete.js' %}"></script>
 
   <script>
     function getGenreList(request, response) {
         var genreArray = [
           {% for genre in genre_list %}
-            "{{genre.genre_name}}",
+            "{{genre.genre_name|safe}}",
           {% endfor %}
         ];
 
@@ -42,13 +42,36 @@
   } );
   </script>
 
-  <style>  
+  <script>
+    submitForms = function(){
+      document.forms[0].submit();
+  }
+
+  </script>
+  <style>
     .edit_tabs {
       background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%)
     }  
     body {
       background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%);
+      height: 100%;
+      margin: 0;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
+
+    .flex-container {
+      display: flex;
+      justify-content: space-between;
+      height: 75px
+    }
+
+    .btn-cancel {
+      color: #fff;
+      background-color: #ff2b2b;
+      border-color: #ff2b2b;
+    }
+
 
   </style>
 
@@ -63,9 +86,15 @@
         <li><a href="#tabs-2">Account Settings</a></li>
       </ul>
       <div id="tabs-1">
-        <div class="form-group row"> <div class="aab col-0.2"></div> <div class="col-lg"> 
-          <input type="button" name="submit" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Return to Profile" class="btn btn-primary" id="submit-id-submit"> </div> </div>
-        
+        <div class="flex-container">
+          <div class="left-btn">
+            <input type="submit" form="tab1form" name="submittab1" style ="margin-top: 15px;"  value="Save Changes" class="btn btn-primary" id="tab1-submit">
+          </div>
+          <div class="right-btn">
+            <input type="button" name="cancel" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Cancel" class="btn btn-cancel" id="tab1-cancel">
+          </div>
+        </div>
+        <form id="tab1form" method="post">
         {% crispy song_form %}
         <style>
           .asteriskField {display: none;};
@@ -101,18 +130,27 @@
           .form-group {margin-bottom: 0.5rem};
 
         </style>
+
+      </form>
       </div>
 
       <div id="tabs-2">
-        <div class="form-group row"> <div class="aab col-0.2"></div> <div class="col-lg"> 
-          <input type="button" name="submit" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Return to Profile" class="btn btn-primary" id="submit-id-submit"> </div> </div>
-        
-        {% crispy account_edit %}
-        <style>
-          .asteriskField {display: none;};
-          .form-group {margin-bottom: 0.5rem};
+        <div class="flex-container">
+          <div class="left-btn">
+            <input type="submit" form="tab2form" name="submittab2" style ="margin-top: 15px;"  value="Save Changes" class="btn btn-primary" id="tab2-submit">
+          </div>
+          <div class="right-btn">
+            <input type="button" name="cancel" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Cancel" class="btn btn-cancel" id="tab2-cancel">
+          </div>
+        </div>
+        <form id="tab2form" method="post">
+          {% crispy account_edit %}
+          <style>
+            .asteriskField {display: none;};
+            .form-group {margin-bottom: 0.5rem};
 
-        </style>
+          </style>
+        </form>
 
       </div>
     </div>
