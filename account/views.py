@@ -44,6 +44,8 @@ def activateEmail(request, user, to_email):
         )
         messages.error(request, msg)
 
+    return msg
+
 
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -75,19 +77,22 @@ def register_request(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            activateEmail(request, user, form.cleaned_data.get("email"))
-            return redirect("account:login")
+            msg = activateEmail(request, user, form.cleaned_data.get("email"))
+            # return redirect("account:login")
 
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
+            msg = " "
 
     else:
         form = NewUserForm()
+        msg = " "
 
     context = {}
     context["form"] = form
     context["loginUrl"] = reverse("account:login")
+    context["returnMsg"] = msg
     return render(
         request=request, template_name="registration/register.html", context=context
     )
