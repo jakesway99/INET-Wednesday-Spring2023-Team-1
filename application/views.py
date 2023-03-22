@@ -39,7 +39,7 @@ def get_album_pic(album_id, spotify):
 
 def get_favorite_data(curr_user, spotify="", get_pics=False):
     if FavoriteSong.objects.filter(
-            user=curr_user
+        user=curr_user
     ):  # pre-populate edit form if data exists
         user_fav_songs = FavoriteSong.objects.get(user=curr_user)
 
@@ -209,7 +209,7 @@ def profile_edit(request):
     elif request.method == "POST":
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
-                    user=curr_user
+                user=curr_user
             ):
                 model_instance = FavoriteSong.objects.get(user=curr_user)
                 form = SongEdit(request.POST, request.FILES, instance=model_instance)
@@ -226,7 +226,7 @@ def profile_edit(request):
 
         if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
-                    user=curr_user
+                user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteAlbum.objects.get(user=curr_user)
                 form = AlbumEdit(request.POST, request.FILES, instance=model_instance)
@@ -241,7 +241,7 @@ def profile_edit(request):
 
         if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
-                    user=curr_user
+                user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteGenre.objects.get(user=curr_user)
                 form = GenreEdit(request.POST, request.FILES, instance=model_instance)
@@ -256,7 +256,7 @@ def profile_edit(request):
 
         if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
-                    user=curr_user
+                user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteArtist.objects.get(user=curr_user)
                 form = ArtistEdit(request.POST, request.FILES, instance=model_instance)
@@ -271,7 +271,7 @@ def profile_edit(request):
 
         if "response1" in request.POST:
             if UserPrompts.objects.filter(
-                    user=curr_user
+                user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = UserPrompts.objects.get(user=curr_user)
                 form = PromptEdit(request.POST, request.FILES, instance=model_instance)
@@ -286,7 +286,7 @@ def profile_edit(request):
 
         if "first_name" in request.POST:
             if Account.objects.filter(
-                    user=curr_user
+                user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = Account.objects.get(user=curr_user)
                 form = AccountSettingsForm(
@@ -301,7 +301,6 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
         return redirect("application:profile")
-
 
 
 @login_required
@@ -319,11 +318,11 @@ def profile(request):
         album_art,
     ) = get_favorite_data(curr_user, spotify, True)
     if (
-            initial_artists == {}
-            or initial_artists == {}
-            or initial_albums == {}
-            or initial_genres == {}
-            or initial_prompts == {}
+        initial_artists == {}
+        or initial_artists == {}
+        or initial_albums == {}
+        or initial_genres == {}
+        or initial_prompts == {}
     ):
         return redirect("profile/edit")
     context = {}

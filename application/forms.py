@@ -11,7 +11,7 @@ from .models import (
 )
 from .models import PromptList
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field, Div
+from crispy_forms.layout import Layout, Fieldset, Field, Div
 from django.contrib.auth.forms import UserCreationForm
 import datetime
 
