@@ -77,8 +77,8 @@ def register_request(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            msg = activateEmail(request, user, form.cleaned_data.get("email"))          
-            #return redirect("account:login")
+            msg = activateEmail(request, user, form.cleaned_data.get("email"))
+            # return redirect("account:login")
 
         else:
             for error in list(form.errors.values()):
