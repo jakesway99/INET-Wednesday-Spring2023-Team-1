@@ -48,3 +48,49 @@ class TestViews(TestCase):
         self.client.login(username=TEST_USER, password="dfgljk")
         response = self.client.get(url_path)
         self.assertEqual(response.status_code, 302)
+
+
+class RegisterView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("account:register")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_login(self):
+        data = {
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "password1": "@12345678",
+            "password2": "@12345678",
+        }
+        response = self.client.post(self.url, data, follow=True)
+        self.assertTemplateUsed(response, "registration/register.html")
+
+
+class LoginViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("account:login")
+        self.user = User.objects.create_user(
+            username="testuser", email="testuser@example.com", password="testpass"
+        )
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_login(self):
+        data = {"username": "testuser", "password": "testpass"}
+        response = self.client.post(self.url, data, follow=True)
+        self.assertRedirects(response, reverse("application:profile_edit"))
+
+    def test_invalid_login(self):
+        data = {"username": "testuser", "password": "wrongpass"}
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/login.html")
+
+        # self.assertContains(response, 'Please enter a correct username and password.')
