@@ -63,8 +63,8 @@ class RegisterView(TestCase):
         data = {
             "username": "testuser",
             "email": "testuser@example.com",
-            "password1": "012345678",
-            "password2": "012345678",
+            "password1": "@12345678",
+            "password2": "@12345678",
         }
         response = self.client.post(self.url, data, follow=True)
         self.assertTemplateUsed(response, "registration/register.html")
