@@ -50,6 +50,26 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+class RegisterView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("account:register")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_login(self):
+        data = {
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "password1": "testpass",
+            "password2": "testpass",
+        }
+        response = self.client.post(self.url, data, follow=True)
+        self.assertTemplateUsed(response, "registration/register.html")
+
+
 class LoginViewTest(TestCase):
     def setUp(self):
         self.client = Client()
