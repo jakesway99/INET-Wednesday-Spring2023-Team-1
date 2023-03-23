@@ -62,7 +62,7 @@ class RegisterView(TestCase):
     def test_valid_login(self):
         data = {
             "username": "testuser",
-            "Email": "testuser@example.com",
+            "email": "testuser@example.com",
             "password1": "testpass",
             "password2": "testpass",
         }
