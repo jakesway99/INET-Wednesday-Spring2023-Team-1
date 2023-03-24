@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 # spotify api package
 import spotipy
@@ -371,3 +372,11 @@ def discover(request):
         {"first_name": curr_user.first_name, "last_name": curr_user.last_name}
     )
     return render(request, "application/discover.html", context)
+
+def getDiscoverProfile(request):
+    # Your code to update the context goes here
+    if request.GET.get('action')=='like':
+        context = {'first_name': 'You changed the first name by liking!'}
+    else:
+        context = {'first_name': 'You changed the first name by disliking!'}
+    return JsonResponse(context)

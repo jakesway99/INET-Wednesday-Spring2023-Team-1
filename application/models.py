@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.contrib.postgres.fields import ArrayField
 
 
 class Account(models.Model):
@@ -88,3 +89,9 @@ class UserPrompts(models.Model):
     response3 = models.CharField(max_length=300)
     response4 = models.CharField(max_length=300)
     response5 = models.CharField(max_length=300)
+
+
+class Likes(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    likes = ArrayField(models.IntegerField(), size=None)
+    dislikes = ArrayField(models.IntegerField(), size=None)

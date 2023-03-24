@@ -19,7 +19,7 @@
                     <a href="{% url 'application:profile' %}">
                         <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
                     </a>
-                    <div class="sidebar-profile-name">{{first_name}}</div>
+                    <div class="sidebar-profile-name" id="user_first_name">{{first_name}}</div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
@@ -116,7 +116,7 @@
                     <div class="right-section-top">
                         <div class="left-column">
                             <div>
-                                <p class="profile-name">{{first_name}}, {{age}}</p>
+                                <p class="profile-name" id="discover_first_name">{{first_name}}, {{age}}</p>
                                 <p class="location">Brooklyn</p>
                             </div>
                             <div class="songs-column">
@@ -261,10 +261,10 @@
                         </div>
                     </div>
                     <div class="footer footer-swipe">
-                        <div class="swipe-button" role="button">
+                        <div class="swipe-button" role="button" id="dislike-button">
                             <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png"/>
                         </div>
-                        <div class="swipe-button" role="button">
+                        <div class="swipe-button" role="button" id="like-button">
                             <span class="swipe-icon">&#128156;</span>
                         </button>                          
                     </div>
@@ -272,4 +272,33 @@
             </div>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $(document).ready(function() {
+       $('#like-button').click(function() {
+           $.ajax({
+               url: 'next',
+               data: {
+                'action': 'like'
+            },
+               success: function(response) {
+                   $('#discover_first_name').html(response.first_name);
+               }
+           });
+       });
+   });
+   $(document).ready(function() {
+       $('#dislike-button').click(function() {
+           $.ajax({
+               url: 'next',
+               data: {
+                'action': 'dislike'
+            },
+               success: function(response) {
+                   $('#discover_first_name').html(response.first_name);
+               }
+           });
+       });
+   });
+</script>
 </html>
