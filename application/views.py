@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import random
 
 # spotify api package
 import spotipy
@@ -375,6 +377,13 @@ def discover(request):
 
 def getDiscoverProfile(request):
     # Your code to update the context goes here
+    user_count = User.objects.count()
+    random_index = random.randint(0, user_count - 1)
+    random_user_pk = User.objects.values_list('pk', flat=True)[random_index]
+    next_user = User.objects.get(pk=random_user_pk)
+
+    # Print the primary key of the randomly selected user
+    print("Randomly selected user pk:", next_user.first_name, next_user.last_name, next_user.email, next_user.username)
     if request.GET.get('action')=='like':
         context = {'first_name': 'You changed the first name by liking!'}
     else:
