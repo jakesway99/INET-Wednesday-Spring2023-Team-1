@@ -278,11 +278,16 @@ class GenreEdit(ModelForm):
         )
 
 
-class PromptEdit(ModelForm):
+def get_prompt_choices():
     prompt_choices = [("", "Choose a prompt")]
     all_prompts = PromptList.objects.all()
     for choice in all_prompts:
         prompt_choices.append((choice.prompt, choice.prompt))
+    return prompt_choices
+
+
+class PromptEdit(ModelForm):
+    prompt_choices = get_prompt_choices()
     prompt1 = forms.ChoiceField(choices=prompt_choices)
     prompt2 = forms.ChoiceField(choices=prompt_choices)
     prompt3 = forms.ChoiceField(choices=prompt_choices)
