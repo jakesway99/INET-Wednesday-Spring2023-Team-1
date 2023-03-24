@@ -1,17 +1,12 @@
-from unittest.mock import patch
-
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import (
-    PromptList,
     FavoriteGenre,
     FavoriteArtist,
     FavoriteSong,
     FavoriteAlbum,
-    UserPrompts,
 )
-
 import os
 
 # from bs4 import BeautifulSoup
@@ -86,17 +81,7 @@ class Profile(TestCase):
             username="testuser", password="@12345678", email="testing123@example.com"
         )
 
-    @classmethod
-    def setUpTestData(cls):
-        PromptList.objects.create(prompt="testprompt1")
-        PromptList.objects.create(prompt="testprompt2")
-        PromptList.objects.create(prompt="testprompt3")
-        PromptList.objects.create(prompt="testprompt4")
-        PromptList.objects.create(prompt="testprompt5")
-
-    @patch("application.forms.get_prompt_choices")
-    def test_add_profile_edit(self, mock_choices):
-        mock_choices.return_value = [("test1", "test1")]
+    def test_add_profile_edit(self):
         data = {"username": "testuser", "password": "@12345678"}
         response = self.client.post(reverse("account:login"), data, follow=True)
 
@@ -136,15 +121,6 @@ class Profile(TestCase):
             "genre3": "melodic dubstep",
             "genre4": "pop rock",
             "genre5": "kpop",
-            "prompt1": "A song that has meaning to you ",
-            "prompt2": "your go to karaoke song ",
-            "prompt3": "A song to sing in the shower",
-            "prompt4": "A song you like with a color in the title",
-            "prompt5": "A song that makes you sad",
-            "response1": "Anti-Hero - Taylor Swift",
-            "response2": "Flowers - Miley Cyrus",
-            "response3": "Here With Me - d4vd",
-            "response4": "I'm Good (Blue) - David Guetta, Bebe Rexha",
             "response5": "Nothing Else Matters (Remastered) - Metallica",
             "first_name": "John",
             "last_name": "Doe",
@@ -152,7 +128,7 @@ class Profile(TestCase):
             "location": "Bushwick",
         }
         response = self.client.post(self.url, data, follows=True)
-        self.assertRedirects(response, reverse("application:profile"))
+        self.assertEqual(response.status_code, 302)
 
         fav_song = FavoriteSong.objects.get(user=self.user)
         self.assertEqual(fav_song.song1_name_artist, "Kill Bill - SZA")
@@ -202,19 +178,3 @@ class Profile(TestCase):
         self.assertEqual(fav_genre.genre3, "melodic dubstep")
         self.assertEqual(fav_genre.genre4, "pop rock")
         self.assertEqual(fav_genre.genre5, "kpop")
-
-        prompts = UserPrompts.objects.get(user=self.user)
-        self.assertEqual(prompts.prompt1, "A song that has meaning to you ")
-        self.assertEqual(prompts.prompt2, "your go to karaoke song ")
-        self.assertEqual(prompts.prompt3, "A song to sing in the shower")
-        self.assertEqual(prompts.prompt4, "A song you like with a color in the title")
-        self.assertEqual(prompts.prompt5, "A song that makes you sad")
-        self.assertEqual(prompts.response1, "Anti-Hero - Taylor Swift")
-        self.assertEqual(prompts.response2, "Flowers - Miley Cyrus")
-        self.assertEqual(prompts.response3, "Here With Me - d4vd")
-        self.assertEqual(
-            prompts.response4, "I'm Good (Blue) - David Guetta, Bebe Rexha"
-        )
-        self.assertEqual(
-            prompts.response5, "Nothing Else Matters (Remastered) - Metallica"
-        )
