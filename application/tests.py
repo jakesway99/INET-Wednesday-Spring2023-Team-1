@@ -3,8 +3,15 @@ from unittest.mock import patch
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import PromptList, FavoriteGenre, FavoriteArtist, FavoriteSong, FavoriteAlbum, Account, UserPrompts
-from .forms import get_prompt_choices
+from .models import (
+    PromptList,
+    FavoriteGenre,
+    FavoriteArtist,
+    FavoriteSong,
+    FavoriteAlbum,
+    UserPrompts,
+)
+
 import os
 
 # from bs4 import BeautifulSoup
@@ -87,11 +94,11 @@ class Profile(TestCase):
         PromptList.objects.create(prompt="testprompt4")
         PromptList.objects.create(prompt="testprompt5")
 
-    @patch('application.forms.get_prompt_choices')
+    @patch("application.forms.get_prompt_choices")
     def test_add_profile_edit(self, mock_choices):
-        mock_choices.return_value = [('test1', 'test1')]
+        mock_choices.return_value = [("test1", "test1")]
         data = {"username": "testuser", "password": "@12345678"}
-        response = self.client.post(reverse('account:login'), data, follow=True)
+        response = self.client.post(reverse("account:login"), data, follow=True)
 
         data = {
             "song1_name_artist": "Kill Bill - SZA",
@@ -104,7 +111,6 @@ class Profile(TestCase):
             "song3_id": "2lnzGkdtDj5mtlcOW2yRtG",
             "song4_id": "3cBsEDNhFI9E82vPj3kvi3",
             "song5_id": "2tIv3DITNBTTayAM6Rewqi",
-
             "album1_name_artist": "Endless Summer Vacation - Miley Cyrus",
             "album2_name_artist": "evermore - Taylor Swift",
             "album3_name_artist": "Purple (Rainbow Friends) - Rockit Music",
@@ -115,7 +121,6 @@ class Profile(TestCase):
             "album3_id": "0uw5PIXZiA3Kp8B6qBqPIo",
             "album4_id": "6FJxoadUE4JNVwWHghBwnb",
             "album5_id": "4ke6cauk7sHuydZCrkgD7s",
-
             "artist1_name": "Harry Styles",
             "artist2_name": "Taylor Swift",
             "artist3_name": "The 1975",
@@ -126,13 +131,11 @@ class Profile(TestCase):
             "artist3_id": "3mIj9lX2MWuHmhNCA7LSCW",
             "artist4_id": "1Xyo4u8uXC1ZmMpatF05PJ",
             "artist5_id": "3Nrfpe0tUJi4K4DXYWgMUX",
-
             "genre1": "pop",
             "genre2": "vaporwave",
             "genre3": "melodic dubstep",
             "genre4": "pop rock",
             "genre5": "kpop",
-
             "prompt1": "A song that has meaning to you ",
             "prompt2": "your go to karaoke song ",
             "prompt3": "A song to sing in the shower",
@@ -143,7 +146,6 @@ class Profile(TestCase):
             "response3": "Here With Me - d4vd",
             "response4": "I'm Good (Blue) - David Guetta, Bebe Rexha",
             "response5": "Nothing Else Matters (Remastered) - Metallica",
-
             "first_name": "John",
             "last_name": "Doe",
             "birth_year": "1990",
@@ -153,11 +155,13 @@ class Profile(TestCase):
         self.assertRedirects(response, reverse("application:profile"))
 
         fav_song = FavoriteSong.objects.get(user=self.user)
-        self.assertEqual(fav_song.song1_name_artist,"Kill Bill - SZA")
-        self.assertEqual(fav_song.song2_name_artist,"Sure Thing - Miguel")
-        self.assertEqual(fav_song.song3_name_artist,"Whenever, Wherever - Shakira")
-        self.assertEqual(fav_song.song4_name_artist,"Wasted On You - Morgan Wallen")
-        self.assertEqual(fav_song.song5_name_artist,"And We Knew It Was Our Time - Lane 8, Massane")
+        self.assertEqual(fav_song.song1_name_artist, "Kill Bill - SZA")
+        self.assertEqual(fav_song.song2_name_artist, "Sure Thing - Miguel")
+        self.assertEqual(fav_song.song3_name_artist, "Whenever, Wherever - Shakira")
+        self.assertEqual(fav_song.song4_name_artist, "Wasted On You - Morgan Wallen")
+        self.assertEqual(
+            fav_song.song5_name_artist, "And We Knew It Was Our Time - Lane 8, Massane"
+        )
         self.assertEqual(fav_song.song1_id, "3OHfY25tqY28d16oZczHc8")
         self.assertEqual(fav_song.song2_id, "0JXXNGljqupsJaZsgSbMZV")
         self.assertEqual(fav_song.song3_id, "2lnzGkdtDj5mtlcOW2yRtG")
@@ -165,19 +169,23 @@ class Profile(TestCase):
         self.assertEqual(fav_song.song5_id, "2tIv3DITNBTTayAM6Rewqi")
 
         fav_album = FavoriteAlbum.objects.get(user=self.user)
-        self.assertEqual(fav_album.album1_name_artist, "Endless Summer Vacation - Miley Cyrus")
-        self.assertEqual(fav_album.album2_name_artist,"evermore - Taylor Swift")
-        self.assertEqual(fav_album.album3_name_artist, "Purple (Rainbow Friends) - Rockit Music")
+        self.assertEqual(
+            fav_album.album1_name_artist, "Endless Summer Vacation - Miley Cyrus"
+        )
+        self.assertEqual(fav_album.album2_name_artist, "evermore - Taylor Swift")
+        self.assertEqual(
+            fav_album.album3_name_artist, "Purple (Rainbow Friends) - Rockit Music"
+        )
         self.assertEqual(fav_album.album4_name_artist, "RENAISSANCE - Beyoncé")
         self.assertEqual(fav_album.album5_name_artist, "Bluey the Album - Bluey")
-        self.assertEqual(fav_album.album1_id,"0HiZ8fNXwJOQcrf5iflrdz")
+        self.assertEqual(fav_album.album1_id, "0HiZ8fNXwJOQcrf5iflrdz")
         self.assertEqual(fav_album.album2_id, "5jmVg7rwRcgd6ARPAeYNSm")
         self.assertEqual(fav_album.album3_id, "0uw5PIXZiA3Kp8B6qBqPIo")
         self.assertEqual(fav_album.album4_id, "6FJxoadUE4JNVwWHghBwnb")
         self.assertEqual(fav_album.album5_id, "4ke6cauk7sHuydZCrkgD7s")
 
         fav_artist = FavoriteArtist.objects.get(user=self.user)
-        self.assertEqual(fav_artist.artist1_name,"Harry Styles")
+        self.assertEqual(fav_artist.artist1_name, "Harry Styles")
         self.assertEqual(fav_artist.artist2_name, "Taylor Swift")
         self.assertEqual(fav_artist.artist3_name, "The 1975")
         self.assertEqual(fav_artist.artist4_name, "The Weeknd")
@@ -190,7 +198,7 @@ class Profile(TestCase):
 
         fav_genre = FavoriteGenre.objects.get(user=self.user)
         self.assertEqual(fav_genre.genre1, "pop")
-        self.assertEqual(fav_genre.genre2,"vaporwave")
+        self.assertEqual(fav_genre.genre2, "vaporwave")
         self.assertEqual(fav_genre.genre3, "melodic dubstep")
         self.assertEqual(fav_genre.genre4, "pop rock")
         self.assertEqual(fav_genre.genre5, "kpop")
@@ -204,7 +212,9 @@ class Profile(TestCase):
         self.assertEqual(prompts.response1, "Anti-Hero - Taylor Swift")
         self.assertEqual(prompts.response2, "Flowers - Miley Cyrus")
         self.assertEqual(prompts.response3, "Here With Me - d4vd")
-        self.assertEqual(prompts.response4, "I'm Good (Blue) - David Guetta, Bebe Rexha")
-        self.assertEqual(prompts.response5, "Nothing Else Matters (Remastered) - Metallica")
-
-
+        self.assertEqual(
+            prompts.response4, "I'm Good (Blue) - David Guetta, Bebe Rexha"
+        )
+        self.assertEqual(
+            prompts.response5, "Nothing Else Matters (Remastered) - Metallica"
+        )
