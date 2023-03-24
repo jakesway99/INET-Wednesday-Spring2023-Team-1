@@ -375,17 +375,27 @@ def discover(request):
     )
     return render(request, "application/discover.html", context)
 
+
 def getDiscoverProfile(request):
     # Your code to update the context goes here
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     user_count = User.objects.count()
     random_index = random.randint(0, user_count - 1)
-    random_user_pk = User.objects.values_list('pk', flat=True)[random_index]
+    random_user_pk = User.objects.values_list("pk", flat=True)[random_index]
     next_user = User.objects.get(pk=random_user_pk)
+    (
+        next_favorite_songs,
+        next_favorite_artists,
+        next_favorite_albums,
+        next_favorite_genres,
+        next_next_prompts,
+        next_next_artist_imgs,
+        next_album_imgs,
+    ) = get_favorite_data(next_user, spotify, True)
+    print(next_album_imgs, next_next_artist_imgs)
 
-    # Print the primary key of the randomly selected user
-    print("Randomly selected user pk:", next_user.first_name, next_user.last_name, next_user.email, next_user.username)
-    if request.GET.get('action')=='like':
-        context = {'first_name': 'You changed the first name by liking!'}
+    if request.GET.get("action") == "like":
+        context = {"first_name": "You changed the first name by liking!"}
     else:
-        context = {'first_name': 'You changed the first name by disliking!'}
+        context = {"first_name": "You changed the first name by disliking!"}
     return JsonResponse(context)
