@@ -19,7 +19,11 @@
                     <a href="{% url 'application:profile' %}">
                         <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
                     </a>
-                    <div class="sidebar-profile-name">{{first_name}}</div>
+                    <div>
+                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
+                        <p class="profile-name" id="user_last_name">{{user.last_name}}, <p id="user_age">{{user.age}}</p></p>
+                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
@@ -107,17 +111,16 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">
                     <div class="right-section-top">
                         <div class="left-column">
                             <div>
-                                <p class="profile-name">{{first_name}}, {{age}}</p>
-                                <p class="location">Brooklyn</p>
+                                <p class="profile-name" id="discover_first_name">{{discover_user.first_name}}</p>
+                                <p class="profile-name" id="discover_last_name">{{discover_user.last_name}}, <p id="discover_age">{{discover_user.age}}</p></p>
+                                <p class="location" id="discover_location">{{discover_user.location}}</p>
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
@@ -261,10 +264,10 @@
                         </div>
                     </div>
                     <div class="footer footer-swipe">
-                        <div class="swipe-button" role="button">
+                        <div class="swipe-button" role="button" id="dislike-button">
                             <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png"/>
                         </div>
-                        <div class="swipe-button" role="button">
+                        <div class="swipe-button" role="button" id="like-button">
                             <span class="swipe-icon">&#128156;</span>
                         </button>                          
                     </div>
@@ -272,4 +275,41 @@
             </div>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $(document).ready(function() {
+       $('#like-button').click(function() {
+           $.ajax({
+               url: 'next',
+               data: {
+                'action': 'like'
+            },
+               success: function(response) {
+                let age =(2023 - Number(response.discover_user.birth_year)).toString()
+                $('#discover_first_name').html(response.discover_user.first_name);
+                   $('#discover_last_name').html(response.discover_user.last_name);
+                   $('#discover_location').html(response.discover_user.location);
+                   $('#discover_age').html(age);
+               }
+           });
+       });
+   });
+   $(document).ready(function() {
+       $('#dislike-button').click(function() {
+           $.ajax({
+               url: 'next',
+               data: {
+                'action': 'dislike'
+            },
+               success: function(response) {
+                let age =(2023 - Number(response.discover_user.birth_year)).toString()
+                $('#discover_first_name').html(response.discover_user.first_name);
+                   $('#discover_last_name').html(response.discover_user.last_name);
+                   $('#discover_location').html(response.discover_user.location);
+                   $('#discover_age').html(age);
+               }
+           });
+       });
+   });
+</script>
 </html>

@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import random
 
 # spotify api package
 import spotipy
@@ -20,6 +23,7 @@ from .models import (
     GenreList,
     UserPrompts,
     Account,
+    Likes,
 )
 
 
@@ -308,6 +312,9 @@ def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
     (
         initial_songs,
         initial_artists,
@@ -333,21 +340,23 @@ def profile(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {
-            "first_name": curr_user.first_name,
-            "last_name": curr_user.last_name,
-            "email": curr_user.email,
-        }
-    )
+    context.update({"user": user_data})
     return render(request, "application/profile.html", context)
 
 
 @login_required
 def discover(request):
+    global CURRENT_DISCOVER
+    CURRENT_DISCOVER = getNextUserPk(request)
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-
     curr_user = request.user
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    discover_user_data = Account.objects.get(user=discover_user).__dict__
+    discover_user_data.pop("_state")
+    discover_user_data["age"] = str(2023 - int(discover_user_data["birth_year"]))
 
     (
         initial_songs,
@@ -357,7 +366,7 @@ def discover(request):
         initial_prompts,
         artist_art,
         album_art,
-    ) = get_favorite_data(curr_user, spotify, True)
+    ) = get_favorite_data(discover_user, spotify, True)
 
     context = {}
     context.update(initial_songs)
@@ -367,7 +376,75 @@ def discover(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {"first_name": curr_user.first_name, "last_name": curr_user.last_name}
-    )
+    context.update({"user": user_data})
+    context.update({"discover_user": discover_user_data})
     return render(request, "application/discover.html", context)
+
+
+@login_required
+def getNextUserPk(request):
+    curr_user = request.user
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    previous_likes_and_dislikes = likes.likes + likes.dislikes
+    previous_likes_and_dislikes.append(curr_user.pk)
+    all_users_pks = list(User.objects.values_list("pk", flat=True))
+    if len(all_users_pks) - len(previous_likes_and_dislikes) <= 1:
+        return curr_user.pk
+    for pk in previous_likes_and_dislikes:
+        if pk in all_users_pks:
+            all_users_pks.remove(pk)
+    random_user_pk = random.choice(all_users_pks)
+    return random_user_pk
+
+
+@login_required
+def getDiscoverProfile(request):
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+
+    # Save current decision
+    global CURRENT_DISCOVER
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    if request.GET.get("action") == "like" and CURRENT_DISCOVER not in likes.likes:
+        likes.likes.append(int(CURRENT_DISCOVER))
+    elif (
+        request.GET.get("action") == "dislike"
+        and CURRENT_DISCOVER not in likes.dislikes
+    ):
+        likes.dislikes.append(int(CURRENT_DISCOVER))
+    likes.save()
+
+    # Get a random user not seen before
+    next_user_pk = getNextUserPk(request)
+    next_user = User.objects.get(pk=next_user_pk)
+
+    # Pass next user to front end
+    CURRENT_DISCOVER = next_user.pk
+    (
+        next_favorite_songs,
+        next_favorite_artists,
+        next_favorite_albums,
+        next_favorite_genres,
+        next_next_prompts,
+        next_next_artist_imgs,
+        next_album_imgs,
+    ) = get_favorite_data(next_user, spotify, True)
+    user_data = Account.objects.get(user=next_user).__dict__
+    user_data.pop("_state")
+    context = {
+        "discover_user": user_data,
+        "favorite_songs": next_favorite_songs,
+        "favorite_artists": next_favorite_artists,
+        "favorite_albums": next_favorite_albums,
+        "favorite_genres": next_favorite_genres,
+        "prompts": next_next_prompts,
+        "artist_imgs": next_next_artist_imgs,
+        "albums_imgs": next_album_imgs,
+    }
+    return JsonResponse(context)

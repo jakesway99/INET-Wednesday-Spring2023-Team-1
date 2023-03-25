@@ -578,7 +578,11 @@
                     <a href="{% url 'application:profile' %}">
                         <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
                     </a>
-                    <div class="sidebar-profile-name">{{first_name}}</div>
+                    <div>
+                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
+                        <p class="profile-name" id="user_last_name">{{user.last_name}}, <p id="user_age">{{user.age}}</p></p>
+                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
@@ -667,9 +671,7 @@
                     </div>
                     <div class="edit-profile">
                         <a href="{% url 'application:profile_edit' %}">Edit</a>
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">

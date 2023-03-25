@@ -1,12 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import (
-    FavoriteGenre,
-    FavoriteArtist,
-    FavoriteSong,
-    FavoriteAlbum,
-)
+from .models import FavoriteGenre, FavoriteArtist, FavoriteSong, FavoriteAlbum, Account
 import os
 
 # from bs4 import BeautifulSoup
@@ -79,6 +74,12 @@ class Profile(TestCase):
         self.url = reverse("application:profile_edit")
         self.user = User.objects.create_user(
             username="testuser", password="@12345678", email="testing123@example.com"
+        )
+        self.account = Account.objects.create(
+            user=self.user,
+            first_name="testFirst",
+            last_name="testLast",
+            birth_year=1995,
         )
 
     def test_add_profile_edit(self):
