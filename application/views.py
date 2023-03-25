@@ -312,6 +312,23 @@ def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    try:
+        user_matches = list(Likes.objects.get(user=curr_user).matches)
+        if len(user_matches) == 0:
+            raise Exception("No matches")
+        matches_data = []
+        for match in user_matches:
+            matched_user = User.objects.get(pk=match)
+            matched_user_account = Account.objects.get(user=matched_user)
+            matches_data = [
+                {
+                    "first_name": matched_user_account.first_name,
+                    "last_name": matched_user_account.last_name,
+                }
+            ]
+
+    except Exception:
+        matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
     user_data["age"] = str(2023 - int(user_data["birth_year"]))
@@ -341,6 +358,7 @@ def profile(request):
     context.update(artist_art)
     context.update(album_art)
     context.update({"user": user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/profile.html", context)
 
 

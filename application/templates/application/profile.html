@@ -586,26 +586,12 @@
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
+                    {% for match in matches_data %}
                     <div class="match">
                         <img src="https://via.placeholder.com/130x130" alt="Match 1">
-                        <p>Match 1</p>
+                        <p>{{match.first_name}}</p>
                     </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 2">
-                        <p>Match 2</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 3">
-                        <p>Match 3</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 4">
-                        <p>Match 4</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 5">
-                        <p>Match 5</p>
-                    </div>
+                    {% endfor %}
                 </div>
                 <h3>Search Matches</h3>
                 <div class="search-container">
