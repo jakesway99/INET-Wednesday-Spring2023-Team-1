@@ -340,11 +340,7 @@ def profile(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {
-            "user": user_data 
-        }
-    )
+    context.update({"user": user_data})
     return render(request, "application/profile.html", context)
 
 
@@ -384,6 +380,7 @@ def discover(request):
     context.update({"discover_user": discover_user_data})
     return render(request, "application/discover.html", context)
 
+
 @login_required
 def getNextUserPk(request):
     curr_user = request.user
@@ -401,6 +398,7 @@ def getNextUserPk(request):
             all_users_pks.remove(pk)
     random_user_pk = random.choice(all_users_pks)
     return random_user_pk
+
 
 @login_required
 def getDiscoverProfile(request):
