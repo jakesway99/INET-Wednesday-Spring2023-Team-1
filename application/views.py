@@ -407,12 +407,21 @@ def getDiscoverProfile(request):
 
     # Save current decision
     global CURRENT_DISCOVER
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    try:
+        discover_user_likes = Likes.objects.get(user=discover_user)
+    except Exception:
+        discover_user_likes = []
     try:
         likes = Likes.objects.get(user=curr_user)
     except Exception:
         likes = Likes.objects.create(user=curr_user)
     if request.GET.get("action") == "like" and CURRENT_DISCOVER not in likes.likes:
         likes.likes.append(int(CURRENT_DISCOVER))
+        if curr_user.pk in discover_user_likes.likes:
+            discover_user_likes.matches.append(curr_user.pk)
+            likes.matches.append(int(CURRENT_DISCOVER))
+
     elif (
         request.GET.get("action") == "dislike"
         and CURRENT_DISCOVER not in likes.dislikes

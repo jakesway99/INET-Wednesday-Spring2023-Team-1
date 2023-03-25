@@ -96,3 +96,4 @@ class Likes(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     likes = models.JSONField(default=list)
     dislikes = models.JSONField(default=list)
+    matches = models.JSONField(default=list)
