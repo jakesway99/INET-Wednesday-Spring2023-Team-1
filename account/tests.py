@@ -3,6 +3,7 @@ import os
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from application.models import Account
 
 TEST_USER = os.environ["TEST_USER"]
 TEST_USER_PASSWORD = os.environ["TEST_USER_PASSWORD"]
@@ -14,6 +15,12 @@ class TestViews(TestCase):
             username=TEST_USER, password=TEST_USER_PASSWORD
         )
         self.client = Client()
+        self.account = Account.objects.create(
+            user=self.user,
+            first_name="testFirst",
+            last_name="testLast",
+            birth_year=1995,
+        )
 
     def test_profile_edit_page(self):
         url_path = reverse("application:profile_edit")
@@ -76,6 +83,12 @@ class LoginViewTest(TestCase):
         self.url = reverse("account:login")
         self.user = User.objects.create_user(
             username="testuser", email="testuser@example.com", password="testpass"
+        )
+        self.account = Account.objects.create(
+            user=self.user,
+            first_name="testFirst",
+            last_name="testLast",
+            birth_year=1995,
         )
 
     def test_get(self):
