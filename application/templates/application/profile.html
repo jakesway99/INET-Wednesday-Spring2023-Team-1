@@ -671,9 +671,7 @@
                     </div>
                     <div class="edit-profile">
                         <a href="{% url 'application:profile_edit' %}">Edit</a>
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">

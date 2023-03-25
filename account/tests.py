@@ -3,6 +3,7 @@ import os
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from application.models import Account
 
 TEST_USER = os.environ["TEST_USER"]
@@ -107,3 +108,18 @@ class LoginViewTest(TestCase):
         self.assertTemplateUsed(response, "registration/login.html")
 
         # self.assertContains(response, 'Please enter a correct username and password.')
+
+
+class LogoutViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="testpass"
+        )
+        self.client.force_login(self.user)
+
+    def test_logout_view(self):
+        response = self.client.get(reverse("account:logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
+        self.assertFalse("_auth_user_id" in self.client.session)
