@@ -307,11 +307,34 @@ def profile_edit(request):
         return redirect("application:profile")
 
 
+def getMatchesData(user):
+    try:
+        user_matches = list(Likes.objects.get(user=user).matches)
+        if len(user_matches) == 0:
+            raise Exception("No matches")
+        matches_data = []
+        for match in user_matches:
+            matched_user = User.objects.get(pk=match)
+            matched_user_account = Account.objects.get(user=matched_user)
+            matches_data = [
+                {
+                    "first_name": matched_user_account.first_name,
+                    "last_name": matched_user_account.last_name,
+                }
+            ]
+
+    except Exception:
+        matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
+    return matches_data
+
+
 @login_required
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
+
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
     user_data["age"] = str(2023 - int(user_data["birth_year"]))
@@ -341,6 +364,7 @@ def profile(request):
     context.update(artist_art)
     context.update(album_art)
     context.update({"user": user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/profile.html", context)
 
 
@@ -350,6 +374,7 @@ def discover(request):
     CURRENT_DISCOVER = getNextUserPk(request)
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
     user_data["age"] = str(2023 - int(user_data["birth_year"]))
@@ -378,6 +403,7 @@ def discover(request):
     context.update(album_art)
     context.update({"user": user_data})
     context.update({"discover_user": discover_user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/discover.html", context)
 
 
@@ -450,12 +476,12 @@ def getDiscoverProfile(request):
     user_data.pop("_state")
     context = {
         "discover_user": user_data,
-        "favorite_songs": next_favorite_songs,
-        "favorite_artists": next_favorite_artists,
-        "favorite_albums": next_favorite_albums,
-        "favorite_genres": next_favorite_genres,
-        "prompts": next_next_prompts,
-        "artist_imgs": next_next_artist_imgs,
-        "albums_imgs": next_album_imgs,
+        "discover_favorite_songs": next_favorite_songs,
+        "discover_favorite_artists": next_favorite_artists,
+        "discover_favorite_albums": next_favorite_albums,
+        "discover_favorite_genres": next_favorite_genres,
+        "discover_prompts": next_next_prompts,
+        "discover_artist_imgs": next_next_artist_imgs,
+        "discover_albums_imgs": next_album_imgs,
     }
     return JsonResponse(context)
