@@ -19,7 +19,11 @@
                     <a href="{% url 'application:profile' %}">
                         <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
                     </a>
-                    <div class="sidebar-profile-name" id="user_first_name">{{first_name}}</div>
+                    <div>
+                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
+                        <p class="profile-name" id="user_last_name">{{user.last_name}}, <p id="user_age">{{user.age}}</p></p>
+                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
@@ -107,18 +111,16 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">
                     <div class="right-section-top">
                         <div class="left-column">
                             <div>
-                                <p class="profile-name" id="discover_first_name">{{first_name}}</p>
-                                <p class="profile-name" id="discover_last_name">{{last_name}}, <p id="discover_age">{{age}}</p></p>
-                                <p class="location" id="discover_location">{{location}}</p>
+                                <p class="profile-name" id="discover_first_name">{{discover_user.first_name}}</p>
+                                <p class="profile-name" id="discover_last_name">{{discover_user.last_name}}, <p id="discover_age">{{discover_user.age}}</p></p>
+                                <p class="location" id="discover_location">{{discover_user.location}}</p>
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
@@ -283,10 +285,10 @@
                 'action': 'like'
             },
                success: function(response) {
-                let age =(2023 - Number(response.user.birth_year)).toString()
-                $('#discover_first_name').html(response.user.first_name);
-                   $('#discover_last_name').html(response.user.last_name);
-                   $('#discover_location').html(response.user.location);
+                let age =(2023 - Number(response.discover_user.birth_year)).toString()
+                $('#discover_first_name').html(response.discover_user.first_name);
+                   $('#discover_last_name').html(response.discover_user.last_name);
+                   $('#discover_location').html(response.discover_user.location);
                    $('#discover_age').html(age);
                }
            });
@@ -300,10 +302,10 @@
                 'action': 'dislike'
             },
                success: function(response) {
-                let age =(2023 - Number(response.user.birth_year)).toString()
-                $('#discover_first_name').html(response.user.first_name);
-                   $('#discover_last_name').html(response.user.last_name);
-                   $('#discover_location').html(response.user.location);
+                let age =(2023 - Number(response.discover_user.birth_year)).toString()
+                $('#discover_first_name').html(response.discover_user.first_name);
+                   $('#discover_last_name').html(response.discover_user.last_name);
+                   $('#discover_location').html(response.discover_user.location);
                    $('#discover_age').html(age);
                }
            });
