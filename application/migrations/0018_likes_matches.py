@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0017_auto_20230325_1526'),
+        ("application", "0017_auto_20230325_1526"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='likes',
-            name='matches',
+            model_name="likes",
+            name="matches",
             field=models.JSONField(default=list),
         ),
     ]

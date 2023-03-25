@@ -17,7 +17,6 @@ application/migrations/__pycache__/
 *.pot
 *.pyc
 local_settings.py
-db.sqlite3
 media
 
 # Secret key file
