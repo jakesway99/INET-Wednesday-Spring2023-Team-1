@@ -392,10 +392,16 @@ def getDiscoverProfile(request):
         next_next_artist_imgs,
         next_album_imgs,
     ) = get_favorite_data(next_user, spotify, True)
-    print(next_album_imgs, next_next_artist_imgs)
-
-    if request.GET.get("action") == "like":
-        context = {"first_name": "You changed the first name by liking!"}
-    else:
-        context = {"first_name": "You changed the first name by disliking!"}
+    user_data = Account.objects.get(user=next_user).__dict__
+    user_data.pop('_state')
+    context = {
+        "user":user_data,
+        "favorite_songs":next_favorite_songs,
+        "favorite_artists":next_favorite_artists,
+        "favorite_albums":next_favorite_albums,
+        "favorite_genres":next_favorite_genres,
+        "prompts":next_next_prompts,
+        "artist_imgs":next_next_artist_imgs,
+        "albums_imgs":next_album_imgs
+    }
     return JsonResponse(context)

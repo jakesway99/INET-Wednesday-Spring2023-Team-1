@@ -116,8 +116,9 @@
                     <div class="right-section-top">
                         <div class="left-column">
                             <div>
-                                <p class="profile-name" id="discover_first_name">{{first_name}}, {{age}}</p>
-                                <p class="location">Brooklyn</p>
+                                <p class="profile-name" id="discover_first_name">{{first_name}}</p>
+                                <p class="profile-name" id="discover_last_name">{{last_name}}, <p id="discover_age">{{age}}</p></p>
+                                <p class="location" id="discover_location">{{location}}</p>
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
@@ -282,7 +283,11 @@
                 'action': 'like'
             },
                success: function(response) {
-                   $('#discover_first_name').html(response.first_name);
+                let age =(2023 - Number(response.user.birth_year)).toString()
+                $('#discover_first_name').html(response.user.first_name);
+                   $('#discover_last_name').html(response.user.last_name);
+                   $('#discover_location').html(response.user.location);
+                   $('#discover_age').html(age);
                }
            });
        });
@@ -295,7 +300,11 @@
                 'action': 'dislike'
             },
                success: function(response) {
-                   $('#discover_first_name').html(response.first_name);
+                let age =(2023 - Number(response.user.birth_year)).toString()
+                $('#discover_first_name').html(response.user.first_name);
+                   $('#discover_last_name').html(response.user.last_name);
+                   $('#discover_location').html(response.user.location);
+                   $('#discover_age').html(age);
                }
            });
        });
