@@ -3,6 +3,8 @@ import os
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from application.models import Account
 
 TEST_USER = os.environ["TEST_USER"]
 TEST_USER_PASSWORD = os.environ["TEST_USER_PASSWORD"]
@@ -14,6 +16,12 @@ class TestViews(TestCase):
             username=TEST_USER, password=TEST_USER_PASSWORD
         )
         self.client = Client()
+        self.account = Account.objects.create(
+            user=self.user,
+            first_name="testFirst",
+            last_name="testLast",
+            birth_year=1995,
+        )
 
     def test_profile_edit_page(self):
         url_path = reverse("application:profile_edit")
@@ -48,3 +56,70 @@ class TestViews(TestCase):
         self.client.login(username=TEST_USER, password="dfgljk")
         response = self.client.get(url_path)
         self.assertEqual(response.status_code, 302)
+
+
+class RegisterView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("account:register")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_login(self):
+        data = {
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "password1": "@12345678",
+            "password2": "@12345678",
+        }
+        response = self.client.post(self.url, data, follow=True)
+        self.assertTemplateUsed(response, "registration/register.html")
+
+
+class LoginViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("account:login")
+        self.user = User.objects.create_user(
+            username="testuser", email="testuser@example.com", password="testpass"
+        )
+        self.account = Account.objects.create(
+            user=self.user,
+            first_name="testFirst",
+            last_name="testLast",
+            birth_year=1995,
+        )
+
+    def test_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_login(self):
+        data = {"username": "testuser", "password": "testpass"}
+        response = self.client.post(self.url, data, follow=True)
+        self.assertRedirects(response, reverse("application:profile_edit"))
+
+    def test_invalid_login(self):
+        data = {"username": "testuser", "password": "wrongpass"}
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/login.html")
+
+        # self.assertContains(response, 'Please enter a correct username and password.')
+
+
+class LogoutViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="testpass"
+        )
+        self.client.force_login(self.user)
+
+    def test_logout_view(self):
+        response = self.client.get(reverse("account:logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
+        self.assertFalse("_auth_user_id" in self.client.session)

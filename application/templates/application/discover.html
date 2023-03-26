@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
+
     <head>
         <title>Discover Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -10,39 +11,31 @@
 
     <body>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-            crossorigin="anonymous">
-        </script>
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+            </script>
         <div class="container">
             <div class="left">
                 <div class="sidebar-profile">
                     <a href="{% url 'application:profile' %}">
-                        <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
+                        <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa"
+                            draggable="false">
                     </a>
-                    <div class="sidebar-profile-name">{{first_name}}</div>
+                    <div>
+                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
+                        <p class="profile-name" id="user_last_name">{{user.last_name}},
+                        <p id="user_age">{{user.age}}</p>
+                        </p>
+                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
+                    {% for match in matches_data %}
                     <div class="match">
                         <img src="https://via.placeholder.com/130x130" alt="Match 1">
-                        <p>Match 1</p>
+                        <p>{{match.first_name}}</p>
                     </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 2">
-                        <p>Match 2</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 3">
-                        <p>Match 3</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 4">
-                        <p>Match 4</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 5">
-                        <p>Match 5</p>
-                    </div>
+                    {% endfor %}
                 </div>
                 <h3>Search Matches</h3>
                 <div class="search-container">
@@ -107,26 +100,27 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">
                     <div class="right-section-top">
                         <div class="left-column">
                             <div>
-                                <p class="profile-name">{{first_name}}, {{age}}</p>
-                                <p class="location">Brooklyn</p>
+                                <p class="profile-name" id="discover_first_name">{{discover_user.first_name}}</p>
+                                <p class="profile-name" id="discover_last_name">{{discover_user.last_name}},
+                                <p id="discover_age">{{discover_user.age}}</p>
+                                </p>
+                                <p class="location" id="discover_location">{{discover_user.location}}</p>
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
                                 <ul>
-                                    <li style="background-color:#cdb4db;">{{song1_name_artist}}</li>
-                                    <li style="background-color:#ffc8dd;">{{song2_name_artist}}</li>
-                                    <li style="background-color:#ffafcc;">{{song3_name_artist}}</li>
-                                    <li style="background-color:#bde0fe;">{{song4_name_artist}}</li>
-                                    <li style="background-color:#a2d2ff;">{{song5_name_artist}}</li>
+                                    <li id="discover_song1" style="background-color:#cdb4db;">{{song1_name_artist}}</li>
+                                    <li id="discover_song2" style="background-color:#ffc8dd;">{{song2_name_artist}}</li>
+                                    <li id="discover_song3" style="background-color:#ffafcc;">{{song3_name_artist}}</li>
+                                    <li id="discover_song4" style="background-color:#bde0fe;">{{song4_name_artist}}</li>
+                                    <li id="discover_song5" style="background-color:#a2d2ff;">{{song5_name_artist}}</li>
                                 </ul>
                             </div>
                             <ul>
@@ -135,41 +129,41 @@
                                 </div>
                                 <li>
                                     <div>
-                                        <h4>{{prompt1}}</h4>
+                                        <h4 id="discover_prompt1">{{prompt1}}</h4>
                                         <div class="answer">
-                                            <div class="box">{{response1}}</div>
+                                            <div id="discover_response1" class="box">{{response1}}</div>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div>
-                                        <h4>{{prompt2}}</h4>
+                                        <h4 id="discover_prompt2">{{prompt2}}</h4>
                                         <div class="answer">
-                                            <div class="box">{{response2}}</div>
+                                            <div id="discover_response2" class="box">{{response2}}</div>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div>
-                                        <h4>{{prompt3}}</h4>
+                                        <h4 id="discover_prompt3">{{prompt3}}</h4>
                                         <div class="answer">
-                                            <div class="box">{{response3}}</div>
+                                            <div id="discover_response3" class="box">{{response3}}</div>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div>
-                                        <h4>{{prompt4}}</h4>
+                                        <h4 id="discover_prompt4">{{prompt4}}</h4>
                                         <div class="answer">
-                                            <div class="box">{{response4}}</div>
+                                            <div id="discover_response4" class="box">{{response4}}</div>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div>
-                                        <h4>{{prompt5}}</h4>
+                                        <h4 id="discover_prompt5">{{prompt5}}</h4>
                                         <div class="answer">
-                                            <div class="box">{{response5}}</div>
+                                            <div id="discover_response5" class="box">{{response5}}</div>
                                         </div>
                                     </div>
                                 </li>
@@ -178,13 +172,13 @@
                                 <div id="favorite-genres">
                                     <h3>Favorite Genres</h3>
                                     <div class="genre-buttons">
-                                        <button class="genre1">{{genre1}}</button>
-                                        <button class="genre2">{{genre2}}</button>
+                                        <button id="discover_genre1" class="genre1">{{genre1}}</button>
+                                        <button id="discover_genre2" class="genre2">{{genre2}}</button>
                                     </div>
                                     <div class="genre-buttons">
-                                        <button class="genre3">{{genre3}}</button>
-                                        <button class="genre4">{{genre4}}</button>
-                                        <button class="genre5">{{genre5}}</button>
+                                        <button id="discover_genre3" class="genre3">{{genre3}}</button>
+                                        <button id="discover_genre4" class="genre4">{{genre4}}</button>
+                                        <button id="discover_genre5" class="genre5">{{genre5}}</button>
                                     </div>
                                 </div>
                             </ul>
@@ -196,29 +190,39 @@
                                 </div>
                                 <div class="artist-frame1">
                                     <div class="img1">
-                                        <img src={{artist1_image_url}} style="width:250px;height:250px;">
+                                        <img id="discover_artist_image_url1" src={{artist1_image_url}}
+                                            style="width:250px;height:250px;">
                                     </div>
                                 </div>
                                 <div class="artist-frame2">
                                     <div class="img2">
-                                        <img src={{artist2_image_url}} style="width:190px;height:190px;">
+                                        <img id="discover_artist_image_url2" src={{artist2_image_url}}
+                                            style="width:190px;height:190px;">
                                     </div>
                                 </div>
                                 <ol class="list-group list-group-numbered">
-                                    <li style="background-color:#cdb4db" class="list-group-item">{{artist1_name}}</li>
-                                    <li style="background-color:#ffc8dd;" class="list-group-item">{{artist2_name}}</li>
-                                    <li style="background-color:#ffafcc;" class="list-group-item">{{artist3_name}}</li>
-                                    <li style="background-color:#bde0fe;" class="list-group-item">{{artist4_name}}</li>
-                                    <li style="background-color:#a2d2ff;" class="list-group-item">{{artist5_name}}</li>
+                                    <li id="discover_artist1" style="background-color:#cdb4db" class="list-group-item">
+                                        {{artist1_name}}</li>
+                                    <li id="discover_artist2" style="background-color:#ffc8dd;" class="list-group-item">
+                                        {{artist2_name}}</li>
+                                    <li id="discover_artist3" style="background-color:#ffafcc;" class="list-group-item">
+                                        {{artist3_name}}</li>
+                                    <li id="discover_artist4" style="background-color:#bde0fe;" class="list-group-item">
+                                        {{artist4_name}}</li>
+                                    <li id="discover_artist5" style="background-color:#a2d2ff;" class="list-group-item">
+                                        {{artist5_name}}</li>
                                 </ol>
                                 <div class="img3">
-                                    <img src={{artist3_image_url}} style="width:150px;height:150px;">
+                                    <img id="discover_artist_image_url3" src={{artist3_image_url}}
+                                        style="width:150px;height:150px;">
                                 </div>
                                 <div class="img4">
-                                    <img src={{artist4_image_url}} style="width:150px;height:150px;">
+                                    <img id="discover_artist_image_url4" src={{artist4_image_url}}
+                                        style="width:150px;height:150px;">
                                 </div>
                                 <div class="img5">
-                                    <img src={{artist5_image_url}} style="width:150px;height:150px;">
+                                    <img id="discover_artist_image_url5" src={{artist5_image_url}}
+                                        style="width:150px;height:150px;">
                                 </div>
 
                             </div>
@@ -227,49 +231,179 @@
                     <div class="album-section">
                         <div class="album-image">
                             <div>
-                                <img src={{album1_image_url}} style="width:150px;height:150px;">
+                                <img id="discover_album_img1" src={{album1_image_url}}
+                                    style="width:150px;height:150px;">
                             </div>
                             <div>
-                                <img src={{album2_image_url}} style="width:150px;height:150px;">
+                                <img id="discover_album_img2" src={{album2_image_url}}
+                                    style="width:150px;height:150px;">
                             </div>
                         </div>
                         <div class="album-list album-list-numbered">
                             <h2>Top Albums</h2>
                             <ol>
-                                <li style="background-color:#cdb4db;" class="album-list-item">{{album1_name_artist}}
+                                <li id="discover_album1" style="background-color:#cdb4db;" class="album-list-item">
+                                    {{album1_name_artist}}
                                 </li>
-                                <li style="background-color:#ffc8dd;" class="lalbum-list-item">{{album2_name_artist}}
+                                <li id="discover_album2" style="background-color:#ffc8dd;" class="lalbum-list-item">
+                                    {{album2_name_artist}}
                                 </li>
-                                <li style="background-color:#ffafcc;" class="album-list-item">{{album3_name_artist}}
+                                <li id="discover_album3" style="background-color:#ffafcc;" class="album-list-item">
+                                    {{album3_name_artist}}
                                 </li>
-                                <li style="background-color:#bde0fe;" class="album-list-item">{{album4_name_artist}}
+                                <li id="discover_album4" style="background-color:#bde0fe;" class="album-list-item">
+                                    {{album4_name_artist}}
                                 </li>
-                                <li style="background-color:#a2d2ff;" class="album-list-item">{{album5_name_artist}}
+                                <li id="discover_album5" style="background-color:#a2d2ff;" class="album-list-item">
+                                    {{album5_name_artist}}
                                 </li>
                             </ol>
                         </div>
                         <div class="album-image">
                             <div class="img3">
-                                <img src={{album3_image_url}} style="width:150px;height:150px;">
+                                <img id="discover_album_img3" src={{album3_image_url}}
+                                    style="width:150px;height:150px;">
                             </div>
                             <div class="img4">
-                                <img src={{album4_image_url}} style="width:150px;height:150px;">
+                                <img id="discover_album_img4" src={{album4_image_url}}
+                                    style="width:150px;height:150px;">
                             </div>
                             <div class="img5">
-                                <img src={{album5_image_url}} style="width:150px;height:150px;">
+                                <img id="discover_album_img5" src={{album5_image_url}}
+                                    style="width:150px;height:150px;">
                             </div>
                         </div>
                     </div>
                     <div class="footer footer-swipe">
-                        <div class="swipe-button" role="button">
-                            <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png"/>
+                        <div class="swipe-button" role="button" id="dislike-button">
+                            <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png" />
                         </div>
-                        <div class="swipe-button" role="button">
+                        <div class="swipe-button" role="button" id="like-button">
                             <span class="swipe-icon">&#128156;</span>
-                        </button>                          
+                            </button>
+                        </div>
                     </div>
-                </div>              
+                </div>
             </div>
-        </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#like-button').click(function () {
+                $.ajax({
+                    url: 'next',
+                    data: {
+                        'action': 'like'
+                    },
+                    success: function (response) {
+                        let age = (2023 - Number(response.discover_user.birth_year)).toString()
+                        $('#discover_first_name').html(response.discover_user.first_name);
+                        $('#discover_last_name').html(response.discover_user.last_name);
+                        $('#discover_location').html(response.discover_user.location);
+                        $('#discover_age').html(age);
+                        $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
+                        $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
+                        $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
+                        $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
+                        $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
+                        $('#discover_prompt1').html(response.discover_prompts.prompt1);
+                        $('#discover_prompt2').html(response.discover_prompts.prompt2);
+                        $('#discover_prompt3').html(response.discover_prompts.prompt3);
+                        $('#discover_prompt4').html(response.discover_prompts.prompt4);
+                        $('#discover_prompt5').html(response.discover_prompts.prompt5);
+                        $('#discover_response1').html(response.discover_prompts.response1);
+                        $('#discover_response2').html(response.discover_prompts.response2);
+                        $('#discover_response3').html(response.discover_prompts.response3);
+                        $('#discover_response4').html(response.discover_prompts.response4);
+                        $('#discover_response5').html(response.discover_prompts.response5);
+                        $('#discover_genre1').html(response.discover_favorite_genres.genre1);
+                        $('#discover_genre2').html(response.discover_favorite_genres.genre2);
+                        $('#discover_genre3').html(response.discover_favorite_genres.genre3);
+                        $('#discover_genre4').html(response.discover_favorite_genres.genre4);
+                        $('#discover_genre5').html(response.discover_favorite_genres.genre5);
+                        $('#discover_artist_image_url1').attr('src', response.discover_artist_imgs.artist1_image_url);
+                        $('#discover_artist_image_url2').attr('src', response.discover_artist_imgs.artist2_image_url);
+                        $('#discover_artist_image_url3').attr('src', response.discover_artist_imgs.artist3_image_url);
+                        $('#discover_artist_image_url4').attr('src', response.discover_artist_imgs.artist4_image_url);
+                        $('#discover_artist_image_url5').attr('src', response.discover_artist_imgs.artist5_image_url);
+                        $('#discover_album_img1').attr('src', response.discover_albums_imgs.album1_image_url);
+                        $('#discover_album_img2').attr('src', response.discover_albums_imgs.album2_image_url);
+                        $('#discover_album_img3').attr('src', response.discover_albums_imgs.album3_image_url);
+                        $('#discover_album_img4').attr('src', response.discover_albums_imgs.album4_image_url);
+                        $('#discover_album_img5').attr('src', response.discover_albums_imgs.album5_image_url);
+                        $('#discover_album1').html(response.discover_favorite_albums.album1_name_artist);
+                        $('#discover_album2').html(response.discover_favorite_albums.album2_name_artist);
+                        $('#discover_album3').html(response.discover_favorite_albums.album3_name_artist);
+                        $('#discover_album4').html(response.discover_favorite_albums.album4_name_artist);
+                        $('#discover_album5').html(response.discover_favorite_albums.album5_name_artist);
+                        $('#discover_artist1').html(response.discover_favorite_artists.artist1_name);
+                        $('#discover_artist2').html(response.discover_favorite_artists.artist2_name);
+                        $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
+                        $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
+                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#dislike-button').click(function () {
+                $.ajax({
+                    url: 'next',
+                    data: {
+                        'action': 'dislike'
+                    },
+                    success: function (response) {
+                        let age = (2023 - Number(response.discover_user.birth_year)).toString()
+                        $('#discover_first_name').html(response.discover_user.first_name);
+                        $('#discover_last_name').html(response.discover_user.last_name);
+                        $('#discover_location').html(response.discover_user.location);
+                        $('#discover_age').html(age);
+                        $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
+                        $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
+                        $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
+                        $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
+                        $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
+                        $('#discover_prompt1').html(response.discover_prompts.prompt1);
+                        $('#discover_prompt2').html(response.discover_prompts.prompt2);
+                        $('#discover_prompt3').html(response.discover_prompts.prompt3);
+                        $('#discover_prompt4').html(response.discover_prompts.prompt4);
+                        $('#discover_prompt5').html(response.discover_prompts.prompt5);
+                        $('#discover_response1').html(response.discover_prompts.response1);
+                        $('#discover_response2').html(response.discover_prompts.response2);
+                        $('#discover_response3').html(response.discover_prompts.response3);
+                        $('#discover_response4').html(response.discover_prompts.response4);
+                        $('#discover_response5').html(response.discover_prompts.response5);
+                        $('#discover_genre1').html(response.discover_favorite_genres.genre1);
+                        $('#discover_genre2').html(response.discover_favorite_genres.genre2);
+                        $('#discover_genre3').html(response.discover_favorite_genres.genre3);
+                        $('#discover_genre4').html(response.discover_favorite_genres.genre4);
+                        $('#discover_genre5').html(response.discover_favorite_genres.genre5);
+                        $('#discover_artist_image_url1').attr('src', response.discover_artist_imgs.artist1_image_url);
+                        $('#discover_artist_image_url2').attr('src', response.discover_artist_imgs.artist2_image_url);
+                        $('#discover_artist_image_url3').attr('src', response.discover_artist_imgs.artist3_image_url);
+                        $('#discover_artist_image_url4').attr('src', response.discover_artist_imgs.artist4_image_url);
+                        $('#discover_artist_image_url5').attr('src', response.discover_artist_imgs.artist5_image_url);
+                        $('#discover_album_img1').attr('src', response.discover_albums_imgs.album1_image_url);
+                        $('#discover_album_img2').attr('src', response.discover_albums_imgs.album2_image_url);
+                        $('#discover_album_img3').attr('src', response.discover_albums_imgs.album3_image_url);
+                        $('#discover_album_img4').attr('src', response.discover_albums_imgs.album4_image_url);
+                        $('#discover_album_img5').attr('src', response.discover_albums_imgs.album5_image_url);
+                        $('#discover_album1').html(response.discover_favorite_albums.album1_name_artist);
+                        $('#discover_album2').html(response.discover_favorite_albums.album2_name_artist);
+                        $('#discover_album3').html(response.discover_favorite_albums.album3_name_artist);
+                        $('#discover_album4').html(response.discover_favorite_albums.album4_name_artist);
+                        $('#discover_album5').html(response.discover_favorite_albums.album5_name_artist);
+                        $('#discover_artist1').html(response.discover_favorite_artists.artist1_name);
+                        $('#discover_artist2').html(response.discover_favorite_artists.artist2_name);
+                        $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
+                        $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
+                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+
+                    }
+                });
+            });
+        });
+    </script>
+
 </html>
