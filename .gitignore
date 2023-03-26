@@ -17,6 +17,7 @@ application/migrations/__pycache__/
 *.pot
 *.pyc
 local_settings.py
+
 media
 
 # Secret key file
