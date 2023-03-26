@@ -206,6 +206,15 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                text-decoration: none;
+            }
+
+            .discover-events-button {
+                text-decoration: none;
+            }
+
+            .discover-events-wrapper a {
+                text-decoration: none;
             }
 
             .footer {
@@ -578,30 +587,20 @@
                     <a href="{% url 'application:profile' %}">
                         <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
                     </a>
-                    <div class="sidebar-profile-name">{{first_name}}</div>
+                    <div>
+                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
+                        <p class="profile-name" id="user_last_name">{{user.last_name}}, <p id="user_age">{{user.age}}</p></p>
+                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
+                    {% for match in matches_data %}
                     <div class="match">
                         <img src="https://via.placeholder.com/130x130" alt="Match 1">
-                        <p>Match 1</p>
+                        <p>{{match.first_name}}</p>
                     </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 2">
-                        <p>Match 2</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 3">
-                        <p>Match 3</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 4">
-                        <p>Match 4</p>
-                    </div>
-                    <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 5">
-                        <p>Match 5</p>
-                    </div>
+                    {% endfor %}
                 </div>
                 <h3>Search Matches</h3>
                 <div class="search-container">
@@ -667,9 +666,7 @@
                     </div>
                     <div class="edit-profile">
                         <a href="{% url 'application:profile_edit' %}">Edit</a>
-                        {% if user.is_authenticated %}
                         <a href="{% url 'account:logout' %}">Logout</a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="right-section-content">

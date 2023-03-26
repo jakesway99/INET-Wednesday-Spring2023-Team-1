@@ -1,5 +1,16 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.validators import MinLengthValidator
+
+# from django.contrib.postgres.fields import ArrayField
+
+
+class Account(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    birth_year = models.CharField(max_length=4, validators=[MinLengthValidator(4)])
+    location = models.CharField(max_length=100)
 
 
 class FavoriteSong(models.Model):
@@ -79,3 +90,10 @@ class UserPrompts(models.Model):
     response3 = models.CharField(max_length=300)
     response4 = models.CharField(max_length=300)
     response5 = models.CharField(max_length=300)
+
+
+class Likes(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    likes = models.JSONField(default=list)
+    dislikes = models.JSONField(default=list)
+    matches = models.JSONField(default=list)

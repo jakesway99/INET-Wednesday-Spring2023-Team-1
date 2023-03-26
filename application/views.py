@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import random
 
 # spotify api package
 import spotipy
@@ -19,6 +22,8 @@ from .models import (
     FavoriteArtist,
     GenreList,
     UserPrompts,
+    Account,
+    Likes,
 )
 
 
@@ -181,6 +186,17 @@ def profile_edit(request):
         _,
     ) = get_favorite_data(curr_user, False)
 
+    if Account.objects.filter(user=curr_user):
+        account_inst = Account.objects.get(user=curr_user)
+        initial_acct_info = {
+            "first_name": account_inst.first_name,
+            "last_name": account_inst.last_name,
+            "birth_year": account_inst.birth_year,
+            "location": account_inst.location,
+        }
+    else:
+        initial_acct_info = {}
+
     if request.method == "GET":
         context = {
             "OAuth": token,
@@ -189,15 +205,10 @@ def profile_edit(request):
             "album_form": AlbumEdit(None, initial=initial_albums),
             "genre_form": GenreEdit(None, initial=initial_genres),
             "prompt_form": PromptEdit(None, initial=initial_prompts),
-            "account_edit": AccountSettingsForm(
-                initial={
-                    "first_name": curr_user.first_name,
-                    "last_name": curr_user.last_name,
-                    "email": curr_user.email,
-                }
-            ),
+            "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
         }
+        return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
         if "song1_id" in request.POST:  # check which submit button was pressed on page
@@ -217,24 +228,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(request.POST or None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "album1_id" in request.POST:
+        if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -249,24 +243,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(request.POST or None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "genre1" in request.POST:
+        if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -281,24 +258,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(request.POST or None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-
-        elif "artist1_id" in request.POST:
+        if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -313,25 +273,7 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(
-                    request.POST or None, initial=initial_artists
-                ),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(initial=initial_prompts),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
-        elif "response1" in request.POST:
+        if "response1" in request.POST:
             if UserPrompts.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -346,26 +288,44 @@ def profile_edit(request):
                 profile_update.user = curr_user
                 profile_update.save()
 
-            context = {  # set request.POST to whatever form is being posted
-                "OAuth": token,
-                "song_form": SongEdit(None, initial=initial_songs),
-                "artist_form": ArtistEdit(None, initial=initial_artists),
-                "album_form": AlbumEdit(None, initial=initial_albums),
-                "genre_form": GenreEdit(None, initial=initial_genres),
-                "prompt_form": PromptEdit(
-                    request.POST or None, initial=initial_prompts
-                ),
-                "account_edit": AccountSettingsForm(
-                    initial={
-                        "first_name": curr_user.first_name,
-                        "last_name": curr_user.last_name,
-                        "email": curr_user.email,
-                    }
-                ),
-                "genre_list": genres,
-            }
+        if "first_name" in request.POST:
+            if Account.objects.filter(
+                user=curr_user
+            ):  # check if favorite song object exists for user
+                model_instance = Account.objects.get(user=curr_user)
+                form = AccountSettingsForm(
+                    request.POST, request.FILES, instance=model_instance
+                )
+            else:
+                form = AccountSettingsForm(request.POST, request.FILES)
+                form.user = curr_user
 
-    return render(request, "application/profile_edit.html", context)
+            if form.is_valid():
+                profile_update = form.save(commit=False)
+                profile_update.user = curr_user
+                profile_update.save()
+        return redirect("application:profile")
+
+
+def getMatchesData(user):
+    try:
+        user_matches = list(Likes.objects.get(user=user).matches)
+        if len(user_matches) == 0:
+            raise Exception("No matches")
+        matches_data = []
+        for match in user_matches:
+            matched_user = User.objects.get(pk=match)
+            matched_user_account = Account.objects.get(user=matched_user)
+            matches_data = [
+                {
+                    "first_name": matched_user_account.first_name,
+                    "last_name": matched_user_account.last_name,
+                }
+            ]
+
+    except Exception:
+        matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
+    return matches_data
 
 
 @login_required
@@ -373,7 +333,11 @@ def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
 
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
     (
         initial_songs,
         initial_artists,
@@ -390,7 +354,7 @@ def profile(request):
         or initial_genres == {}
         or initial_prompts == {}
     ):
-        return redirect("profile/edit")
+        return redirect("application:profile_edit")
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -399,21 +363,25 @@ def profile(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {
-            "first_name": curr_user.first_name,
-            "last_name": curr_user.last_name,
-            "email": curr_user.email,
-        }
-    )
+    context.update({"user": user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/profile.html", context)
 
 
 @login_required
 def discover(request):
+    global CURRENT_DISCOVER
+    CURRENT_DISCOVER = getNextUserPk(request)
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    discover_user_data = Account.objects.get(user=discover_user).__dict__
+    discover_user_data.pop("_state")
+    discover_user_data["age"] = str(2023 - int(discover_user_data["birth_year"]))
 
     (
         initial_songs,
@@ -423,7 +391,7 @@ def discover(request):
         initial_prompts,
         artist_art,
         album_art,
-    ) = get_favorite_data(curr_user, spotify, True)
+    ) = get_favorite_data(discover_user, spotify, True)
 
     context = {}
     context.update(initial_songs)
@@ -433,7 +401,101 @@ def discover(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {"first_name": curr_user.first_name, "last_name": curr_user.last_name}
-    )
+    context.update({"user": user_data})
+    context.update({"discover_user": discover_user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/discover.html", context)
+
+
+@login_required
+def getNextUserPk(request):
+    curr_user = request.user
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    previous_likes_and_dislikes = likes.likes + likes.dislikes
+    previous_likes_and_dislikes.append(curr_user.pk)
+    all_users_pks = list(
+        User.objects.filter(is_superuser=False).values_list("pk", flat=True)
+    )
+    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
+        return curr_user.pk
+    for pk in previous_likes_and_dislikes:
+        if pk in all_users_pks:
+            all_users_pks.remove(pk)
+    random_user_pk = random.choice(all_users_pks)
+    return random_user_pk
+
+
+@login_required
+def getDiscoverProfile(request):
+    is_match = False
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+
+    # Save current decision
+    global CURRENT_DISCOVER
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    try:
+        discover_user_likes = Likes.objects.get(user=discover_user)
+    except Exception:
+        discover_user_likes = Likes.objects.create(user=discover_user)
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    if (
+        request.GET.get("action") == "like"
+        and CURRENT_DISCOVER not in likes.likes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
+        likes.likes.append(int(CURRENT_DISCOVER))
+        if curr_user.pk in discover_user_likes.likes:
+            discover_user_likes.matches.append(curr_user.pk)
+            discover_user_likes.save()
+            likes.matches.append(int(CURRENT_DISCOVER))
+            likes.save()
+            is_match = True
+
+    elif (
+        request.GET.get("action") == "dislike"
+        and CURRENT_DISCOVER not in likes.dislikes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
+        likes.dislikes.append(int(CURRENT_DISCOVER))
+    likes.save()
+
+    # Get a random user not seen before
+    next_user_pk = getNextUserPk(request)
+    next_user = User.objects.get(pk=next_user_pk)
+
+    # Pass next user to front end
+    CURRENT_DISCOVER = next_user.pk
+    (
+        next_favorite_songs,
+        next_favorite_artists,
+        next_favorite_albums,
+        next_favorite_genres,
+        next_next_prompts,
+        next_next_artist_imgs,
+        next_album_imgs,
+    ) = get_favorite_data(next_user, spotify, True)
+    updated_matches = getMatchesData(curr_user)
+    next_user_data = Account.objects.get(user=next_user).__dict__
+    next_user_data.pop("_state")
+    context = {
+        "discover_user": next_user_data,
+        "discover_favorite_songs": next_favorite_songs,
+        "discover_favorite_artists": next_favorite_artists,
+        "discover_favorite_albums": next_favorite_albums,
+        "discover_favorite_genres": next_favorite_genres,
+        "discover_prompts": next_next_prompts,
+        "discover_artist_imgs": next_next_artist_imgs,
+        "discover_albums_imgs": next_album_imgs,
+        "updated_matches": updated_matches,
+        "is_match": is_match,
+    }
+    return JsonResponse(context)
