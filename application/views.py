@@ -416,8 +416,10 @@ def getNextUserPk(request):
         likes = Likes.objects.create(user=curr_user)
     previous_likes_and_dislikes = likes.likes + likes.dislikes
     previous_likes_and_dislikes.append(curr_user.pk)
-    all_users_pks = list(User.objects.values_list("pk", flat=True))
-    if len(all_users_pks) - len(previous_likes_and_dislikes) <= 1:
+    all_users_pks = list(
+        User.objects.filter(is_superuser=False).values_list("pk", flat=True)
+    )
+    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
         return curr_user.pk
     for pk in previous_likes_and_dislikes:
         if pk in all_users_pks:
@@ -442,7 +444,12 @@ def getDiscoverProfile(request):
         likes = Likes.objects.get(user=curr_user)
     except Exception:
         likes = Likes.objects.create(user=curr_user)
-    if request.GET.get("action") == "like" and CURRENT_DISCOVER not in likes.likes:
+    if (
+        request.GET.get("action") == "like"
+        and CURRENT_DISCOVER not in likes.likes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
         likes.likes.append(int(CURRENT_DISCOVER))
         if curr_user.pk in discover_user_likes.likes:
             discover_user_likes.matches.append(curr_user.pk)
@@ -453,6 +460,8 @@ def getDiscoverProfile(request):
     elif (
         request.GET.get("action") == "dislike"
         and CURRENT_DISCOVER not in likes.dislikes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
     ):
         likes.dislikes.append(int(CURRENT_DISCOVER))
     likes.save()
