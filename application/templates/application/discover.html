@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <h2>Matches</h2>
-                <div class="matches">
+                <div class="matches" id="matches">
                     {% for match in matches_data %}
                     <div class="match">
                         <img src="https://via.placeholder.com/130x130" alt="Match 1">
@@ -298,7 +298,7 @@
                     success: function (response) {
                         let age = (2023 - Number(response.discover_user.birth_year)).toString()
                         $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name);
+                        $('#discover_last_name').html(response.discover_user.last_name+ ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
@@ -341,6 +341,12 @@
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+                        $('.match').remove();
+                        for (let match of response.updated_matches) {
+                            $('.matches').append(
+                                '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                            )
+                        }
 
                     }
                 });
@@ -356,7 +362,7 @@
                     success: function (response) {
                         let age = (2023 - Number(response.discover_user.birth_year)).toString()
                         $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name);
+                        $('#discover_last_name').html(response.discover_user.last_name+ ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
@@ -399,6 +405,12 @@
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+                        $('.match').remove();
+                        for (let match of response.updated_matches) {
+                            $('.matches').append(
+                                '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                            )
+                        }
 
                     }
                 });
