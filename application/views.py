@@ -430,6 +430,7 @@ def getNextUserPk(request):
 
 @login_required
 def getDiscoverProfile(request):
+    is_match = False
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
 
@@ -456,6 +457,7 @@ def getDiscoverProfile(request):
             discover_user_likes.save()
             likes.matches.append(int(CURRENT_DISCOVER))
             likes.save()
+            is_match = True
 
     elif (
         request.GET.get("action") == "dislike"
@@ -494,5 +496,6 @@ def getDiscoverProfile(request):
         "discover_artist_imgs": next_next_artist_imgs,
         "discover_albums_imgs": next_album_imgs,
         "updated_matches": updated_matches,
+        "is_match": is_match,
     }
     return JsonResponse(context)

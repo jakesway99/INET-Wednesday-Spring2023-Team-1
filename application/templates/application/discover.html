@@ -287,6 +287,32 @@
             </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        .ui-dialog {
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            box-shadow: 0 0 8px #999;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .ui-dialog-titlebar {
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #ccc;
+            color: #333;
+        }
+
+        .ui-dialog-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ui-dialog-content {
+            padding: 10px;
+        }
+    </style>
     <script>
         $(document).ready(function () {
             $('#like-button').click(function () {
@@ -298,7 +324,7 @@
                     success: function (response) {
                         let age = (2023 - Number(response.discover_user.birth_year)).toString()
                         $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name+ ',');
+                        $('#discover_last_name').html(response.discover_user.last_name + ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
@@ -346,6 +372,22 @@
                             $('.matches').append(
                                 '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
+                        }
+                        if (response.is_match) {
+                            $('<div>').text('It\'s a Match!').dialog({
+                                classes: {
+                                    "ui-dialog": "my-custom-dialog",
+                                    "ui-dialog-titlebar": "my-custom-titlebar",
+                                    "ui-dialog-title": "my-custom-title",
+                                    "ui-dialog-content": "my-custom-content"
+                                },
+                                modal: true,
+                                buttons: {
+                                    "Close": function () {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
                         }
 
                     }
@@ -362,7 +404,7 @@
                     success: function (response) {
                         let age = (2023 - Number(response.discover_user.birth_year)).toString()
                         $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name+ ',');
+                        $('#discover_last_name').html(response.discover_user.last_name + ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
@@ -411,7 +453,6 @@
                                 '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
-
                     }
                 });
             });
