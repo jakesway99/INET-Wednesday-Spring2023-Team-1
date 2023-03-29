@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import random
-from django.core.files.storage import default_storage
-import datetime
 
 # spotify api package
 import spotipy
