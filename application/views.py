@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
+
+# from django.contrib.auth.forms import PasswordChangeForm
 import random
 
 # spotify api package
@@ -14,6 +18,7 @@ from .forms import (
     GenreEdit,
     PromptEdit,
     AccountSettingsForm,
+    PasswordChangeForm,
 )
 from .models import (
     FavoriteSong,
@@ -172,6 +177,7 @@ def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
     token = token_dict["access_token"]
+    in_password_change = False
 
     genres = GenreList.objects.all()
 
@@ -185,6 +191,8 @@ def profile_edit(request):
         _,
         _,
     ) = get_favorite_data(curr_user, False)
+
+    initial_passw_info = {"old_password": curr_user.password}
 
     if Account.objects.filter(user=curr_user):
         account_inst = Account.objects.get(user=curr_user)
@@ -207,10 +215,12 @@ def profile_edit(request):
             "prompt_form": PromptEdit(None, initial=initial_prompts),
             "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
+            "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
         }
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
+        print("POST REQUEST: ", request.POST)
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -304,7 +314,30 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
-        return redirect("application:profile")
+
+        if "old_password" in request.POST:
+            in_password_change = True
+            form2 = PasswordChangeForm(request.user, request.POST)
+            form2.user = request.user
+            context = {"form_passw": form2}
+
+            if form2.is_valid():
+                user = form2.save()
+                update_session_auth_hash(request, user)  # so we dont logout the user
+                messages.success(request, "Password changed successfully.")
+            else:
+                messages.error(
+                    request,
+                    "Password change unsuccessful. Please make sure you have entered"
+                    "your old password"
+                    "accurately and have followed the new password guidelines",
+                )
+                # messages.error(request, form2.errors)
+
+        if in_password_change is False:
+            return redirect("application:profile")
+        else:
+            return redirect("/application/profile/edit")
 
 
 def getMatchesData(user):

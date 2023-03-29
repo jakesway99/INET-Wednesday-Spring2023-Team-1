@@ -86,7 +86,8 @@
     border: none;
     background: none;
     position: absolute;
-    bottom: 45%;
+    bottom: 43%;
+    left: 5%;
     color: #ae92b7;
     text-decoration-line: underline;  
     cursor: pointer;
@@ -172,13 +173,15 @@
         <h4> Password</h4>
         {{form.password}}
       </div>
-      <div class="forgot_password">
-        <button onclick = "">Forgot Password?</button>
-      </div>
       <div class = "button1">
         <button onclick = "">Sign In</button>
       </div>
     </form>
+    <div class="forgot_password">
+      <a href="/account/reset_password/">
+        <button>Forgot Password?</button>
+      </a>        
+    </div>
     <div class = "rightBox">
       <h1> Welcome To <br/> NYU BeatBuddies</h1>
       <h4> Don't have an account? </h4>
