@@ -13,15 +13,13 @@ from .models import (
 from .models import PromptList
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, Div
-from django.contrib.auth.forms import UserCreationForm, SetPasswordForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 import datetime
 
 
 class NewUserForm(UserCreationForm):
     username = forms.CharField(
-        widget=forms.TextInput(
-            attrs={"placeholder": "Username"}
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Username"})
     )
     email = forms.EmailField(
         required=True, widget=forms.TextInput(attrs={"placeholder": "Email"})
@@ -44,17 +42,22 @@ class NewUserForm(UserCreationForm):
             user.save()
         return user
 
+
 class PasswordChangeForm(SetPasswordForm):
     """
     A form that lets a user change their password by entering their old
     password.
     """
-    error_messages = dict(SetPasswordForm.error_messages, **{
-        'password_incorrect': ("Your old password was entered incorrectly. "
-                                "Please enter it again."),
-    })
-    old_password = forms.CharField(label=("Old password"),
-                                   widget=forms.PasswordInput)
+
+    error_messages = dict(
+        SetPasswordForm.error_messages,
+        **{
+            "password_incorrect": (
+                "Your old password was entered incorrectly. " "Please enter it again."
+            ),
+        }
+    )
+    old_password = forms.CharField(label=("Old password"), widget=forms.PasswordInput)
 
     def clean_old_password(self):
         """
@@ -63,17 +66,16 @@ class PasswordChangeForm(SetPasswordForm):
         old_password = self.cleaned_data["old_password"]
         if not self.user.check_password(old_password):
             raise forms.ValidationError(
-                self.error_messages['password_incorrect'],
-                code='password_incorrect',
+                self.error_messages["password_incorrect"],
+                code="password_incorrect",
             )
         return old_password
 
 
 PasswordChangeForm.base_fields = OrderedDict(
     (k, PasswordChangeForm.base_fields[k])
-    for k in ['old_password', 'new_password1', 'new_password2']
+    for k in ["old_password", "new_password1", "new_password2"]
 )
-
 
 
 class SongEdit(ModelForm):
@@ -485,5 +487,4 @@ class AccountSettingsForm(ModelForm):
             "last_name",
             "birth_year",
             "location",
-            
         )

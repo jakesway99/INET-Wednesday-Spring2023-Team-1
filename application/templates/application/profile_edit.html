@@ -83,14 +83,41 @@
 
   {% if messages %}
   {% for message in messages %}
-    <div class="alert alert-dismissible alert-success">
-      <button type="button" class="close" data-bs-dismiss="alert">
-      ×
-      </button>
+    <div class="alert alert-info alert-dismissible fade show">
       <strong>{{message}}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
  {% endfor %}
 {% endif %}
+
+<style>
+.alert {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0px);
+  transition: visibility 0s, opacity 250ms, transform 250ms;
+}
+.alert.hide {
+  position: relative;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-10px); 
+  transition: visibility 0s 250ms, opacity 250ms, transform 250ms;
+}
+</style>
+<script>
+  var m = document.getElementsByClassName("alert");  // Return an array
+  
+  setTimeout(function(){
+     if (m && m.length) {
+         m[0].classList.add('hide');
+     }
+  }, 3000);
+  </script>
+  
 
   <div class="container">
     <div id="tabs" class ="edit_tabs">
@@ -179,7 +206,6 @@
             <div class = "accordianBody">
               <form id = "change_password" method="POST">
                 {% csrf_token %}
-                <!-- {% crispy passw_change %} -->
                 {% crispy passw_change %}
                 <button type="submit" form="change_password" name="submitpassw" class="btn btn-outline-primary"> Submit </button>
               </form>
