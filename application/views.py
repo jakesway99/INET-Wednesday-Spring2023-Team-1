@@ -220,7 +220,6 @@ def profile_edit(request):
 
     elif request.method == "POST":
         if "song1_id" in request.POST:  # check which submit button was pressed on page
-            print("IN song1_id FORM")
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
             ):
@@ -238,7 +237,6 @@ def profile_edit(request):
                 profile_update.save()
 
         if "album1_id" in request.POST:
-            print("IN album1_id FORM")
             if FavoriteAlbum.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -254,7 +252,6 @@ def profile_edit(request):
                 profile_update.save()
 
         if "genre1" in request.POST:
-            print("IN genre1 FORM")
             if FavoriteGenre.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -270,7 +267,6 @@ def profile_edit(request):
                 profile_update.save()
 
         if "artist1_id" in request.POST:
-            print("IN artist1_id FORM")
             if FavoriteArtist.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -286,7 +282,6 @@ def profile_edit(request):
                 profile_update.save()
 
         if "response1" in request.POST:
-            print("IN response1 FORM")
             if UserPrompts.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -302,7 +297,6 @@ def profile_edit(request):
                 profile_update.save()
 
         if "first_name" in request.POST:
-            print("IN first_name FORM")
             if Account.objects.filter(
                 user=curr_user
             ):  # check if favorite song object exists for user
@@ -320,7 +314,6 @@ def profile_edit(request):
                 profile_update.save()
         
         if "old_password" in request.POST:
-            print("IN CONTEZT FORM")
             context = {"form": form}
 
             # model_instance = curr_user

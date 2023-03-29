@@ -56,11 +56,6 @@ class PasswordChangeForm(SetPasswordForm):
     old_password = forms.CharField(label=("Old password"),
                                    widget=forms.PasswordInput)
 
-    # class Meta:
-    #     model = User
-    #     fields = ("old_password", "new_password1", "new_password2")
-
-
     def clean_old_password(self):
         """
         Validates that the old_password field is correct.
