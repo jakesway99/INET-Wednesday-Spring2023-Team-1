@@ -585,7 +585,7 @@
             <div class="left">
                 <div class="sidebar-profile">
                     <a href="{% url 'application:profile' %}">
-                        <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
+                        <img class="profile-picture" src="{{ profile_picture.url }}" alt="Vanessa" draggable="false">
                     </a>
                     <div>
                         <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
