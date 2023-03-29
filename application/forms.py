@@ -442,6 +442,13 @@ class AccountSettingsForm(ModelForm):
                         css_class="form-group form-control-lg",
                     ),
                 ),
+                Fieldset("Profile Picture:"),
+                Div(
+                    Field(
+                        "profile_picture",
+                        css_class="form-group form-control-lg",
+                    ),
+                ),
             ),
         )
         self.helper.form_show_labels = False
@@ -453,4 +460,5 @@ class AccountSettingsForm(ModelForm):
             "last_name",
             "birth_year",
             "location",
+            "profile_picture",
         )

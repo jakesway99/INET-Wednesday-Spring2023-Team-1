@@ -11,7 +11,7 @@ class Account(models.Model):
     last_name = models.CharField(max_length=50)
     birth_year = models.CharField(max_length=4, validators=[MinLengthValidator(4)])
     location = models.CharField(max_length=100)
-
+    profile_picture = models.ImageField(upload_to='images/', default='images/placeholder.png')
 
 class FavoriteSong(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
