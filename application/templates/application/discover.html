@@ -106,12 +106,16 @@
                 <div class="right-section-content">
                     <div class="right-section-top">
                         <div class="left-column">
-                            <div>
-                                <p class="profile-name" id="discover_first_name">{{discover_user.first_name}}</p>
-                                <p class="profile-name" id="discover_last_name">{{discover_user.last_name}},
-                                <p id="discover_age">{{discover_user.age}}</p>
-                                </p>
-                                <p class="location" id="discover_location">{{discover_user.location}}</p>
+                            <div class="account-details">
+                                <div class="profile-picture">
+                                    <img src="{{ discover_profile_picture.url }}" alt="Image" draggable="false">
+                                </div>
+                                <div class="profile">
+                                    <span class="profile-name" id="discover_first_name">{{discover_user.first_name}}</span>
+                                    <span class="profile-name" id="discover_last_name">{{discover_user.last_name}},</span>
+                                    <span class="profile-name" id="discover_age">{{discover_user.age}}</span>
+                                    <p class="location" id="discover_location">{{discover_user.location}}</p>
+                                </div>                  
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>

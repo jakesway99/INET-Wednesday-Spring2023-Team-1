@@ -400,6 +400,7 @@ def discover(request):
     ) = get_favorite_data(discover_user, spotify, True)
 
     account = Account.objects.get(user=curr_user)
+    discover_account = Account.objects.get(user=discover_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -412,6 +413,7 @@ def discover(request):
     context.update({"discover_user": discover_user_data})
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
+    context.update({"discover_profile_picture": discover_account.profile_picture})
     return render(request, "application/discover.html", context)
 
 
