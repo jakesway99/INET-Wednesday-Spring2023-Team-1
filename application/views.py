@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
+
+# from django.contrib.auth.forms import PasswordChangeForm
 import random
 
 # spotify api package
@@ -14,6 +18,7 @@ from .forms import (
     GenreEdit,
     PromptEdit,
     AccountSettingsForm,
+    PasswordChangeForm,
 )
 from .models import (
     FavoriteSong,
@@ -172,6 +177,7 @@ def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
     token = token_dict["access_token"]
+    in_password_change = False
 
     genres = GenreList.objects.all()
 
@@ -185,6 +191,8 @@ def profile_edit(request):
         _,
         _,
     ) = get_favorite_data(curr_user, False)
+
+    initial_passw_info = {"old_password": curr_user.password}
 
     if Account.objects.filter(user=curr_user):
         account_inst = Account.objects.get(user=curr_user)
@@ -207,10 +215,12 @@ def profile_edit(request):
             "prompt_form": PromptEdit(None, initial=initial_prompts),
             "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
+            "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
         }
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
+        print("POST REQUEST: ", request.POST)
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -304,7 +314,30 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
-        return redirect("application:profile")
+
+        if "old_password" in request.POST:
+            in_password_change = True
+            form2 = PasswordChangeForm(request.user, request.POST)
+            form2.user = request.user
+            context = {"form_passw": form2}
+
+            if form2.is_valid():
+                user = form2.save()
+                update_session_auth_hash(request, user)  # so we dont logout the user
+                messages.success(request, "Password changed successfully.")
+            else:
+                messages.error(
+                    request,
+                    "Password change unsuccessful. Please make sure you have entered"
+                    "your old password"
+                    "accurately and have followed the new password guidelines",
+                )
+                # messages.error(request, form2.errors)
+
+        if in_password_change is False:
+            return redirect("application:profile")
+        else:
+            return redirect("/application/profile/edit")
 
 
 def getMatchesData(user):
@@ -416,8 +449,10 @@ def getNextUserPk(request):
         likes = Likes.objects.create(user=curr_user)
     previous_likes_and_dislikes = likes.likes + likes.dislikes
     previous_likes_and_dislikes.append(curr_user.pk)
-    all_users_pks = list(User.objects.values_list("pk", flat=True))
-    if len(all_users_pks) - len(previous_likes_and_dislikes) <= 1:
+    all_users_pks = list(
+        User.objects.filter(is_superuser=False).values_list("pk", flat=True)
+    )
+    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
         return curr_user.pk
     for pk in previous_likes_and_dislikes:
         if pk in all_users_pks:
@@ -428,6 +463,7 @@ def getNextUserPk(request):
 
 @login_required
 def getDiscoverProfile(request):
+    is_match = False
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
 
@@ -442,17 +478,25 @@ def getDiscoverProfile(request):
         likes = Likes.objects.get(user=curr_user)
     except Exception:
         likes = Likes.objects.create(user=curr_user)
-    if request.GET.get("action") == "like" and CURRENT_DISCOVER not in likes.likes:
+    if (
+        request.GET.get("action") == "like"
+        and CURRENT_DISCOVER not in likes.likes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
         likes.likes.append(int(CURRENT_DISCOVER))
         if curr_user.pk in discover_user_likes.likes:
             discover_user_likes.matches.append(curr_user.pk)
             discover_user_likes.save()
             likes.matches.append(int(CURRENT_DISCOVER))
             likes.save()
+            is_match = True
 
     elif (
         request.GET.get("action") == "dislike"
         and CURRENT_DISCOVER not in likes.dislikes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
     ):
         likes.dislikes.append(int(CURRENT_DISCOVER))
     likes.save()
@@ -472,10 +516,11 @@ def getDiscoverProfile(request):
         next_next_artist_imgs,
         next_album_imgs,
     ) = get_favorite_data(next_user, spotify, True)
-    user_data = Account.objects.get(user=next_user).__dict__
-    user_data.pop("_state")
+    updated_matches = getMatchesData(curr_user)
+    next_user_data = Account.objects.get(user=next_user).__dict__
+    next_user_data.pop("_state")
     context = {
-        "discover_user": user_data,
+        "discover_user": next_user_data,
         "discover_favorite_songs": next_favorite_songs,
         "discover_favorite_artists": next_favorite_artists,
         "discover_favorite_albums": next_favorite_albums,
@@ -483,5 +528,7 @@ def getDiscoverProfile(request):
         "discover_prompts": next_next_prompts,
         "discover_artist_imgs": next_next_artist_imgs,
         "discover_albums_imgs": next_album_imgs,
+        "updated_matches": updated_matches,
+        "is_match": is_match,
     }
     return JsonResponse(context)
