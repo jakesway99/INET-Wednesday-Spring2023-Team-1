@@ -349,12 +349,12 @@ def getMatchesData(user):
         for match in user_matches:
             matched_user = User.objects.get(pk=match)
             matched_user_account = Account.objects.get(user=matched_user)
-            matches_data = [
+            matches_data.append(
                 {
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
                 }
-            ]
+            )
 
     except Exception:
         matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
