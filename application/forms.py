@@ -13,7 +13,7 @@ from .models import (
 from .models import PromptList
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, Div
-from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
+from django.contrib.auth.forms import UserCreationForm, SetPasswordForm, PasswordChangeForm
 import datetime
 
 
@@ -46,7 +46,7 @@ class NewUserForm(UserCreationForm):
 
 class PasswordChangeForm(SetPasswordForm):
     """
-    lets a user change their password by entering their old
+    A form that lets a user change their password by entering their old
     password.
     """
     error_messages = dict(SetPasswordForm.error_messages, **{
