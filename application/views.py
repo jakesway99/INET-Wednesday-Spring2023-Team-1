@@ -201,6 +201,7 @@ def profile_edit(request):
             "last_name": account_inst.last_name,
             "birth_year": account_inst.birth_year,
             "location": account_inst.location,
+            "profile_picture": account_inst.profile_picture,
         }
     else:
         initial_acct_info = {}
@@ -388,6 +389,7 @@ def profile(request):
         or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
+    account = Account.objects.get(user=curr_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -398,6 +400,7 @@ def profile(request):
     context.update(album_art)
     context.update({"user": user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
     return render(request, "application/profile.html", context)
 
 
@@ -426,6 +429,7 @@ def discover(request):
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
 
+    account = Account.objects.get(user=curr_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -437,6 +441,7 @@ def discover(request):
     context.update({"user": user_data})
     context.update({"discover_user": discover_user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
     return render(request, "application/discover.html", context)
 
 
