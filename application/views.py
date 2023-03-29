@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import random
 
 # spotify api package
 import spotipy
@@ -20,6 +23,7 @@ from .models import (
     GenreList,
     UserPrompts,
     Account,
+    Likes,
 )
 
 
@@ -303,11 +307,37 @@ def profile_edit(request):
         return redirect("application:profile")
 
 
+def getMatchesData(user):
+    try:
+        user_matches = list(Likes.objects.get(user=user).matches)
+        if len(user_matches) == 0:
+            raise Exception("No matches")
+        matches_data = []
+        for match in user_matches:
+            matched_user = User.objects.get(pk=match)
+            matched_user_account = Account.objects.get(user=matched_user)
+            matches_data = [
+                {
+                    "first_name": matched_user_account.first_name,
+                    "last_name": matched_user_account.last_name,
+                }
+            ]
+
+    except Exception:
+        matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
+    return matches_data
+
+
 @login_required
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
+
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
     (
         initial_songs,
         initial_artists,
@@ -333,21 +363,25 @@ def profile(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {
-            "first_name": curr_user.first_name,
-            "last_name": curr_user.last_name,
-            "email": curr_user.email,
-        }
-    )
+    context.update({"user": user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/profile.html", context)
 
 
 @login_required
 def discover(request):
+    global CURRENT_DISCOVER
+    CURRENT_DISCOVER = getNextUserPk(request)
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-
     curr_user = request.user
+    matches_data = getMatchesData(curr_user)
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    discover_user_data = Account.objects.get(user=discover_user).__dict__
+    discover_user_data.pop("_state")
+    discover_user_data["age"] = str(2023 - int(discover_user_data["birth_year"]))
 
     (
         initial_songs,
@@ -357,7 +391,7 @@ def discover(request):
         initial_prompts,
         artist_art,
         album_art,
-    ) = get_favorite_data(curr_user, spotify, True)
+    ) = get_favorite_data(discover_user, spotify, True)
 
     context = {}
     context.update(initial_songs)
@@ -367,7 +401,101 @@ def discover(request):
     context.update(initial_prompts)
     context.update(artist_art)
     context.update(album_art)
-    context.update(
-        {"first_name": curr_user.first_name, "last_name": curr_user.last_name}
-    )
+    context.update({"user": user_data})
+    context.update({"discover_user": discover_user_data})
+    context.update({"matches_data": matches_data})
     return render(request, "application/discover.html", context)
+
+
+@login_required
+def getNextUserPk(request):
+    curr_user = request.user
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    previous_likes_and_dislikes = likes.likes + likes.dislikes
+    previous_likes_and_dislikes.append(curr_user.pk)
+    all_users_pks = list(
+        User.objects.filter(is_superuser=False).values_list("pk", flat=True)
+    )
+    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
+        return curr_user.pk
+    for pk in previous_likes_and_dislikes:
+        if pk in all_users_pks:
+            all_users_pks.remove(pk)
+    random_user_pk = random.choice(all_users_pks)
+    return random_user_pk
+
+
+@login_required
+def getDiscoverProfile(request):
+    is_match = False
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+
+    # Save current decision
+    global CURRENT_DISCOVER
+    discover_user = User.objects.get(pk=CURRENT_DISCOVER)
+    try:
+        discover_user_likes = Likes.objects.get(user=discover_user)
+    except Exception:
+        discover_user_likes = Likes.objects.create(user=discover_user)
+    try:
+        likes = Likes.objects.get(user=curr_user)
+    except Exception:
+        likes = Likes.objects.create(user=curr_user)
+    if (
+        request.GET.get("action") == "like"
+        and CURRENT_DISCOVER not in likes.likes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
+        likes.likes.append(int(CURRENT_DISCOVER))
+        if curr_user.pk in discover_user_likes.likes:
+            discover_user_likes.matches.append(curr_user.pk)
+            discover_user_likes.save()
+            likes.matches.append(int(CURRENT_DISCOVER))
+            likes.save()
+            is_match = True
+
+    elif (
+        request.GET.get("action") == "dislike"
+        and CURRENT_DISCOVER not in likes.dislikes
+        and CURRENT_DISCOVER != curr_user.pk
+        and not curr_user.is_superuser
+    ):
+        likes.dislikes.append(int(CURRENT_DISCOVER))
+    likes.save()
+
+    # Get a random user not seen before
+    next_user_pk = getNextUserPk(request)
+    next_user = User.objects.get(pk=next_user_pk)
+
+    # Pass next user to front end
+    CURRENT_DISCOVER = next_user.pk
+    (
+        next_favorite_songs,
+        next_favorite_artists,
+        next_favorite_albums,
+        next_favorite_genres,
+        next_next_prompts,
+        next_next_artist_imgs,
+        next_album_imgs,
+    ) = get_favorite_data(next_user, spotify, True)
+    updated_matches = getMatchesData(curr_user)
+    next_user_data = Account.objects.get(user=next_user).__dict__
+    next_user_data.pop("_state")
+    context = {
+        "discover_user": next_user_data,
+        "discover_favorite_songs": next_favorite_songs,
+        "discover_favorite_artists": next_favorite_artists,
+        "discover_favorite_albums": next_favorite_albums,
+        "discover_favorite_genres": next_favorite_genres,
+        "discover_prompts": next_next_prompts,
+        "discover_artist_imgs": next_next_artist_imgs,
+        "discover_albums_imgs": next_album_imgs,
+        "updated_matches": updated_matches,
+        "is_match": is_match,
+    }
+    return JsonResponse(context)
