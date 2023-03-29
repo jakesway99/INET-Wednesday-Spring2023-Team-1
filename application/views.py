@@ -316,7 +316,6 @@ def profile_edit(request):
         if "old_password" in request.POST:
             context = {"form": form}
 
-            # model_instance = curr_user
             form = PasswordChangeForm(request, request.POST)
             
             if form.is_valid():
@@ -329,10 +328,7 @@ def profile_edit(request):
             else:
                 print("FORM IS NOT VALID")
                 return render(request, "application/profile_edit.html", context)
-        
-
-
-            
+               
 
         return redirect("application:profile")
 
