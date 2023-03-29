@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0018_likes_matches'),
+        ("application", "0018_likes_matches"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='account',
-            name='profile_picture',
-            field=models.ImageField(default='images/placeholder.png', upload_to='images/'),
+            model_name="account",
+            name="profile_picture",
+            field=models.ImageField(
+                default="images/placeholder.png", upload_to="images/"
+            ),
         ),
     ]
