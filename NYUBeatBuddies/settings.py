@@ -99,6 +99,18 @@ DATABASES = {
     }
 }
 
+if "DATABASE_NAME" in os.environ:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.environ.get("DATABASE_NAME", ""),
+            "USER": os.environ.get("DATABASE_USERNAME", ""),
+            "PASSWORD": os.enviro.get("DATABASE_PASSWORD", ""),
+            "HOST": os.environ.get("DATABASE_HOSTNAME", ""),
+            "PORT": os.environ.get("DATABASE_PORT", "5432"),
+        }
+    }
+
 # if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
 #    DATABASES["default"] = {
 #        "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -173,7 +185,9 @@ PASSWORD_RESET_TIMEOUT = 14400
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "nyu-beat-buddies-develop")
+AWS_STORAGE_BUCKET_NAME = os.environ.get(
+    "AWS_STORAGE_BUCKET_NAME", "nyu-beat-buddies-develop"
+)
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-west-2")
 
 # Use S3 for media files storage.
