@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
+
+# from django.contrib.auth.forms import PasswordChangeForm
 import random
+import datetime
 
 # spotify api package
 import spotipy
@@ -14,6 +19,7 @@ from .forms import (
     GenreEdit,
     PromptEdit,
     AccountSettingsForm,
+    PasswordChangeForm,
 )
 from .models import (
     FavoriteSong,
@@ -172,6 +178,7 @@ def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
     token = token_dict["access_token"]
+    in_password_change = False
 
     genres = GenreList.objects.all()
 
@@ -186,6 +193,8 @@ def profile_edit(request):
         _,
     ) = get_favorite_data(curr_user, False)
 
+    initial_passw_info = {"old_password": curr_user.password}
+
     if Account.objects.filter(user=curr_user):
         account_inst = Account.objects.get(user=curr_user)
         initial_acct_info = {
@@ -193,6 +202,7 @@ def profile_edit(request):
             "last_name": account_inst.last_name,
             "birth_year": account_inst.birth_year,
             "location": account_inst.location,
+            "profile_picture": account_inst.profile_picture,
         }
     else:
         initial_acct_info = {}
@@ -207,10 +217,12 @@ def profile_edit(request):
             "prompt_form": PromptEdit(None, initial=initial_prompts),
             "account_edit": AccountSettingsForm(initial=initial_acct_info),
             "genre_list": genres,
+            "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
         }
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
+        print("POST REQUEST: ", request.POST)
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -304,7 +316,30 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
-        return redirect("application:profile")
+
+        if "old_password" in request.POST:
+            in_password_change = True
+            form2 = PasswordChangeForm(request.user, request.POST)
+            form2.user = request.user
+            context = {"form_passw": form2}
+
+            if form2.is_valid():
+                user = form2.save()
+                update_session_auth_hash(request, user)  # so we dont logout the user
+                messages.success(request, "Password changed successfully.")
+            else:
+                messages.error(
+                    request,
+                    "Password change unsuccessful. Please make sure you have entered"
+                    "your old password"
+                    "accurately and have followed the new password guidelines",
+                )
+                # messages.error(request, form2.errors)
+
+        if in_password_change is False:
+            return redirect("application:profile")
+        else:
+            return redirect("/application/profile/edit")
 
 
 def getMatchesData(user):
@@ -316,12 +351,12 @@ def getMatchesData(user):
         for match in user_matches:
             matched_user = User.objects.get(pk=match)
             matched_user_account = Account.objects.get(user=matched_user)
-            matches_data = [
+            matches_data.append(
                 {
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
                 }
-            ]
+            )
 
     except Exception:
         matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
@@ -337,7 +372,7 @@ def profile(request):
 
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
-    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
     (
         initial_songs,
         initial_artists,
@@ -355,6 +390,7 @@ def profile(request):
         or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
+    account = Account.objects.get(user=curr_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -365,6 +401,7 @@ def profile(request):
     context.update(album_art)
     context.update({"user": user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
     return render(request, "application/profile.html", context)
 
 
@@ -377,11 +414,13 @@ def discover(request):
     matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
-    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
     discover_user = User.objects.get(pk=CURRENT_DISCOVER)
     discover_user_data = Account.objects.get(user=discover_user).__dict__
     discover_user_data.pop("_state")
-    discover_user_data["age"] = str(2023 - int(discover_user_data["birth_year"]))
+    discover_user_data["age"] = str(
+        datetime.date.today().year - int(discover_user_data["birth_year"])
+    )
 
     (
         initial_songs,
@@ -393,6 +432,8 @@ def discover(request):
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
 
+    account = Account.objects.get(user=curr_user)
+    discover_account = Account.objects.get(user=discover_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -404,6 +445,8 @@ def discover(request):
     context.update({"user": user_data})
     context.update({"discover_user": discover_user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"discover_profile_picture": discover_account.profile_picture})
     return render(request, "application/discover.html", context)
 
 
