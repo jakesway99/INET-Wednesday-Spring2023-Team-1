@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+import os
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
@@ -31,6 +32,8 @@ from .models import (
     Account,
     Likes,
 )
+
+import ticketpy
 
 
 def get_pic(artist_id, spotify):
@@ -542,3 +545,34 @@ def getDiscoverProfile(request):
         "is_match": is_match,
     }
     return JsonResponse(context)
+
+
+@login_required
+def discover_events(request):
+    tm_client = ticketpy.ApiClient(os.environ.get("TICKETMASTER_CLIENT_KEY"))
+    today = datetime.date.today()
+    four_week = today + datetime.timedelta(weeks=4)
+    start_time = today.strftime("%Y-%m-%d") + "T00:00:01Z"
+    end_time = four_week.strftime("%Y-%m-%d") + "T23:59:00Z"
+    pages = tm_client.events.find(
+        classification_name="music",
+        city="New York",
+        sort="date,asc",
+        start_date_time=start_time,
+        end_date_time=end_time,
+    )
+    event_list = []
+    for page in pages:
+        for event in page:
+            event_info = (
+                event.name,
+                event.local_start_date,
+                event.local_start_time,
+                event.venues[0].name,
+                event.venues[0].city,
+                event.json["images"][1]["url"],
+            )
+            event_list.append(event_info)
+    return render(
+        request, "application/discover_events.html", {"event_list": event_list}
+    )
