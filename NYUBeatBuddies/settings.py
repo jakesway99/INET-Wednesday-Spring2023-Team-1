@@ -99,6 +99,18 @@ DATABASES = {
     }
 }
 
+if "DATABASE_NAME" in os.environ:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.environ.get("DATABASE_NAME", ""),
+            "USER": os.environ.get("DATABASE_USERNAME", ""),
+            "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
+            "HOST": os.environ.get("DATABASE_HOSTNAME", ""),
+            "PORT": os.environ.get("DATABASE_PORT", "5432"),
+        }
+    }
+
 # if os.environ.get("DATABASE_NAME", None):  # is not None and "test" not in sys.argv:
 #    DATABASES["default"] = {
 #        "ENGINE": "django.db.backends.postgresql_psycopg2",
