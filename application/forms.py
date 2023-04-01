@@ -321,12 +321,19 @@ def get_prompt_choices():
 
 
 class PromptEdit(ModelForm):
-    prompt_choices = get_prompt_choices()
-    prompt1 = forms.ChoiceField(choices=prompt_choices)
-    prompt2 = forms.ChoiceField(choices=prompt_choices)
-    prompt3 = forms.ChoiceField(choices=prompt_choices)
-    prompt4 = forms.ChoiceField(choices=prompt_choices)
-    prompt5 = forms.ChoiceField(choices=prompt_choices)
+    try:
+        prompt_choices = get_prompt_choices()
+        prompt1 = forms.ChoiceField(choices=prompt_choices)
+        prompt2 = forms.ChoiceField(choices=prompt_choices)
+        prompt3 = forms.ChoiceField(choices=prompt_choices)
+        prompt4 = forms.ChoiceField(choices=prompt_choices)
+        prompt5 = forms.ChoiceField(choices=prompt_choices)
+    except Exception:
+        prompt1 = "Choose prompt"
+        prompt2 = "Choose prompt"
+        prompt3 = "Choose prompt"
+        prompt4 = "Choose prompt"
+        prompt5 = "Choose prompt"
 
     def __init__(self, *args, **kwargs):
         super(PromptEdit, self).__init__(*args, **kwargs)
