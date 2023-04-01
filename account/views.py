@@ -80,6 +80,9 @@ def register_request(request):
             user.save()
             user_account = Account.objects.create(user=user)
             user_account.birth_year = 1900
+            user_account.first_name = "New"
+            user_account.last_name = "User"
+            user_account.location = "Harmony"
             user_account.save()
             msg = activateEmail(request, user, form.cleaned_data.get("email"))
             # return redirect("account:login")
