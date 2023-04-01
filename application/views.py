@@ -557,6 +557,7 @@ def getDiscoverProfile(request):
     ) = get_favorite_data(next_user, spotify, True)
     updated_matches = getMatchesData(curr_user)
     next_user_data = Account.objects.get(user=next_user)
+    previous_user_data = Account.objects.get(user=discover_user)
     image_url = next_user_data.profile_picture.url
     next_user_data = next_user_data.__dict__
     next_user_data.pop("_state")
@@ -572,6 +573,12 @@ def getDiscoverProfile(request):
         "discover_albums_imgs": next_album_imgs,
         "updated_matches": updated_matches,
         "is_match": is_match,
+        "previous_user": {
+            "first_name": previous_user_data.first_name,
+            "last_name": previous_user_data.last_name,
+            "profile_picture": previous_user_data.profile_picture.url,
+            "pk": discover_user.pk,
+        },
     }
     return JsonResponse(context)
 
