@@ -16,23 +16,23 @@
         <div class="container">
             <div class="left">
                 <div class="sidebar-profile">
-                    <a href="{% url 'application:profile' %}">
-                        <img class="profile-picture" src="{{ profile_picture.url }}" alt="Vanessa"
-                            draggable="false">
+                    <div class="profile-picture">
+                        <a href="{% url 'application:profile' %}">
+                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
                     </a>
-                    <div>
-                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
-                        <p class="profile-name" id="user_last_name">{{user.last_name}},
-                        <p id="user_age">{{user.age}}</p>
-                        </p>
-                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
+                    <div class="profile">
+                        <span class="profile-name">{{user.first_name}}</span>
+                        <span class="profile-name">{{user.last_name}},</span>
+                        <span class="profile-name">{{user.age}}</span>
+                        <p class="location">{{user.location}}</p>
                     </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches" id="matches">
                     {% for match in matches_data %}
                     <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 1">
+                        <img src={{match.profile_picture}} alt="Match 1">
                         <p>{{match.first_name}}</p>
                     </div>
                     {% endfor %}
@@ -108,14 +108,17 @@
                         <div class="left-column">
                             <div class="account-details">
                                 <div class="profile-picture">
-                                    <img src="{{ discover_profile_picture.url }}" alt="Image" draggable="false">
+                                    <img src="{{ discover_profile_picture.url }}" alt="Image" draggable="false"
+                                        id="discover_profile_picture">
                                 </div>
                                 <div class="profile">
-                                    <span class="profile-name" id="discover_first_name">{{discover_user.first_name}}</span>
-                                    <span class="profile-name" id="discover_last_name">{{discover_user.last_name}},</span>
+                                    <span class="profile-name"
+                                        id="discover_first_name">{{discover_user.first_name}}</span>
+                                    <span class="profile-name"
+                                        id="discover_last_name">{{discover_user.last_name}},</span>
                                     <span class="profile-name" id="discover_age">{{discover_user.age}}</span>
                                     <p class="location" id="discover_location">{{discover_user.location}}</p>
-                                </div>                  
+                                </div>
                             </div>
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
@@ -331,6 +334,7 @@
                         $('#discover_last_name').html(response.discover_user.last_name + ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
+                        $('#discover_profile_picture').attr('src', response.discover_user.profile_picture);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
                         $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
                         $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
@@ -374,7 +378,7 @@
                         $('.match').remove();
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
                         if (response.is_match) {
@@ -411,6 +415,7 @@
                         $('#discover_last_name').html(response.discover_user.last_name + ',');
                         $('#discover_location').html(response.discover_user.location);
                         $('#discover_age').html(age);
+                        $('#discover_profile_picture').attr('src', response.discover_user.profile_picture);
                         $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
                         $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
                         $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
