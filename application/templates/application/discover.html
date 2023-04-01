@@ -6,6 +6,7 @@
         <title>Discover Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
         <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
     </head>
 
@@ -18,8 +19,8 @@
                 <div class="sidebar-profile">
                     <div class="profile-picture">
                         <a href="{% url 'application:profile' %}">
-                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
-                    </a>
+                            <img src="{{ profile_picture.url }}" alt="Image" draggable="false" />
+                        </a>
                     </div>
                     <div class="profile">
                         <span class="profile-name">{{user.first_name}}</span>
@@ -292,33 +293,86 @@
                     </div>
                 </div>
             </div>
+            <div id="my-dialog-content" style="display:none;">
+                <div style="display: flex;justify-content: center;flex-direction: column;align-items: center;">
+                    <p style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">IT'S A
+                        MATCH!</p>
+                    <div class="profile-picture">
+                        <img id="matched-person-picture" src="https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png"
+                            alt="Match 1">
+                    </div>
+                    <p style="font-family: Arial; font-size: 30px; margin: 0;"><span id="matched-person-first">First</span><span> </span><span id="matched-person-last">Last</span></p>
+                    <div style="display: flex;justify-content: center;flex-direction: row">
+                        <button class="chat-match-button"
+                            onclick="$('#my-dialog-content').dialog('close')">Chat</button>
+                        <button class="close-match-button"
+                            onclick="$('#my-dialog-content').dialog('close')">Close</button>
+
+                    </div>
+                </div>
+            </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <style>
-        .ui-dialog {
-            border: 2px solid #aaa;
-            border-radius: 4px;
-            box-shadow: 0 0 8px #999;
-            background-color: #fff;
-            color: #333;
-            font-size: 16px;
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
+
+    <style type="text/css">
+        .ui-dialog .ui-dialog-content {
+            position: relative;
+            border: 0;
+            background: none;
+            overflow: auto;
+            zoom: 1;
+            border: solid 5px rgb(91, 10, 60);
+        }
+
+
+
+        .ui-widget-content {
+            border: none;
+        }
+
+        .ui-dialog-buttonpane {
+            text-align: center;
         }
 
         .ui-dialog-titlebar {
-            background-color: #f1f1f1;
-            border-bottom: 1px solid #ccc;
-            color: #333;
+            display: none;
         }
 
-        .ui-dialog-title {
-            font-size: 20px;
-            font-weight: bold;
+        .ui-dialog-buttonset {
+            display: inline-block;
+            margin: 0 auto;
         }
 
-        .ui-dialog-content {
-            padding: 10px;
+        .close-match-button {
+            display: block;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: #fff;
+            background-color: purple;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            width: 100px;
+            text-align: center;
         }
+
+        .chat-match-button {
+            display: block;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: #fff;
+            background-color: purple;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            width: 100px;
+            text-align: center;
+        }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -376,26 +430,23 @@
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
                         $('.match').remove();
+                        $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
+                        $('#matched-person-first').html(response.previous_user.first_name);
+                        $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
                                 '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
-                        if (response.is_match) {
-                            $('<div>').text('It\'s a Match!').dialog({
-                                classes: {
-                                    "ui-dialog": "my-custom-dialog",
-                                    "ui-dialog-titlebar": "my-custom-titlebar",
-                                    "ui-dialog-title": "my-custom-title",
-                                    "ui-dialog-content": "my-custom-content"
-                                },
+                        if (response) {
+                            $('#my-dialog-content').dialog({
+                                width: 300,
+                                height: 365,
                                 modal: true,
-                                buttons: {
-                                    "Close": function () {
-                                        $(this).dialog('close');
-                                    }
-                                }
-                            });
+                                resizable: false,
+                                draggable: true,
+
+                            })
                         }
 
                     }
