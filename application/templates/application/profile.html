@@ -602,7 +602,7 @@
                 <div class="matches">
                     {% for match in matches_data %}
                     <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 1">
+                        <img src={{match.profile_picture}} alt="Match 1">
                         <p>{{match.first_name}}</p>
                     </div>
                     {% endfor %}

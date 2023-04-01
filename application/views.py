@@ -366,8 +366,7 @@ def getMatchesData(user):
             {
                 "first_name": "No Matches Yet",
                 "last_name": "",
-                "profile_picture": "https://nyu-beat-buddies-develop.s3.\
-                    amazonaws.com/images/placeholder.png",
+                "profile_picture": "https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png",
             }
         ]
     return matches_data
