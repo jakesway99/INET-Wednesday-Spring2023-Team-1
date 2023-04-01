@@ -95,6 +95,7 @@ class UserPrompts(models.Model):
     response4 = models.CharField(max_length=300)
     response5 = models.CharField(max_length=300)
 
+
 class Likes(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     likes = ArrayField(models.IntegerField(null=True), null=True)

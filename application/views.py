@@ -358,11 +358,18 @@ def getMatchesData(user):
                 {
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
-                    "profile_picture": matched_user_account.profile_picture.url
+                    "profile_picture": matched_user_account.profile_picture.url,
                 }
             )
     except Exception:
-        matches_data = [{"first_name": "No Matches Yet", "last_name": "", "profile_picture":"https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png"}]
+        matches_data = [
+            {
+                "first_name": "No Matches Yet",
+                "last_name": "",
+                "profile_picture": "https://nyu-beat-buddies-develop.s3.\
+                    amazonaws.com/images/placeholder.png",
+            }
+        ]
     return matches_data
 
 
@@ -462,9 +469,11 @@ def getNextUserPk(request):
         likes = Likes.objects.create(user=curr_user)
     if likes.likes is not None or likes.dislikes is not None:
         if likes.likes is not None and likes.dislikes is not None:
-           previous_likes_and_dislikes = likes.likes + likes.dislikes
+            previous_likes_and_dislikes = likes.likes + likes.dislikes
         else:
-            previous_likes_and_dislikes = likes.likes if likes.likes  is not None else likes.dislikes
+            previous_likes_and_dislikes = (
+                likes.likes if likes.likes is not None else likes.dislikes
+            )
     else:
         previous_likes_and_dislikes = []
     previous_likes_and_dislikes.append(curr_user.pk)
@@ -500,9 +509,15 @@ def getDiscoverProfile(request):
     likes.likes = [] if likes.likes is None else likes.likes
     likes.dislikes = [] if likes.dislikes is None else likes.dislikes
     likes.matches = [] if likes.matches is None else likes.matches
-    discover_user_likes.likes = [] if discover_user_likes.likes is None else discover_user_likes.likes
-    discover_user_likes.dislikes = [] if discover_user_likes.dislikes is None else discover_user_likes.dislikes
-    discover_user_likes.matches = [] if discover_user_likes.matches is None else discover_user_likes.matches
+    discover_user_likes.likes = (
+        [] if discover_user_likes.likes is None else discover_user_likes.likes
+    )
+    discover_user_likes.dislikes = (
+        [] if discover_user_likes.dislikes is None else discover_user_likes.dislikes
+    )
+    discover_user_likes.matches = (
+        [] if discover_user_likes.matches is None else discover_user_likes.matches
+    )
     if (
         request.GET.get("action") == "like"
         and CURRENT_DISCOVER not in likes.likes
@@ -544,9 +559,9 @@ def getDiscoverProfile(request):
     updated_matches = getMatchesData(curr_user)
     next_user_data = Account.objects.get(user=next_user)
     image_url = next_user_data.profile_picture.url
-    next_user_data= next_user_data.__dict__
+    next_user_data = next_user_data.__dict__
     next_user_data.pop("_state")
-    next_user_data['profile_picture'] = image_url
+    next_user_data["profile_picture"] = image_url
     context = {
         "discover_user": next_user_data,
         "discover_favorite_songs": next_favorite_songs,

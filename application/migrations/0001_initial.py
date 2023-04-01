@@ -8,7 +8,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,119 +16,259 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='GenreList',
+            name="GenreList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre_name', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre_name", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='PromptList',
+            name="PromptList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prompt', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("prompt", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='UserPrompts',
+            name="UserPrompts",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prompt1', models.CharField(max_length=300)),
-                ('prompt2', models.CharField(max_length=300)),
-                ('prompt3', models.CharField(max_length=300)),
-                ('prompt4', models.CharField(max_length=300)),
-                ('prompt5', models.CharField(max_length=300)),
-                ('response1', models.CharField(max_length=300)),
-                ('response2', models.CharField(max_length=300)),
-                ('response3', models.CharField(max_length=300)),
-                ('response4', models.CharField(max_length=300)),
-                ('response5', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("prompt1", models.CharField(max_length=300)),
+                ("prompt2", models.CharField(max_length=300)),
+                ("prompt3", models.CharField(max_length=300)),
+                ("prompt4", models.CharField(max_length=300)),
+                ("prompt5", models.CharField(max_length=300)),
+                ("response1", models.CharField(max_length=300)),
+                ("response2", models.CharField(max_length=300)),
+                ("response3", models.CharField(max_length=300)),
+                ("response4", models.CharField(max_length=300)),
+                ("response5", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Likes',
+            name="Likes",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('likes', django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(null=True), null=True, size=None)),
-                ('dislikes', django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(null=True), null=True, size=None)),
-                ('matches', django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(null=True), null=True, size=None)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "likes",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.IntegerField(null=True), null=True, size=None
+                    ),
+                ),
+                (
+                    "dislikes",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.IntegerField(null=True), null=True, size=None
+                    ),
+                ),
+                (
+                    "matches",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.IntegerField(null=True), null=True, size=None
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FavoriteSong',
+            name="FavoriteSong",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('song1_id', models.CharField(max_length=50)),
-                ('song1_name_artist', models.CharField(max_length=300)),
-                ('song2_id', models.CharField(max_length=50)),
-                ('song2_name_artist', models.CharField(max_length=300)),
-                ('song3_id', models.CharField(max_length=50)),
-                ('song3_name_artist', models.CharField(max_length=300)),
-                ('song4_id', models.CharField(max_length=50)),
-                ('song4_name_artist', models.CharField(max_length=300)),
-                ('song5_id', models.CharField(max_length=50)),
-                ('song5_name_artist', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("song1_id", models.CharField(max_length=50)),
+                ("song1_name_artist", models.CharField(max_length=300)),
+                ("song2_id", models.CharField(max_length=50)),
+                ("song2_name_artist", models.CharField(max_length=300)),
+                ("song3_id", models.CharField(max_length=50)),
+                ("song3_name_artist", models.CharField(max_length=300)),
+                ("song4_id", models.CharField(max_length=50)),
+                ("song4_name_artist", models.CharField(max_length=300)),
+                ("song5_id", models.CharField(max_length=50)),
+                ("song5_name_artist", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FavoriteGenre',
+            name="FavoriteGenre",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre1', models.CharField(max_length=300)),
-                ('genre2', models.CharField(max_length=300)),
-                ('genre3', models.CharField(max_length=300)),
-                ('genre4', models.CharField(max_length=300)),
-                ('genre5', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre1", models.CharField(max_length=300)),
+                ("genre2", models.CharField(max_length=300)),
+                ("genre3", models.CharField(max_length=300)),
+                ("genre4", models.CharField(max_length=300)),
+                ("genre5", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FavoriteArtist',
+            name="FavoriteArtist",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('artist1_id', models.CharField(max_length=50)),
-                ('artist1_name', models.CharField(max_length=300)),
-                ('artist2_id', models.CharField(max_length=50)),
-                ('artist2_name', models.CharField(max_length=300)),
-                ('artist3_id', models.CharField(max_length=50)),
-                ('artist3_name', models.CharField(max_length=300)),
-                ('artist4_id', models.CharField(max_length=50)),
-                ('artist4_name', models.CharField(max_length=300)),
-                ('artist5_id', models.CharField(max_length=50)),
-                ('artist5_name', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("artist1_id", models.CharField(max_length=50)),
+                ("artist1_name", models.CharField(max_length=300)),
+                ("artist2_id", models.CharField(max_length=50)),
+                ("artist2_name", models.CharField(max_length=300)),
+                ("artist3_id", models.CharField(max_length=50)),
+                ("artist3_name", models.CharField(max_length=300)),
+                ("artist4_id", models.CharField(max_length=50)),
+                ("artist4_name", models.CharField(max_length=300)),
+                ("artist5_id", models.CharField(max_length=50)),
+                ("artist5_name", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FavoriteAlbum',
+            name="FavoriteAlbum",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('album1_id', models.CharField(max_length=50)),
-                ('album1_name_artist', models.CharField(max_length=300)),
-                ('album2_id', models.CharField(max_length=50)),
-                ('album2_name_artist', models.CharField(max_length=300)),
-                ('album3_id', models.CharField(max_length=50)),
-                ('album3_name_artist', models.CharField(max_length=300)),
-                ('album4_id', models.CharField(max_length=50)),
-                ('album4_name_artist', models.CharField(max_length=300)),
-                ('album5_id', models.CharField(max_length=50)),
-                ('album5_name_artist', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("album1_id", models.CharField(max_length=50)),
+                ("album1_name_artist", models.CharField(max_length=300)),
+                ("album2_id", models.CharField(max_length=50)),
+                ("album2_name_artist", models.CharField(max_length=300)),
+                ("album3_id", models.CharField(max_length=50)),
+                ("album3_name_artist", models.CharField(max_length=300)),
+                ("album4_id", models.CharField(max_length=50)),
+                ("album4_name_artist", models.CharField(max_length=300)),
+                ("album5_id", models.CharField(max_length=50)),
+                ("album5_name_artist", models.CharField(max_length=300)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Account',
+            name="Account",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(max_length=50)),
-                ('last_name', models.CharField(max_length=50)),
-                ('birth_year', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4)])),
-                ('location', models.CharField(max_length=100)),
-                ('profile_picture', models.ImageField(default='images/placeholder.png', upload_to='images/')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=50)),
+                ("last_name", models.CharField(max_length=50)),
+                (
+                    "birth_year",
+                    models.CharField(
+                        max_length=4,
+                        validators=[django.core.validators.MinLengthValidator(4)],
+                    ),
+                ),
+                ("location", models.CharField(max_length=100)),
+                (
+                    "profile_picture",
+                    models.ImageField(
+                        default="images/placeholder.png", upload_to="images/"
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
