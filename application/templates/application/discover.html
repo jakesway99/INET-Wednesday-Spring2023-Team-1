@@ -438,7 +438,7 @@
                                 '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
-                        if (response) {
+                        if (response.is_match) {
                             $('#my-dialog-content').dialog({
                                 width: 300,
                                 height: 365,
