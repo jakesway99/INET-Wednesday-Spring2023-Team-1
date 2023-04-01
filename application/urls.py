@@ -7,4 +7,5 @@ urlpatterns = [
     path("profile", views.profile, name="profile"),
     path("discover", views.discover, name="discover"),
     path("next", views.getDiscoverProfile, name="next"),
+    path("discover_events", views.discover_events, name="events"),
 ]

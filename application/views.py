@@ -4,9 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+import os
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
+import datetime
 
 # spotify api package
 import spotipy
@@ -30,6 +32,8 @@ from .models import (
     Account,
     Likes,
 )
+
+import ticketpy
 
 
 def get_pic(artist_id, spotify):
@@ -201,6 +205,7 @@ def profile_edit(request):
             "last_name": account_inst.last_name,
             "birth_year": account_inst.birth_year,
             "location": account_inst.location,
+            "profile_picture": account_inst.profile_picture,
         }
     else:
         initial_acct_info = {}
@@ -353,11 +358,17 @@ def getMatchesData(user):
                 {
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
+                    "profile_picture": matched_user_account.profile_picture.url,
                 }
             )
-
     except Exception:
-        matches_data = [{"first_name": "No Matches Yet", "last_name": ""}]
+        matches_data = [
+            {
+                "first_name": "No Matches Yet",
+                "last_name": "",
+                "profile_picture": "https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png",
+            }
+        ]
     return matches_data
 
 
@@ -370,7 +381,7 @@ def profile(request):
 
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
-    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
     (
         initial_songs,
         initial_artists,
@@ -388,6 +399,7 @@ def profile(request):
         or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
+    account = Account.objects.get(user=curr_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -398,6 +410,7 @@ def profile(request):
     context.update(album_art)
     context.update({"user": user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
     return render(request, "application/profile.html", context)
 
 
@@ -410,11 +423,13 @@ def discover(request):
     matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
-    user_data["age"] = str(2023 - int(user_data["birth_year"]))
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
     discover_user = User.objects.get(pk=CURRENT_DISCOVER)
     discover_user_data = Account.objects.get(user=discover_user).__dict__
     discover_user_data.pop("_state")
-    discover_user_data["age"] = str(2023 - int(discover_user_data["birth_year"]))
+    discover_user_data["age"] = str(
+        datetime.date.today().year - int(discover_user_data["birth_year"])
+    )
 
     (
         initial_songs,
@@ -426,6 +441,8 @@ def discover(request):
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
 
+    account = Account.objects.get(user=curr_user)
+    discover_account = Account.objects.get(user=discover_user)
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -437,6 +454,8 @@ def discover(request):
     context.update({"user": user_data})
     context.update({"discover_user": discover_user_data})
     context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"discover_profile_picture": discover_account.profile_picture})
     return render(request, "application/discover.html", context)
 
 
@@ -447,7 +466,15 @@ def getNextUserPk(request):
         likes = Likes.objects.get(user=curr_user)
     except Exception:
         likes = Likes.objects.create(user=curr_user)
-    previous_likes_and_dislikes = likes.likes + likes.dislikes
+    if likes.likes is not None or likes.dislikes is not None:
+        if likes.likes is not None and likes.dislikes is not None:
+            previous_likes_and_dislikes = likes.likes + likes.dislikes
+        else:
+            previous_likes_and_dislikes = (
+                likes.likes if likes.likes is not None else likes.dislikes
+            )
+    else:
+        previous_likes_and_dislikes = []
     previous_likes_and_dislikes.append(curr_user.pk)
     all_users_pks = list(
         User.objects.filter(is_superuser=False).values_list("pk", flat=True)
@@ -478,6 +505,18 @@ def getDiscoverProfile(request):
         likes = Likes.objects.get(user=curr_user)
     except Exception:
         likes = Likes.objects.create(user=curr_user)
+    likes.likes = [] if likes.likes is None else likes.likes
+    likes.dislikes = [] if likes.dislikes is None else likes.dislikes
+    likes.matches = [] if likes.matches is None else likes.matches
+    discover_user_likes.likes = (
+        [] if discover_user_likes.likes is None else discover_user_likes.likes
+    )
+    discover_user_likes.dislikes = (
+        [] if discover_user_likes.dislikes is None else discover_user_likes.dislikes
+    )
+    discover_user_likes.matches = (
+        [] if discover_user_likes.matches is None else discover_user_likes.matches
+    )
     if (
         request.GET.get("action") == "like"
         and CURRENT_DISCOVER not in likes.likes
@@ -517,8 +556,12 @@ def getDiscoverProfile(request):
         next_album_imgs,
     ) = get_favorite_data(next_user, spotify, True)
     updated_matches = getMatchesData(curr_user)
-    next_user_data = Account.objects.get(user=next_user).__dict__
+    next_user_data = Account.objects.get(user=next_user)
+    previous_user_data = Account.objects.get(user=discover_user)
+    image_url = next_user_data.profile_picture.url
+    next_user_data = next_user_data.__dict__
     next_user_data.pop("_state")
+    next_user_data["profile_picture"] = image_url
     context = {
         "discover_user": next_user_data,
         "discover_favorite_songs": next_favorite_songs,
@@ -530,5 +573,42 @@ def getDiscoverProfile(request):
         "discover_albums_imgs": next_album_imgs,
         "updated_matches": updated_matches,
         "is_match": is_match,
+        "previous_user": {
+            "first_name": previous_user_data.first_name,
+            "last_name": previous_user_data.last_name,
+            "profile_picture": previous_user_data.profile_picture.url,
+            "pk": discover_user.pk,
+        },
     }
     return JsonResponse(context)
+
+
+@login_required
+def discover_events(request):
+    tm_client = ticketpy.ApiClient(os.environ.get("TICKETMASTER_CLIENT_KEY"))
+    today = datetime.date.today()
+    four_week = today + datetime.timedelta(weeks=4)
+    start_time = today.strftime("%Y-%m-%d") + "T00:00:01Z"
+    end_time = four_week.strftime("%Y-%m-%d") + "T23:59:00Z"
+    pages = tm_client.events.find(
+        classification_name="music",
+        city="New York",
+        sort="date,asc",
+        start_date_time=start_time,
+        end_date_time=end_time,
+    )
+    event_list = []
+    for page in pages:
+        for event in page:
+            event_info = (
+                event.name,
+                event.local_start_date,
+                event.local_start_time,
+                event.venues[0].name,
+                event.venues[0].city,
+                event.json["images"][1]["url"],
+            )
+            event_list.append(event_info)
+    return render(
+        request, "application/discover_events.html", {"event_list": event_list}
+    )

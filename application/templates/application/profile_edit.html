@@ -183,7 +183,7 @@
             <input type="button" name="cancel" style ="margin-top: 15px;" onclick="location.href = '/application/profile'" value="Cancel" class="btn btn-cancel" id="tab2-cancel">
           </div>
         </div>
-        <form id="tab2form" method="post">
+        <form id="tab2form" method="post" enctype="multipart/form-data">
           {% crispy account_edit %}
           <style>
             .asteriskField {display: none;};

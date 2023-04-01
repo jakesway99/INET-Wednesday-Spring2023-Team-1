@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 
     <head>
@@ -575,6 +576,7 @@
                 height: 10px;
             }
         </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
     </head>
 
     <body>
@@ -584,20 +586,23 @@
         <div class="container">
             <div class="left">
                 <div class="sidebar-profile">
-                    <a href="{% url 'application:profile' %}">
-                        <img class="profile-picture" src="https://via.placeholder.com/150x150" alt="Vanessa" draggable="false">
+                    <div class="profile-picture">
+                        <a href="{% url 'application:profile' %}">
+                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
                     </a>
-                    <div>
-                        <p class="profile-name" id="user_first_name">{{user.first_name}}</p>
-                        <p class="profile-name" id="user_last_name">{{user.last_name}}, <p id="user_age">{{user.age}}</p></p>
-                        <p class="location" id="user_location">{{user.location}}</p>
+                    </div>
+                    <div class="profile">
+                        <span class="profile-name">{{user.first_name}}</span>
+                        <span class="profile-name">{{user.last_name}},</span>
+                        <span class="profile-name">{{user.age}}</span>
+                        <p class="location">{{user.location}}</p>
                     </div>
                 </div>
                 <h2>Matches</h2>
                 <div class="matches">
                     {% for match in matches_data %}
                     <div class="match">
-                        <img src="https://via.placeholder.com/130x130" alt="Match 1">
+                        <img src={{match.profile_picture}} alt="Match 1">
                         <p>{{match.first_name}}</p>
                     </div>
                     {% endfor %}
@@ -655,6 +660,7 @@
                 </div>
                 <div class="footer">
                     <div class="discover-events-wrapper">
+                        <a href="{% url 'application:events' %}">
                         <button class="discover-events-button">Discover Events</button>
                     </div>
                 </div>
