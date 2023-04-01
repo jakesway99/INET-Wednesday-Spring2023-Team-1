@@ -508,9 +508,12 @@
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
                         $('.match').remove();
+                        $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
+                        $('#matched-person-first').html(response.previous_user.first_name);
+                        $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src="https://via.placeholder.com/130x130" alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
                     }
