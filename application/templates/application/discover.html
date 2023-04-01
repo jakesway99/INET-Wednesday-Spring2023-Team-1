@@ -6,6 +6,7 @@
         <title>Discover Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
         <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
     </head>
 
@@ -18,8 +19,8 @@
                 <div class="sidebar-profile">
                     <div class="profile-picture">
                         <a href="{% url 'application:profile' %}">
-                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
-                    </a>
+                            <img src="{{ profile_picture.url }}" alt="Image" draggable="false" />
+                        </a>
                     </div>
                     <div class="profile">
                         <span class="profile-name">{{user.first_name}}</span>
@@ -295,29 +296,33 @@
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <style>
-        .ui-dialog {
-            border: 2px solid #aaa;
-            border-radius: 4px;
-            box-shadow: 0 0 8px #999;
-            background-color: #fff;
-            color: #333;
-            font-size: 16px;
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
+
+    <style type="text/css">
+        .ui-dialog .ui-dialog-content {
+            position: relative;
+            border: 0;
+            padding: .5em 1em;
+            background: none;
+            overflow: auto;
+            zoom: 1;
+            background-color: rgb(197, 150, 192);
+            border: solid 5px rgb(91, 10, 60);
         }
 
-        .ui-dialog-titlebar {
-            background-color: #f1f1f1;
-            border-bottom: 1px solid #ccc;
-            color: #333;
+        
+
+        .ui-widget-content {
+            border: none;
         }
 
-        .ui-dialog-title {
-            font-size: 20px;
-            font-weight: bold;
+        .ui-dialog-buttonpane {
+            text-align: center;
         }
 
-        .ui-dialog-content {
-            padding: 10px;
+        .ui-dialog-buttonset {
+            display: inline-block;
+            margin: 0 auto;
         }
     </style>
     <script>
@@ -381,21 +386,36 @@
                                 '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
                             )
                         }
-                        if (response.is_match) {
-                            $('<div>').text('It\'s a Match!').dialog({
-                                classes: {
-                                    "ui-dialog": "my-custom-dialog",
-                                    "ui-dialog-titlebar": "my-custom-titlebar",
-                                    "ui-dialog-title": "my-custom-title",
-                                    "ui-dialog-content": "my-custom-content"
-                                },
-                                modal: true,
-                                buttons: {
-                                    "Close": function () {
-                                        $(this).dialog('close');
+                        if (response) {
+                            $('<div>')
+                                .addClass('ui-dialog')
+                                
+                                .append($('<div>')
+                                    .addClass('profile-picture')
+                                    .append($('<img>')
+                                        .attr('src', 'https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png')
+
+                                    )
+                                )
+                                .addClass('ui-dialog')
+                                .append($('<h2>')
+                                    .addClass('match-message')
+                                    .text('First Last')
+                                )
+                                .dialog({
+               
+                                    draggable: true,
+                                    title: "It's a Match!",
+                                    buttons: {
+                                        "Close": function () {
+                                            $(this)
+                                                .addClass('ssss')
+                                                .dialog('close');
+
+                                        }
                                     }
-                                }
-                            });
+                                })
+                                .dialog( "option", "showCloseButton", false );
                         }
 
                     }
