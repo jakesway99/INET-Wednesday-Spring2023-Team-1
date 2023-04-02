@@ -334,8 +334,8 @@ def profile_edit(request):
                 messages.error(
                     request,
                     "Password change unsuccessful. Please make sure you have entered"
-                    "your old password"
-                    "accurately and have followed the new password guidelines",
+                    " your old password"
+                    " accurately and have followed the new password guidelines",
                 )
                 # messages.error(request, form2.errors)
 
