@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from application.models import Account
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
 
 TEST_USER = os.environ["TEST_USER"]
 TEST_USER_PASSWORD = os.environ["TEST_USER_PASSWORD"]
@@ -123,3 +126,38 @@ class LogoutViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")
         self.assertFalse("_auth_user_id" in self.client.session)
+
+
+class ActivateAccountTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create(
+            username="testuser", email="testuser@example.com"
+        )
+        self.token = default_token_generator.make_token(self.user)
+
+    def test_activation_success(self):
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        url = reverse(
+            "account:activate",
+            kwargs={
+                "uidb64": uidb64,
+                "token": self.token,
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.url, reverse("account:login"))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+
+    def test_activation_failure(self):
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        url = reverse(
+            "account:activate",
+            kwargs={
+                "uidb64": uidb64,
+                "token": self.token,
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.url, reverse("account:login"))
+        self.user.refresh_from_db()
