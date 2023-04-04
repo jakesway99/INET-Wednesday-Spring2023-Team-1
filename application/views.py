@@ -376,6 +376,7 @@ def getMatchesData(user):
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
                     "profile_picture": matched_user_account.profile_picture.url,
+                    "pk": match,
                 }
             )
     except Exception:
@@ -384,6 +385,7 @@ def getMatchesData(user):
                 "first_name": "No Matches Yet",
                 "last_name": "",
                 "profile_picture": "https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png",
+                "pk": user.pk,
             }
         ]
     return matches_data
@@ -636,6 +638,30 @@ def discover_events(request):
                 event.img_url,
             )
         )
-    return render(
-        request, "application/discover_events.html", {"event_list": event_list}
+    curr_user = request.user
+    account = Account.objects.get(user=curr_user)
+    context = {}
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"first_name": account.first_name})
+    context.update({"event_list": event_list})
+
+    return render(request, "application/discover_events.html", context)
+
+
+@login_required
+def match_profile(request, match_pk):
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+    curr_user_matches = Likes.objects.get(user=curr_user).matches
+    if match_pk not in curr_user_matches:
+        return redirect("application:discover")
+    matches_data = getMatchesData(curr_user)
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
+    matched_user = User.objects.get(pk=match_pk)
+    matched_user_data = Account.objects.get(user=matched_user).__dict__
+    matched_user_data.pop("_state")
+    matched_user_data["age"] = str(
+        datetime.date.today().year - int(matched_user_data["birth_year"])
     )
