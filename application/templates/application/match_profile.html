@@ -103,7 +103,7 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
-                        <a href="{% url 'account:logout' %}">Logout</a>
+                        <a href="{% url 'application:remove_match' match_pk=matched_user.user_id %}">Remove</a>
                     </div>
                 </div>
                 <div class="right-section-content">
@@ -111,16 +111,16 @@
                         <div class="left-column">
                             <div class="account-details">
                                 <div class="profile-picture">
-                                    <img src="{{ discover_profile_picture.url }}" alt="Image" draggable="false"
+                                    <img src="{{ matched_profile_picture.url }}" alt="Image" draggable="false"
                                         id="discover_profile_picture">
                                 </div>
                                 <div class="profile">
                                     <span class="profile-name"
-                                        id="discover_first_name">{{discover_user.first_name}}</span>
+                                        id="discover_first_name">{{matched_user.first_name}}</span>
                                     <span class="profile-name"
-                                        id="discover_last_name">{{discover_user.last_name}},</span>
-                                    <span class="profile-name" id="discover_age">{{discover_user.age}}</span>
-                                    <p class="location" id="discover_location">{{discover_user.location}}</p>
+                                        id="discover_last_name">{{matched_user.last_name}},</span>
+                                    <span class="profile-name" id="discover_age">{{matched_user.age}}</span>
+                                    <p class="location" id="discover_location">{{matched_user.location}}</p>
                                 </div>
                             </div>
                             <div class="songs-column">
@@ -284,246 +284,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="footer footer-swipe">
-                        <div class="swipe-button" role="button" id="dislike-button">
-                            <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png" />
-                        </div>
-                        <div class="swipe-button" role="button" id="like-button">
-                            <span class="swipe-icon">&#128156;</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="my-dialog-content" style="display:none;">
-                <div style="display: flex;justify-content: center;flex-direction: column;align-items: center;">
-                    <p style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">IT'S A
-                        MATCH!</p>
-                    <div class="profile-picture">
-                        <img id="matched-person-picture"
-                            src="https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png"
-                            alt="Match 1">
-                    </div>
-                    <p style="font-family: Arial; font-size: 30px; margin: 0;"><span
-                            id="matched-person-first">First</span><span> </span><span
-                            id="matched-person-last">Last</span></p>
-                    <div style="display: flex;justify-content: center;flex-direction: row">
-                        <button class="chat-match-button"
-                            onclick="$('#my-dialog-content').dialog('close')">Chat</button>
-                        <button class="close-match-button"
-                            onclick="$('#my-dialog-content').dialog('close')">Close</button>
-
-                    </div>
                 </div>
             </div>
     </body>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
-
-    <style type="text/css">
-        .ui-dialog .ui-dialog-content {
-            position: relative;
-            border: 0;
-            background: none;
-            overflow: auto;
-            zoom: 1;
-            border: solid 5px rgb(91, 10, 60);
-        }
-
-
-
-        .ui-widget-content {
-            border: none;
-        }
-
-        .ui-dialog-buttonpane {
-            text-align: center;
-        }
-
-        .ui-dialog-titlebar {
-            display: none;
-        }
-
-        .ui-dialog-buttonset {
-            display: inline-block;
-            margin: 0 auto;
-        }
-
-        .close-match-button {
-            display: block;
-            padding: 10px 20px;
-            font-size: 24px;
-            color: #fff;
-            background-color: purple;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 10px;
-            width: 100px;
-            text-align: center;
-        }
-
-        .chat-match-button {
-            display: block;
-            padding: 10px 20px;
-            font-size: 24px;
-            color: #fff;
-            background-color: purple;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 10px;
-            width: 100px;
-            text-align: center;
-        }
-    </style>
-    <script>
-        $(document).ready(function () {
-            $('#like-button').click(function () {
-                $.ajax({
-                    url: 'next',
-                    data: {
-                        'action': 'like'
-                    },
-                    success: function (response) {
-                        let age = (2023 - Number(response.discover_user.birth_year)).toString()
-                        $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name + ',');
-                        $('#discover_location').html(response.discover_user.location);
-                        $('#discover_age').html(age);
-                        $('#discover_profile_picture').attr('src', response.discover_user.profile_picture);
-                        $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
-                        $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
-                        $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
-                        $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
-                        $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
-                        $('#discover_prompt1').html(response.discover_prompts.prompt1);
-                        $('#discover_prompt2').html(response.discover_prompts.prompt2);
-                        $('#discover_prompt3').html(response.discover_prompts.prompt3);
-                        $('#discover_prompt4').html(response.discover_prompts.prompt4);
-                        $('#discover_prompt5').html(response.discover_prompts.prompt5);
-                        $('#discover_response1').html(response.discover_prompts.response1);
-                        $('#discover_response2').html(response.discover_prompts.response2);
-                        $('#discover_response3').html(response.discover_prompts.response3);
-                        $('#discover_response4').html(response.discover_prompts.response4);
-                        $('#discover_response5').html(response.discover_prompts.response5);
-                        $('#discover_genre1').html(response.discover_favorite_genres.genre1);
-                        $('#discover_genre2').html(response.discover_favorite_genres.genre2);
-                        $('#discover_genre3').html(response.discover_favorite_genres.genre3);
-                        $('#discover_genre4').html(response.discover_favorite_genres.genre4);
-                        $('#discover_genre5').html(response.discover_favorite_genres.genre5);
-                        $('#discover_artist_image_url1').attr('src', response.discover_artist_imgs.artist1_image_url);
-                        $('#discover_artist_image_url2').attr('src', response.discover_artist_imgs.artist2_image_url);
-                        $('#discover_artist_image_url3').attr('src', response.discover_artist_imgs.artist3_image_url);
-                        $('#discover_artist_image_url4').attr('src', response.discover_artist_imgs.artist4_image_url);
-                        $('#discover_artist_image_url5').attr('src', response.discover_artist_imgs.artist5_image_url);
-                        $('#discover_album_img1').attr('src', response.discover_albums_imgs.album1_image_url);
-                        $('#discover_album_img2').attr('src', response.discover_albums_imgs.album2_image_url);
-                        $('#discover_album_img3').attr('src', response.discover_albums_imgs.album3_image_url);
-                        $('#discover_album_img4').attr('src', response.discover_albums_imgs.album4_image_url);
-                        $('#discover_album_img5').attr('src', response.discover_albums_imgs.album5_image_url);
-                        $('#discover_album1').html(response.discover_favorite_albums.album1_name_artist);
-                        $('#discover_album2').html(response.discover_favorite_albums.album2_name_artist);
-                        $('#discover_album3').html(response.discover_favorite_albums.album3_name_artist);
-                        $('#discover_album4').html(response.discover_favorite_albums.album4_name_artist);
-                        $('#discover_album5').html(response.discover_favorite_albums.album5_name_artist);
-                        $('#discover_artist1').html(response.discover_favorite_artists.artist1_name);
-                        $('#discover_artist2').html(response.discover_favorite_artists.artist2_name);
-                        $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
-                        $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
-                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
-                        $('.match').remove();
-                        $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
-                        $('#matched-person-first').html(response.previous_user.first_name);
-                        $('#matched-person-last').html(response.previous_user.last_name);
-                        for (let match of response.updated_matches) {
-                            $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
-                            )
-                        }
-                        if (response.is_match) {
-                            $('#my-dialog-content').dialog({
-                                width: 300,
-                                height: 365,
-                                modal: true,
-                                resizable: false,
-                                draggable: true,
-
-                            })
-                        }
-
-                    }
-                });
-            });
-        });
-        $(document).ready(function () {
-            $('#dislike-button').click(function () {
-                $.ajax({
-                    url: 'next',
-                    data: {
-                        'action': 'dislike'
-                    },
-                    success: function (response) {
-                        let age = (2023 - Number(response.discover_user.birth_year)).toString()
-                        $('#discover_first_name').html(response.discover_user.first_name);
-                        $('#discover_last_name').html(response.discover_user.last_name + ',');
-                        $('#discover_location').html(response.discover_user.location);
-                        $('#discover_age').html(age);
-                        $('#discover_profile_picture').attr('src', response.discover_user.profile_picture);
-                        $('#discover_song1').html(response.discover_favorite_songs.song1_name_artist);
-                        $('#discover_song2').html(response.discover_favorite_songs.song2_name_artist);
-                        $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
-                        $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
-                        $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
-                        $('#discover_prompt1').html(response.discover_prompts.prompt1);
-                        $('#discover_prompt2').html(response.discover_prompts.prompt2);
-                        $('#discover_prompt3').html(response.discover_prompts.prompt3);
-                        $('#discover_prompt4').html(response.discover_prompts.prompt4);
-                        $('#discover_prompt5').html(response.discover_prompts.prompt5);
-                        $('#discover_response1').html(response.discover_prompts.response1);
-                        $('#discover_response2').html(response.discover_prompts.response2);
-                        $('#discover_response3').html(response.discover_prompts.response3);
-                        $('#discover_response4').html(response.discover_prompts.response4);
-                        $('#discover_response5').html(response.discover_prompts.response5);
-                        $('#discover_genre1').html(response.discover_favorite_genres.genre1);
-                        $('#discover_genre2').html(response.discover_favorite_genres.genre2);
-                        $('#discover_genre3').html(response.discover_favorite_genres.genre3);
-                        $('#discover_genre4').html(response.discover_favorite_genres.genre4);
-                        $('#discover_genre5').html(response.discover_favorite_genres.genre5);
-                        $('#discover_artist_image_url1').attr('src', response.discover_artist_imgs.artist1_image_url);
-                        $('#discover_artist_image_url2').attr('src', response.discover_artist_imgs.artist2_image_url);
-                        $('#discover_artist_image_url3').attr('src', response.discover_artist_imgs.artist3_image_url);
-                        $('#discover_artist_image_url4').attr('src', response.discover_artist_imgs.artist4_image_url);
-                        $('#discover_artist_image_url5').attr('src', response.discover_artist_imgs.artist5_image_url);
-                        $('#discover_album_img1').attr('src', response.discover_albums_imgs.album1_image_url);
-                        $('#discover_album_img2').attr('src', response.discover_albums_imgs.album2_image_url);
-                        $('#discover_album_img3').attr('src', response.discover_albums_imgs.album3_image_url);
-                        $('#discover_album_img4').attr('src', response.discover_albums_imgs.album4_image_url);
-                        $('#discover_album_img5').attr('src', response.discover_albums_imgs.album5_image_url);
-                        $('#discover_album1').html(response.discover_favorite_albums.album1_name_artist);
-                        $('#discover_album2').html(response.discover_favorite_albums.album2_name_artist);
-                        $('#discover_album3').html(response.discover_favorite_albums.album3_name_artist);
-                        $('#discover_album4').html(response.discover_favorite_albums.album4_name_artist);
-                        $('#discover_album5').html(response.discover_favorite_albums.album5_name_artist);
-                        $('#discover_artist1').html(response.discover_favorite_artists.artist1_name);
-                        $('#discover_artist2').html(response.discover_favorite_artists.artist2_name);
-                        $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
-                        $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
-                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
-                        $('.match').remove();
-                        $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
-                        $('#matched-person-first').html(response.previous_user.first_name);
-                        $('#matched-person-last').html(response.previous_user.last_name);
-                        for (let match of response.updated_matches) {
-                            $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
-                            )
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-
 </html>
