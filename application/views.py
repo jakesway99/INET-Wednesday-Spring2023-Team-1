@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-import os
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
@@ -31,9 +30,24 @@ from .models import (
     UserPrompts,
     Account,
     Likes,
+    EventList,
 )
 
-import ticketpy
+
+def returnTime(time_string):
+    if int(time_string[:2]) == 0:
+        return_hr = str(12)
+        am_pm = "AM"
+    elif int(time_string[:2]) <= 11:
+        return_hr = time_string[:2]
+        am_pm = "AM"
+    elif int(time_string[:2]) == 12:
+        return_hr = time_string[:2]
+        am_pm = "PM"
+    else:
+        return_hr = time_string[:2]
+        am_pm = "PM"
+    return return_hr + time_string[2:5] + am_pm
 
 
 def get_pic(artist_id, spotify):
@@ -586,74 +600,24 @@ def getDiscoverProfile(request):
 @login_required
 def discover_events(request):
     event_list = []
-    tm_client1 = ticketpy.ApiClient(os.environ.get("TICKETMASTER_CLIENT_KEY1"))
-    tm_client2 = ticketpy.ApiClient(os.environ.get("TICKETMASTER_CLIENT_KEY2"))
-    today = datetime.date.today()
-    end_day1 = today + datetime.timedelta(days=3)
-    start_day2 = end_day1 + datetime.timedelta(days=1)
-    end_day2 = end_day1 + datetime.timedelta(days=3)
+    all_events = EventList.objects.all()
+    for event in all_events:
+        time_string = event.start_time
+        if time_string == "TBA":
+            event_time = "TBA"
+        else:
+            event_time = returnTime(time_string)
 
-    start_time1 = today.strftime("%Y-%m-%d") + "T00:00:00Z"
-    end_time1 = end_day1.strftime("%Y-%m-%d") + "T23:59:59Z"
-    pages = tm_client1.events.find(
-        classification_name="music",
-        city="New York",
-        sort="date,asc",
-        start_date_time=start_time1,
-        end_date_time=end_time1,
-    )
-
-    for page in pages:
-        for event in page:
-            img_url = ""
-            for img in event.json["images"]:
-                if (
-                    "RETINA_PORTRAIT" in img["url"]
-                    and img["width"] == 640
-                    and img["height"] == 360
-                ):
-                    img_url = img["url"]
-                    break
-            event_info = (
-                event.name,
-                event.local_start_date,
-                event.local_start_time,
-                event.venues[0].name,
-                event.venues[0].city,
-                img_url,
+        event_list.append(
+            (
+                event.event_name,
+                event.start_date,
+                event_time,
+                event.venue_name,
+                event.city,
+                event.img_url,
             )
-            event_list.append(event_info)
-
-    start_time2 = start_day2.strftime("%Y-%m-%d") + "T00:00:00Z"
-    end_time2 = end_day2.strftime("%Y-%m-%d") + "T23:59:59Z"
-    pages = tm_client2.events.find(
-        classification_name="music",
-        city="New York",
-        sort="date,asc",
-        start_date_time=start_time2,
-        end_date_time=end_time2,
-    )
-
-    for page in pages:
-        for event in page:
-            img_url = ""
-            for img in event.json["images"]:
-                if (
-                    "RETINA_PORTRAIT" in img["url"]
-                    and img["width"] == 640
-                    and img["height"] == 360
-                ):
-                    img_url = img["url"]
-                    break
-            event_info = (
-                event.name,
-                event.local_start_date,
-                event.local_start_time,
-                event.venues[0].name,
-                event.venues[0].city,
-                img_url,
-            )
-            event_list.append(event_info)
+        )
     return render(
         request, "application/discover_events.html", {"event_list": event_list}
     )
