@@ -620,9 +620,14 @@ def discover_events(request):
                 event.img_url,
             )
         )
-    return render(
-        request, "application/discover_events.html", {"event_list": event_list}
-    )
+    curr_user = request.user
+    account = Account.objects.get(user=curr_user)
+    context = {}
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"first_name": account.first_name})
+    context.update({"event_list": event_list})
+
+    return render(request, "application/discover_events.html", context)
 
 
 @login_required
