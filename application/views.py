@@ -624,7 +624,5 @@ def discover_events(request):
     context.update({"profile_picture": account.profile_picture})
     context.update({"first_name": account.first_name})
     context.update({"event_list": event_list})
-    
-    return render(
-        request, "application/discover_events.html", context
-    )
+
+    return render(request, "application/discover_events.html", context)
