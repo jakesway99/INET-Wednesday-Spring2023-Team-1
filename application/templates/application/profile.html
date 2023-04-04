@@ -576,7 +576,7 @@
                 height: 10px;
             }
         </style>
-    <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
     </head>
 
     <body>
@@ -588,8 +588,8 @@
                 <div class="sidebar-profile">
                     <div class="profile-picture">
                         <a href="{% url 'application:profile' %}">
-                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
-                    </a>
+                            <img src="{{ profile_picture.url }}" alt="Image" draggable="false" />
+                        </a>
                     </div>
                     <div class="profile">
                         <span class="profile-name">{{user.first_name}}</span>
@@ -602,8 +602,11 @@
                 <div class="matches">
                     {% for match in matches_data %}
                     <div class="match">
-                        <img src={{match.profile_picture}} alt="Match 1">
+                        <a href="{% url 'application:match_profile' match_pk=match.pk %}">
+                            <img src={{match.profile_picture}} alt="Match 1">
+                        </a>
                         <p>{{match.first_name}}</p>
+
                     </div>
                     {% endfor %}
                 </div>
@@ -661,7 +664,7 @@
                 <div class="footer">
                     <div class="discover-events-wrapper">
                         <a href="{% url 'application:events' %}">
-                        <button class="discover-events-button">Discover Events</button>
+                            <button class="discover-events-button">Discover Events</button>
                     </div>
                 </div>
             </div>
@@ -822,7 +825,7 @@
                 <div class="footer">
                     <div class="discover-events-wrapper">
                         <a href="{% url 'application:discover' %}">
-                        <button class="discover-events-button">Discover People</button>
+                            <button class="discover-events-button">Discover People</button>
                         </a>
                     </div>
                 </div>
