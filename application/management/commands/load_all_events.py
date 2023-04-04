@@ -21,16 +21,16 @@ def getTicketmaster(start_date, end_date, tm_key):
             img_url = ""
             for img in event["images"]:
                 if (
-                        "RETINA_PORTRAIT" in img["url"]
-                        and img["width"] == 640
-                        and img["height"] == 360
+                    "RETINA_PORTRAIT" in img["url"]
+                    and img["width"] == 640
+                    and img["height"] == 360
                 ):
                     img_url = img["url"]
                     break
 
             event_dates = event["dates"]["start"]
             if event_dates.get("localTime") is None:
-                start_time = 'TBA'
+                start_time = "TBA"
             else:
                 start_time = event["dates"]["start"]["localTime"]
 
@@ -71,4 +71,3 @@ class Command(BaseCommand):
                 img_url=event[5],
             )
             event_inst.save()
-
