@@ -629,6 +629,9 @@ def discover_events(request):
 def match_profile(request, match_pk):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
+    curr_user_matches = Likes.objects.get(user=curr_user).matches
+    if match_pk not in curr_user_matches:
+        return redirect("application:discover")
     matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")

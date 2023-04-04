@@ -439,7 +439,7 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
                             )
                         }
                         if (response.is_match) {
@@ -517,7 +517,7 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
                             )
                         }
                     }
