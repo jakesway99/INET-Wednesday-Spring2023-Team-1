@@ -4,10 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        function getMonth(dateObj) {
+            // let dateObj = document.getElementById(date);
+            print(dateObj);
+        }
+    </script>
 </head>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;  
+    }
+    .event {
+        position: relative;
+        width: 1200px;
+        border: 2px solid lightgrey;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        padding: 15px;
+        margin: 20px; 
+    }
+    p {
+    display: inline-block;
+    }    
+    #date {
+        position: absolute;
+        bottom: 55px; 
+        left: 200px;
+        font-size: 25px;
+        color: purple;
+    }
+
+    #day_time {
+        position: absolute;
+        bottom: 30px; 
+        left: 200px;
+        font-size: 20px;
+        color: grey;
+    }
+    #event_name {
+        position: absolute;
+        bottom: 55px; 
+        left: 368px;
+        font-size: 25px;
+    }
+    #venue_name {
+        position: absolute;
+        bottom: 30px; 
+        left: 368px;
+        font-size: 20px;
+        color: grey;
+    }
+
+    .event img {
+        border: 5px solid #555;
+    }    
+</style>
+
 <body>
-{% for item in event_list %}
-     {{ item.0 }}, {{ item.1}}, {{ item.2 }}, {{ item.3}}, {{ item.4 }}, {{ item.5}} <br>
-{% endfor %}
+<div class= "items">
+    {% for item in event_list %}
+    <div class = "event">
+        <img src={{item.7}} style="width:130px;height:70px;">
+
+        <p id = "date" >
+           {{ item.1 }} {{ item.2 }}
+        </p> 
+        <p id = "day_time" >
+            {{ item.3 }} &#x2022; {{ item.4 }}
+        </p> 
+        <p>
+            &emsp; &emsp;
+        </p>
+        <p id = "event_name" >
+            {{ item.0 }}
+        </p> 
+        <!-- <p>
+            &emsp;
+        </p> -->
+        <p id = "venue_name" >
+            {{ item.5 }}
+        </p> 
+        <!-- <p id = "city" >
+            {{ item.6 }}
+        </p>  -->
+        <br>
+    </div> 
+    {% endfor %}
+    
+</div>
+
 </body>
 </html>
