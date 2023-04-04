@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-import os
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
@@ -31,9 +30,24 @@ from .models import (
     UserPrompts,
     Account,
     Likes,
+    EventList,
 )
 
-import ticketpy
+
+def returnTime(time_string):
+    if int(time_string[:2]) == 0:
+        return_hr = str(12)
+        am_pm = "AM"
+    elif int(time_string[:2]) <= 11:
+        return_hr = time_string[:2]
+        am_pm = "AM"
+    elif int(time_string[:2]) == 12:
+        return_hr = time_string[:2]
+        am_pm = "PM"
+    else:
+        return_hr = time_string[:2]
+        am_pm = "PM"
+    return return_hr + time_string[2:5] + am_pm
 
 
 def get_pic(artist_id, spotify):
@@ -359,6 +373,7 @@ def getMatchesData(user):
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
                     "profile_picture": matched_user_account.profile_picture.url,
+                    "pk": match,
                 }
             )
     except Exception:
@@ -367,6 +382,7 @@ def getMatchesData(user):
                 "first_name": "No Matches Yet",
                 "last_name": "",
                 "profile_picture": "https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png",
+                "pk": user.pk,
             }
         ]
     return matches_data
@@ -585,30 +601,77 @@ def getDiscoverProfile(request):
 
 @login_required
 def discover_events(request):
-    tm_client = ticketpy.ApiClient(os.environ.get("TICKETMASTER_CLIENT_KEY"))
-    today = datetime.date.today()
-    four_week = today + datetime.timedelta(weeks=4)
-    start_time = today.strftime("%Y-%m-%d") + "T00:00:01Z"
-    end_time = four_week.strftime("%Y-%m-%d") + "T23:59:00Z"
-    pages = tm_client.events.find(
-        classification_name="music",
-        city="New York",
-        sort="date,asc",
-        start_date_time=start_time,
-        end_date_time=end_time,
-    )
     event_list = []
-    for page in pages:
-        for event in page:
-            event_info = (
-                event.name,
-                event.local_start_date,
-                event.local_start_time,
-                event.venues[0].name,
-                event.venues[0].city,
-                event.json["images"][1]["url"],
+    all_events = EventList.objects.all()
+    for event in all_events:
+        time_string = event.start_time
+        if time_string == "TBA":
+            event_time = "TBA"
+        else:
+            event_time = returnTime(time_string)
+
+        event_list.append(
+            (
+                event.event_name,
+                event.start_date,
+                event_time,
+                event.venue_name,
+                event.city,
+                event.img_url,
             )
-            event_list.append(event_info)
+        )
     return render(
         request, "application/discover_events.html", {"event_list": event_list}
     )
+
+
+@login_required
+def match_profile(request, match_pk):
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+    matches_data = getMatchesData(curr_user)
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
+    matched_user = User.objects.get(pk=match_pk)
+    matched_user_data = Account.objects.get(user=matched_user).__dict__
+    matched_user_data.pop("_state")
+    matched_user_data["age"] = str(
+        datetime.date.today().year - int(matched_user_data["birth_year"])
+    )
+
+    (
+        initial_songs,
+        initial_artists,
+        initial_albums,
+        initial_genres,
+        initial_prompts,
+        artist_art,
+        album_art,
+    ) = get_favorite_data(matched_user, spotify, True)
+
+    account = Account.objects.get(user=curr_user)
+    matched_account = Account.objects.get(user=matched_user)
+    context = {}
+    context.update(initial_songs)
+    context.update(initial_artists)
+    context.update(initial_albums)
+    context.update(initial_genres)
+    context.update(initial_prompts)
+    context.update(artist_art)
+    context.update(album_art)
+    context.update({"user": user_data})
+    context.update({"matched_user": matched_user_data})
+    context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"matched_profile_picture": matched_account.profile_picture})
+    return render(request, "application/match_profile.html", context)
+
+
+@login_required
+def remove_match(request, match_pk):
+    user_likes = Likes.objects.get(user=request.user)
+    user_likes.likes.remove(int(match_pk))
+    user_likes.matches.remove(int(match_pk))
+    user_likes.save()
+    return redirect("application:discover")

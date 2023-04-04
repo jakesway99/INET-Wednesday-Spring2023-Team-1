@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.contrib.postgres.fields import ArrayField
 
+
 # from django.contrib.postgres.fields import ArrayField
 
 
@@ -101,3 +102,15 @@ class Likes(models.Model):
     likes = ArrayField(models.IntegerField(null=True), null=True)
     dislikes = ArrayField(models.IntegerField(null=True), null=True)
     matches = ArrayField(models.IntegerField(null=True), null=True)
+
+
+class EventList(models.Model):
+    event_name = models.CharField(max_length=300)
+    start_date = models.DateField()
+    start_time = models.CharField(max_length=8)
+    venue_name = models.CharField(max_length=300)
+    city = models.CharField(max_length=300)
+    img_url = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.event_name}-{self.start_date}"

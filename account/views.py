@@ -15,6 +15,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 
 from .forms import NewUserForm
+from application.models import Account
 
 
 def activateEmail(request, user, to_email):
@@ -67,7 +68,7 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, "Activation link is invalid!")
 
-    return redirect("home")
+    return redirect("account:login")
 
 
 def register_request(request):
@@ -77,6 +78,12 @@ def register_request(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            user_account = Account.objects.create(user=user)
+            user_account.birth_year = 1900
+            user_account.first_name = "New"
+            user_account.last_name = "User"
+            user_account.location = "Harmony"
+            user_account.save()
             msg = activateEmail(request, user, form.cleaned_data.get("email"))
             # return redirect("account:login")
 
