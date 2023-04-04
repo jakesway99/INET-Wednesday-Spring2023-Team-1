@@ -359,7 +359,7 @@ def profile_edit(request):
         if in_password_change is False:
             return redirect("application:profile")
         else:
-            return redirect("/application/profile/edit")
+            return redirect("application:profile_edit")
 
 
 def getMatchesData(user):
