@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 import os
+from datetime import datetime, date
+import calendar
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
@@ -614,10 +616,28 @@ def discover_events(request):
                 ):
                     img_url = img["url"]
                     break
+
+            # getting month name and day from datetime obj
+            date_object = datetime.datetime.strptime(event.local_start_date, '%Y-%m-%d').date()
+            month_num= date_object.month
+            month_name = calendar.month_abbr[month_num]
+            day_num = date_object.day
+
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.local_start_time, '%H:%M:%S')
+            mil_time = time_object.time()
+            std_time = mil_time.strftime("%-I:%M" "%p").lower()
+
+            # getting day of the week based on datetime obj
+            dow_num = date_object.weekday()
+            day_name = calendar.day_abbr[dow_num]
+
             event_info = (
                 event.name,
-                event.local_start_date,
-                event.local_start_time,
+                month_name,
+                day_num,
+                day_name,
+                std_time,
                 event.venues[0].name,
                 event.venues[0].city,
                 img_url,
@@ -645,10 +665,28 @@ def discover_events(request):
                 ):
                     img_url = img["url"]
                     break
+
+            # getting month name and day from datetime obj
+            date_object = datetime.datetime.strptime(event.local_start_date, '%Y-%m-%d').date()
+            month_num= date_object.month
+            month_name = calendar.month_abbr[month_num]
+            day_num = date_object.day
+
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.local_start_time, '%H:%M:%S')
+            mil_time = time_object.time()
+            std_time = mil_time.strftime("%-I:%M" "%p").lower()
+
+            # getting day of the week based on datetime obj
+            dow_num = date_object.weekday()
+            day_name = calendar.day_abbr[dow_num]
+
             event_info = (
                 event.name,
-                event.local_start_date,
-                event.local_start_time,
+                month_name,
+                day_num,
+                day_name,
+                std_time,
                 event.venues[0].name,
                 event.venues[0].city,
                 img_url,
