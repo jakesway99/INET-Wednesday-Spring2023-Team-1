@@ -3,14 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
-    <script>
-        function getMonth(dateObj) {
-            // let dateObj = document.getElementById(date);
-            print(dateObj);
-        }
-    </script>
+    <title>Discover Events</title>
 </head>
 <style>
     body {
@@ -47,20 +40,65 @@
     #event_name {
         position: absolute;
         bottom: 55px; 
-        left: 368px;
+        left: 375px;
         font-size: 25px;
     }
-    #venue_name {
+    #event_name span {
+        display:block;
+        width:640px;
+        word-break:normal;
+    }
+    #venue_name_city {
         position: absolute;
         bottom: 30px; 
-        left: 368px;
+        left: 375px;
         font-size: 20px;
         color: grey;
     }
 
     .event img {
-        border: 5px solid #555;
+        border: 5px solid lightgray;
     }    
+    #interested {
+        position: absolute;
+        font-size: 18px;
+        left: 1100px;
+        bottom: 80px;
+        padding: 0 10px;
+        width: 10%;
+        height: 25%;
+        border-radius: 25px;
+        background-color: transparent;
+        color: purple;
+        border-color: purple;
+        border-style: solid;
+        cursor: pointer;
+    }
+    #going {
+        position: absolute;
+        font-size: 18px;
+        left: 1100px;
+        bottom: 40px;
+        padding: 0 10px;
+        width: 10%;
+        height: 25%;
+        border-radius: 25px;
+        background-color: transparent;
+        color: purple;
+        border-color: purple;
+        border-style: solid;
+        cursor: pointer;
+    }
+    #interested:hover {
+			background-color: purple;
+			border-style: solid;
+            color: white;
+		}
+    #going:hover {
+			background-color: purple;
+			border-style: solid;
+            color: white;
+	}
 </style>
 
 <body>
@@ -70,7 +108,7 @@
         <img src={{item.7}} style="width:130px;height:70px;">
 
         <p id = "date" >
-           {{ item.1 }} {{ item.2 }}
+           {{ item.1 }} {{ item.2 }} 
         </p> 
         <p id = "day_time" >
             {{ item.3 }} &#x2022; {{ item.4 }}
@@ -79,17 +117,16 @@
             &emsp; &emsp;
         </p>
         <p id = "event_name" >
-            {{ item.0 }}
+            <span>{{ item.0 }} </span>
         </p> 
-        <!-- <p>
-            &emsp;
-        </p> -->
-        <p id = "venue_name" >
-            {{ item.5 }}
+        <p id = "venue_name_city" >
+            {{ item.5 }} 
         </p> 
-        <!-- <p id = "city" >
-            {{ item.6 }}
+        <!-- <p id = "venue_name_city" >
+            {{ item.5 }} &#8211; {{ item.6 }}
         </p>  -->
+        <button id="interested" class="button">Interested</button>
+        <button id="going" class="button">Going</button>
         <br>
     </div> 
     {% endfor %}
