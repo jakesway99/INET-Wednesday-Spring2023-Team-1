@@ -701,4 +701,8 @@ def remove_match(request, match_pk):
     user_likes.likes.remove(int(match_pk))
     user_likes.matches.remove(int(match_pk))
     user_likes.save()
+    matched_user_likes = Likes.objects.get(user=match_pk)
+    matched_user_likes.likes.remove(int(request.user.pk))
+    matched_user_likes.matches.remove(int(request.user.pk))
+    matched_user_likes.save()
     return redirect("application:discover")
