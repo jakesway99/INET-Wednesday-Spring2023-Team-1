@@ -1,8 +1,9 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import FavoriteGenre, FavoriteArtist, FavoriteSong, FavoriteAlbum, Account
 import os
+from .views import discover_events
 
 # from bs4 import BeautifulSoup
 
@@ -166,10 +167,24 @@ class Profile(TestCase):
 
 class DiscoverEvents(TestCase):
     def setUp(self):
+        self.request_factory = RequestFactory()
         self.client = Client()
-        self.user = User.objects.create_user(username="TEST_USER", password="@1234567")
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user1 = User.objects.create_user(username="TEST_USER", password="@1234567")
+        cls.Acct = Account.objects.create(
+            user=cls.user1,
+            first_name="test",
+            last_name="testlast",
+            birth_year=1996,
+            location="NYC",
+            profile_picture="placeholder",
+        )
 
     def test_discover_page(self):
-        self.client.force_login(self.user)
-        response = self.client.get(reverse("application:events"))
+        self.client.force_login(self.user1)
+        request = self.request_factory.get(reverse("application:events"))
+        request.user = self.user1
+        response = discover_events(request)
         self.assertEqual(response.status_code, 200)
