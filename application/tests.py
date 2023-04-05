@@ -167,11 +167,9 @@ class Profile(TestCase):
 class DiscoverEvents(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(
-            username='TEST_USER', password='@1234567'
-        )
+        self.user = User.objects.create_user(username="TEST_USER", password="@1234567")
 
     def test_discover_page(self):
         self.client.force_login(self.user)
-        response = self.client.get(reverse('application:events'))
+        response = self.client.get(reverse("application:events"))
         self.assertEqual(response.status_code, 200)
