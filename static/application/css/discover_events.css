@@ -100,7 +100,7 @@ a {
     align-items: center;
     border: solid orange;
     width: 80%; */
-    margin: 0px;
+    margin: 20px;
     padding-top: 20px;
     padding-bottom: 40px; 
     /* background: transparent;
@@ -150,16 +150,20 @@ a {
 
 .event {
     position: relative;
-    left: 170px;
-    bottom: -20px;
+    /* left: 170px;
+    bottom: -20px; */
+    /* transform: translate(-50%, -50%); */
+    bottom: -25px; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 1100px;
     height: 100px;
     border: 2px solid lightgrey;
     border-top: none;
     border-left: none;
     border-right: none;
-    padding: 15px;
-    margin: 0px; 
+    padding: 15px; 
     background-color: white;
     display:none;
 } 
@@ -254,7 +258,7 @@ display: inline-block;
     width: 10%;
     height: 40px;
     left: 635px;
-    bottom: -32px;
+    bottom: -10px;
     padding: 0 20px;
     border-radius: 25px;
     background-color: purple;
@@ -263,6 +267,9 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 } 
 #load:hover {
     background-color: white;
