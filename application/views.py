@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 
+# import os
+# from datetime import datetime
+import calendar
+
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
 import datetime
@@ -348,15 +352,15 @@ def profile_edit(request):
                 messages.error(
                     request,
                     "Password change unsuccessful. Please make sure you have entered"
-                    "your old password"
-                    "accurately and have followed the new password guidelines",
+                    " your old password"
+                    " accurately and have followed the new password guidelines.",
                 )
                 # messages.error(request, form2.errors)
 
         if in_password_change is False:
             return redirect("application:profile")
         else:
-            return redirect("/application/profile/edit")
+            return redirect("application:profile_edit")
 
 
 def getMatchesData(user):
@@ -606,23 +610,43 @@ def discover_events(request):
     for event in all_events:
         time_string = event.start_time
         if time_string == "TBA":
-            event_time = "TBA"
+            event_time_final = "TBA"
         else:
-            event_time = returnTime(time_string)
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+            mil_time = time_object.time()
+            std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            event_time_final = std_time
+
+        # getting month name and day number from datetime obj
+        month_num = event.start_date.month
+        month_name = calendar.month_abbr[month_num]
+        day_num = event.start_date.day
+
+        # getting day of the week based on datetime obj
+        dow_num = event.start_date.weekday()
+        day_name = calendar.day_abbr[dow_num]
 
         event_list.append(
             (
                 event.event_name,
-                event.start_date,
-                event_time,
+                month_name,
+                day_num,
+                day_name,
+                event_time_final,
                 event.venue_name,
                 event.city,
                 event.img_url,
             )
         )
-    return render(
-        request, "application/discover_events.html", {"event_list": event_list}
-    )
+    curr_user = request.user
+    account = Account.objects.get(user=curr_user)
+    context = {}
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"first_name": account.first_name})
+    context.update({"event_list": event_list})
+
+    return render(request, "application/discover_events.html", context)
 
 
 @login_required

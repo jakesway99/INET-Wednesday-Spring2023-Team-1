@@ -1,12 +1,75 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Discover Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'application/css/discover_events.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>  
 </head>
 <body>
-{% for item in event_list %}
-     {{ item.0 }}, {{ item.1}}, {{ item.2 }}, {{ item.3}}, {{ item.4 }}, {{ item.5}} <br>
-{% endfor %}
-</body>
-</html>
+    <div class="container">
+        <div class="nav-bar">
+            <div class="events-header">
+                <a href="{% url 'application:events' %}" class="title">Events in NYC</a>
+            </div>
+            <div class="search-container">
+                <input class="search-events" placeholder="Find experiences in NYC" type="text">
+            </div>
+            <div class="profile">
+                <div class="profile-picture">
+                    <a href="{% url 'application:profile' %}">
+                        <img src="{{ profile_picture.url }}" alt="Image" draggable="false"/>
+                    </a>
+                </div>
+                <div class="profile-name">
+                    <a href="{% url 'application:profile' %}" class="name">{{first_name}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="main-page">
+            <div class="events-box">
+                {% for item in event_list %}
+                <div class = "event">
+                    <img src={{item.7}} style="width:130px;height:70px;">
+            
+                    <p id = "date" >
+                       {{ item.1 }} {{ item.2 }} 
+                    </p> 
+                    <p id = "day_time" >
+                        {{ item.3 }} &#x2022; {{ item.4 }}
+                    </p> 
+                    <p>
+                        &emsp; &emsp;
+                    </p>
+                    <p id = "event_name" >
+                        <span><b>{{ item.0 }}</b></span>
+                    </p> 
+                    <p id = "venue_name_city" >
+                        {{ item.5 }} 
+                    </p> 
+                    <button id="interested" class="button">&#9733; Interested</button>
+                    <button id="going" class="button">&#10003; Going</button>
+                    <br>
+                </div> 
+                {% endfor %}
+                <button id="load" class="button">Load More</button>
+            </div>
+            <script>
+                $(function(){
+                    $("div").slice(0, 15).show(); // select the first ten
+                    $("#load").click(function(e){ // click event for load more
+                    e.preventDefault();
+                    $("div:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
+                    if($("div:hidden").length == 0){ // check if any hidden divs still exist
+                    alert("No more concerts to display"); // alert if there are none left
+                }
+                });
+                });
+            </script>
+        </div>       
+    </div>
+ </body>
+ </html>
