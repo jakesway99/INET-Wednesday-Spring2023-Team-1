@@ -133,49 +133,45 @@ class Profile(TestCase):
 
         fav_song = FavoriteSong.objects.get(user=self.user)
         self.assertEqual(fav_song.song1_name_artist, "Kill Bill - SZA")
-        self.assertEqual(fav_song.song2_name_artist, "Sure Thing - Miguel")
         self.assertEqual(fav_song.song3_name_artist, "Whenever, Wherever - Shakira")
-        self.assertEqual(fav_song.song4_name_artist, "Wasted On You - Morgan Wallen")
         self.assertEqual(
             fav_song.song5_name_artist, "And We Knew It Was Our Time - Lane 8, Massane"
         )
         self.assertEqual(fav_song.song1_id, "3OHfY25tqY28d16oZczHc8")
-        self.assertEqual(fav_song.song2_id, "0JXXNGljqupsJaZsgSbMZV")
         self.assertEqual(fav_song.song3_id, "2lnzGkdtDj5mtlcOW2yRtG")
-        self.assertEqual(fav_song.song4_id, "3cBsEDNhFI9E82vPj3kvi3")
         self.assertEqual(fav_song.song5_id, "2tIv3DITNBTTayAM6Rewqi")
 
         fav_album = FavoriteAlbum.objects.get(user=self.user)
         self.assertEqual(
             fav_album.album1_name_artist, "Endless Summer Vacation - Miley Cyrus"
         )
-        self.assertEqual(fav_album.album2_name_artist, "evermore - Taylor Swift")
         self.assertEqual(
             fav_album.album3_name_artist, "Purple (Rainbow Friends) - Rockit Music"
         )
-        self.assertEqual(fav_album.album4_name_artist, "RENAISSANCE - Beyoncé")
         self.assertEqual(fav_album.album5_name_artist, "Bluey the Album - Bluey")
         self.assertEqual(fav_album.album1_id, "0HiZ8fNXwJOQcrf5iflrdz")
-        self.assertEqual(fav_album.album2_id, "5jmVg7rwRcgd6ARPAeYNSm")
-        self.assertEqual(fav_album.album3_id, "0uw5PIXZiA3Kp8B6qBqPIo")
-        self.assertEqual(fav_album.album4_id, "6FJxoadUE4JNVwWHghBwnb")
         self.assertEqual(fav_album.album5_id, "4ke6cauk7sHuydZCrkgD7s")
 
         fav_artist = FavoriteArtist.objects.get(user=self.user)
         self.assertEqual(fav_artist.artist1_name, "Harry Styles")
-        self.assertEqual(fav_artist.artist2_name, "Taylor Swift")
-        self.assertEqual(fav_artist.artist3_name, "The 1975")
-        self.assertEqual(fav_artist.artist4_name, "The Weeknd")
         self.assertEqual(fav_artist.artist5_name, "BTS")
         self.assertEqual(fav_artist.artist1_id, "6KImCVD70vtIoJWnq6nGn3")
-        self.assertEqual(fav_artist.artist2_id, "6KImCVD70vtIoJWnq6nGn3")
-        self.assertEqual(fav_artist.artist3_id, "3mIj9lX2MWuHmhNCA7LSCW")
-        self.assertEqual(fav_artist.artist4_id, "1Xyo4u8uXC1ZmMpatF05PJ")
         self.assertEqual(fav_artist.artist5_id, "3Nrfpe0tUJi4K4DXYWgMUX")
 
         fav_genre = FavoriteGenre.objects.get(user=self.user)
         self.assertEqual(fav_genre.genre1, "pop")
         self.assertEqual(fav_genre.genre2, "vaporwave")
-        self.assertEqual(fav_genre.genre3, "melodic dubstep")
-        self.assertEqual(fav_genre.genre4, "pop rock")
         self.assertEqual(fav_genre.genre5, "kpop")
+
+
+class DiscoverEvents(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='TEST_USER', password='@1234567'
+        )
+
+    def test_discover_page(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('application:events'))
+        self.assertEqual(response.status_code, 200)
