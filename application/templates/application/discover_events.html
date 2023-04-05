@@ -31,46 +31,44 @@
         </div>
         <div class="main-page">
             <div class="events-box">
-                <div class="events-list">
-                    <!-- {% for item in event_list %}
-                        {{ item.0 }}, {{ item.1}}, {{ item.2 }}, {{ item.3}}, {{ item.4 }}, {{ item.5}} <br>
-                    {% endfor %} -->
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                        <p>Event venue 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <li class="events-list-item">
-                        <p>Event title 1</p>
-                    </li>
-                    <button class="load-button" id="loadMoreBtn" onclick="loadMoreEvents()">Load More</button>
-                </div>
-                
-                <script>
-                    function loadMoreEvents() {
-                    }
-                </script>
+                {% for item in event_list %}
+                <div class = "event">
+                    <img src={{item.7}} style="width:130px;height:70px;">
+            
+                    <p id = "date" >
+                       {{ item.1 }} {{ item.2 }} 
+                    </p> 
+                    <p id = "day_time" >
+                        {{ item.3 }} &#x2022; {{ item.4 }}
+                    </p> 
+                    <p>
+                        &emsp; &emsp;
+                    </p>
+                    <p id = "event_name" >
+                        <span><b>{{ item.0 }}</b></span>
+                    </p> 
+                    <p id = "venue_name_city" >
+                        {{ item.5 }} 
+                    </p> 
+                    <button id="interested" class="button">&#9733; Interested</button>
+                    <button id="going" class="button">&#10003; Going</button>
+                    <br>
+                </div> 
+                {% endfor %}
+                <button id="load" class="button">Load More</button>
             </div>
+            <script>
+                $(function(){
+                    $("div").slice(0, 15).show(); // select the first ten
+                    $("#load").click(function(e){ // click event for load more
+                    e.preventDefault();
+                    $("div:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
+                    if($("div:hidden").length == 0){ // check if any hidden divs still exist
+                    alert("No more concerts to display"); // alert if there are none left
+                }
+                });
+                });
+            </script>
         </div>       
     </div>
  </body>

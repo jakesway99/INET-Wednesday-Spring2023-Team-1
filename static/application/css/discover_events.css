@@ -95,13 +95,20 @@ a {
 }
 
 .events-box {
-    display: flex;
+    /* position: absolute;
     justify-content: center;
     align-items: center;
+    border: solid orange;
+    width: 80%; */
+    margin: 0px;
+    padding-top: 20px;
+    padding-bottom: 40px; 
+    /* background: transparent;
+    transform: translateX(100px); */
 }
 
 .events-list {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -109,10 +116,19 @@ a {
     border: #496067 solid;
     margin: 10px;
     padding: 10px;
-    background: transparent;
+    background: transparent; */
+    position: relative;
+    width: 1200px;
+    border: 2px solid purple;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 15px;
+    margin: 20px; 
+
 }
 
-.events-list-item {
+/* .events-list-item {
     display: flex;
     flex-direction: row;
     width: 98%;
@@ -120,9 +136,9 @@ a {
     justify-content: center;
     border: 1px solid #ccc;
     padding: 10px;
-}
+} */
 
-.load-button {
+/* .load-button {
     display: flex;
     background: rgb(94, 60, 100); 
     justify-content: center;
@@ -130,4 +146,126 @@ a {
     padding: 10px;
     border-radius: 50px;
     margin-top: 10px;
+} */
+
+.event {
+    position: relative;
+    left: 170px;
+    bottom: -20px;
+    width: 1100px;
+    height: 100px;
+    border: 2px solid lightgrey;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 15px;
+    margin: 0px; 
+    background-color: white;
+    display:none;
+} 
+p {
+display: inline-block;
+}    
+#date {
+    position: absolute;
+    bottom: 25px; 
+    left: 170px;
+    font-size: 25px;
+    color: purple;
+}
+
+#day_time {
+    position: absolute;
+    bottom: 0px; 
+    left: 170px;
+    font-size: 20px;
+    color: grey;
+}
+#event_name {
+    position: absolute;
+    bottom: 28px; 
+    left: 325px;
+    font-size: 19px;
+}
+#event_name span {
+    display:block;
+    width:600px;
+    word-break:normal;
+    padding-top: 2px;
+}
+#venue_name_city {
+    position: absolute;
+    bottom: 0px; 
+    left: 325px;
+    font-size: 20px;
+    color: grey;
+}
+
+.event img {
+    position: absolute;
+    border: 5px solid lightgray;
+    bottom: 10px;
+
+}    
+#interested {
+    position: absolute;
+    font-size: 14px;
+    left: 950px;
+    bottom: 50px;
+    padding: 0 10px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: purple;
+    color: white;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+}
+#going {
+    position: absolute;
+    font-size: 14px;
+    left: 950px;
+    bottom: 20px;
+    padding: 0 10px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: purple;
+    color: white;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+}
+#interested:hover {
+        background-color: white;
+        border-style: solid;
+        color: purple;
+    }
+#going:hover {
+        background-color: white;
+        border-style: solid;
+        color: purple;
+}
+#load {
+    position: relative;
+    width: 10%;
+    height: 40px;
+    left: 635px;
+    bottom: -32px;
+    padding: 0 20px;
+    border-radius: 25px;
+    background-color: purple;
+    color: white;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+} 
+#load:hover {
+    background-color: white;
+    border-style: solid;
+    color: purple;
 }
