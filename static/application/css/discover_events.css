@@ -1,0 +1,133 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100vh;
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    background: linear-gradient(to bottom, #496067 0%, #e2b7cd 100%);
+}
+
+a {
+    text-decoration: none;
+}
+
+.main-page {
+    overflow: auto;
+    width: 100%;
+    padding: 0;
+}
+
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    z-index: 3;
+    height: 60px;
+    align-items: center;
+    justify-content: space-around;
+    background: #e2b7cd 60%;
+}
+
+.events-header {
+    display: flex;
+    padding: 10px;
+    width: 30%;
+    justify-content: center;  
+}
+
+.events-header .title {
+    font-size: 25px;
+    font-weight: 600; 
+    font-family: Averta;
+    color: rgb(94, 60, 100); 
+}
+
+.search-container {
+    width: 40%;
+}
+
+.search-events {
+    width: 60%;
+    padding-left: 10px;
+    margin-left: 10px;
+}
+
+.profile {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: inherit;
+}
+
+.profile-picture {
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-picture img {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #4a2555;
+    border-radius: 50%;
+}
+
+.profile-name {
+    font-size: 20px;
+    margin: 0;
+    padding: 10px;
+}
+
+.profile-name .name {
+    font-family: Averta;
+    color: rgb(94, 60, 100);
+    font-weight: 400; 
+}
+
+.events-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    border: #496067 solid;
+    margin: 10px;
+    padding: 10px;
+    background: transparent;
+}
+
+.events-list-item {
+    display: flex;
+    flex-direction: row;
+    width: 98%;
+    background: white;
+    justify-content: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.load-button {
+    display: flex;
+    background: rgb(94, 60, 100); 
+    justify-content: center;
+    border: 2px solid #ccc;
+    padding: 10px;
+    border-radius: 50px;
+    margin-top: 10px;
+}

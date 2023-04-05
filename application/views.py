@@ -373,6 +373,7 @@ def getMatchesData(user):
                     "first_name": matched_user_account.first_name,
                     "last_name": matched_user_account.last_name,
                     "profile_picture": matched_user_account.profile_picture.url,
+                    "pk": match,
                 }
             )
     except Exception:
@@ -381,6 +382,7 @@ def getMatchesData(user):
                 "first_name": "No Matches Yet",
                 "last_name": "",
                 "profile_picture": "https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png",
+                "pk": user.pk,
             }
         ]
     return matches_data
@@ -618,6 +620,66 @@ def discover_events(request):
                 event.img_url,
             )
         )
-    return render(
-        request, "application/discover_events.html", {"event_list": event_list}
+    curr_user = request.user
+    account = Account.objects.get(user=curr_user)
+    context = {}
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"first_name": account.first_name})
+    context.update({"event_list": event_list})
+
+    return render(request, "application/discover_events.html", context)
+
+
+@login_required
+def match_profile(request, match_pk):
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    curr_user = request.user
+    curr_user_matches = Likes.objects.get(user=curr_user).matches
+    if match_pk not in curr_user_matches:
+        return redirect("application:discover")
+    matches_data = getMatchesData(curr_user)
+    user_data = Account.objects.get(user=curr_user).__dict__
+    user_data.pop("_state")
+    user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
+    matched_user = User.objects.get(pk=match_pk)
+    matched_user_data = Account.objects.get(user=matched_user).__dict__
+    matched_user_data.pop("_state")
+    matched_user_data["age"] = str(
+        datetime.date.today().year - int(matched_user_data["birth_year"])
     )
+
+    (
+        initial_songs,
+        initial_artists,
+        initial_albums,
+        initial_genres,
+        initial_prompts,
+        artist_art,
+        album_art,
+    ) = get_favorite_data(matched_user, spotify, True)
+
+    account = Account.objects.get(user=curr_user)
+    matched_account = Account.objects.get(user=matched_user)
+    context = {}
+    context.update(initial_songs)
+    context.update(initial_artists)
+    context.update(initial_albums)
+    context.update(initial_genres)
+    context.update(initial_prompts)
+    context.update(artist_art)
+    context.update(album_art)
+    context.update({"user": user_data})
+    context.update({"matched_user": matched_user_data})
+    context.update({"matches_data": matches_data})
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"matched_profile_picture": matched_account.profile_picture})
+    return render(request, "application/match_profile.html", context)
+
+
+@login_required
+def remove_match(request, match_pk):
+    user_likes = Likes.objects.get(user=request.user)
+    user_likes.likes.remove(int(match_pk))
+    user_likes.matches.remove(int(match_pk))
+    user_likes.save()
+    return redirect("application:discover")
