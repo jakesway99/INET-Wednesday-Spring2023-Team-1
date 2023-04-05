@@ -8,9 +8,11 @@ from .models import (
     FavoriteAlbum,
     Account,
     UserPrompts,
+    EventList
 )
 import os
 from .views import discover_events, profile_edit, profile
+import datetime
 
 # from bs4 import BeautifulSoup
 
@@ -262,13 +264,21 @@ class DiscoverEvents(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user1 = User.objects.create_user(username="TEST_USER", password="@1234567")
-        cls.Acct = Account.objects.create(
+        cls.acct = Account.objects.create(
             user=cls.user1,
             first_name="test",
             last_name="testlast",
             birth_year=1996,
             location="NYC",
             profile_picture="placeholder",
+        )
+        cls.events = EventList.objects.create(
+            event_name='testevent1',
+            start_date=datetime.date.today(),
+            start_time='19:30:00',
+            venue_name="testvenue1",
+            city='New York',
+            img_url='placeholder.jpg'
         )
 
     def test_discover_page(self):
