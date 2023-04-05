@@ -33,7 +33,9 @@
                 <div class="matches" id="matches">
                     {% for match in matches_data %}
                     <div class="match">
-                        <img src={{match.profile_picture}} alt="Match 1">
+                        <a href="{% url 'application:match_profile' match_pk=match.pk %}">
+                            <img src={{match.profile_picture}} alt="Match 1">
+                        </a>
                         <p>{{match.first_name}}</p>
                     </div>
                     {% endfor %}
@@ -300,10 +302,13 @@
                     <p style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">IT'S A
                         MATCH!</p>
                     <div class="profile-picture">
-                        <img id="matched-person-picture" src="https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png"
+                        <img id="matched-person-picture"
+                            src="https://nyu-beat-buddies-develop.s3.amazonaws.com/images/placeholder.png"
                             alt="Match 1">
                     </div>
-                    <p style="font-family: Arial; font-size: 30px; margin: 0;"><span id="matched-person-first">First</span><span> </span><span id="matched-person-last">Last</span></p>
+                    <p style="font-family: Arial; font-size: 30px; margin: 0;"><span
+                            id="matched-person-first">First</span><span> </span><span
+                            id="matched-person-last">Last</span></p>
                     <div style="display: flex;justify-content: center;flex-direction: row">
                         <button class="chat-match-button"
                             onclick="$('#my-dialog-content').dialog('close')">Chat</button>
@@ -375,7 +380,6 @@
             width: 100px;
             text-align: center;
         }
-
     </style>
     <script>
         $(document).ready(function () {
@@ -438,7 +442,7 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
                             )
                         }
                         if (response.is_match) {
@@ -516,7 +520,7 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><img src=' + match.profile_picture + ' alt="Match 1"><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
                             )
                         }
                     }
