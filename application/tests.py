@@ -8,7 +8,7 @@ from .models import (
     FavoriteAlbum,
     Account,
     UserPrompts,
-    EventList
+    EventList,
 )
 import os
 from .views import discover_events, profile_edit, profile
@@ -273,12 +273,12 @@ class DiscoverEvents(TestCase):
             profile_picture="placeholder",
         )
         cls.events = EventList.objects.create(
-            event_name='testevent1',
+            event_name="testevent1",
             start_date=datetime.date.today(),
-            start_time='19:30:00',
+            start_time="19:30:00",
             venue_name="testvenue1",
-            city='New York',
-            img_url='placeholder.jpg'
+            city="New York",
+            img_url="placeholder.jpg",
         )
 
     def test_discover_page(self):
