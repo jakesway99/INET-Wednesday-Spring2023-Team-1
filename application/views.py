@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-import os
-from datetime import datetime, date
+
+# import os
+# from datetime import datetime
 import calendar
 
 # from django.contrib.auth.forms import PasswordChangeForm
@@ -612,13 +613,13 @@ def discover_events(request):
             event_time_final = "TBA"
         else:
             # getting stripped standard time from datetime obj
-            time_object = datetime.datetime.strptime(event.start_time, '%H:%M:%S')
+            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
             event_time_final = std_time
 
         # getting month name and day number from datetime obj
-        month_num= event.start_date.month
+        month_num = event.start_date.month
         month_name = calendar.month_abbr[month_num]
         day_num = event.start_date.day
 
