@@ -478,10 +478,7 @@ def discover(request):
 @login_required
 def getNextUserPk(request):
     curr_user = request.user
-    try:
-        likes = Likes.objects.get(user=curr_user)
-    except Exception:
-        likes = Likes.objects.create(user=curr_user)
+    likes = Likes.objects.get_or_create(user=curr_user)[0]
     if likes.likes is not None or likes.dislikes is not None:
         if likes.likes is not None and likes.dislikes is not None:
             previous_likes_and_dislikes = likes.likes + likes.dislikes
