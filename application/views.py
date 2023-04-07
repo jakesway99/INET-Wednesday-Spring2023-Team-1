@@ -35,6 +35,7 @@ from .models import (
     Account,
     Likes,
     EventList,
+    SavedEvents,
 )
 
 
@@ -399,6 +400,8 @@ def profile(request):
     curr_user = request.user
     matches_data = getMatchesData(curr_user)
 
+    interested_events, going_to_events = getSavedEvents(curr_user)
+
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
     user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
@@ -431,6 +434,8 @@ def profile(request):
     context.update({"user": user_data})
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return render(request, "application/profile.html", context)
 
 
@@ -460,6 +465,7 @@ def discover(request):
         artist_art,
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
+    interested_events, going_to_events = getSavedEvents(discover_user)
 
     account = Account.objects.get(user=curr_user)
     discover_account = Account.objects.get(user=discover_user)
@@ -476,6 +482,8 @@ def discover(request):
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
     context.update({"discover_profile_picture": discover_account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return render(request, "application/discover.html", context)
 
 
@@ -563,6 +571,7 @@ def getDiscoverProfile(request):
     # Get a random user not seen before
     next_user_pk = getNextUserPk(request)
     next_user = User.objects.get(pk=next_user_pk)
+    interested_events, going_to_events = getSavedEvents(next_user)
 
     # Pass next user to front end
     CURRENT_DISCOVER = next_user.pk
@@ -600,6 +609,8 @@ def getDiscoverProfile(request):
             "pk": discover_user.pk,
         },
     }
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return JsonResponse(context)
 
 
@@ -637,14 +648,19 @@ def discover_events(request):
                 event.venue_name,
                 event.city,
                 event.img_url,
+                event.pk,
             )
         )
     curr_user = request.user
     account = Account.objects.get(user=curr_user)
+    interested_events, going_to_events = getSavedEvents(curr_user)
+
     context = {}
     context.update({"profile_picture": account.profile_picture})
     context.update({"first_name": account.first_name})
     context.update({"event_list": event_list})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
 
     return render(request, "application/discover_events.html", context)
 
@@ -679,6 +695,8 @@ def match_profile(request, match_pk):
 
     account = Account.objects.get(user=curr_user)
     matched_account = Account.objects.get(user=matched_user)
+    interested_events, going_to_events = getSavedEvents(matched_user)
+
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -692,6 +710,8 @@ def match_profile(request, match_pk):
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
     context.update({"matched_profile_picture": matched_account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return render(request, "application/match_profile.html", context)
 
 
@@ -702,3 +722,57 @@ def remove_match(request, match_pk):
     user_likes.matches.remove(int(match_pk))
     user_likes.save()
     return redirect("application:discover")
+
+
+def getSavedEvents(user):
+    try:
+        saved_events = SavedEvents.objects.get(user=user)
+    except Exception:
+        saved_events = SavedEvents.objects.create(user=user)
+
+    interestedEvents = (
+        [] if saved_events.interestedEvents is None else saved_events.interestedEvents
+    )
+    goingToEvents = (
+        [] if saved_events.goingToEvents is None else saved_events.goingToEvents
+    )
+    interested_events = getEventList(interestedEvents)
+    going_to_events = getEventList(goingToEvents)
+
+    return interested_events, going_to_events
+
+
+def getEventList(user_events):
+    saved_events = []
+    for event_id in user_events:
+        event = EventList.objects.get(pk=event_id)
+        time_string = event.start_time
+        if time_string == "TBA":
+            event_time_final = "TBA"
+        else:
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+            mil_time = time_object.time()
+            std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            event_time_final = std_time
+        saved_events.append(
+            (
+                event.event_name,
+                calendar.month_abbr[event.start_date.month],
+                event.start_date.day,
+                calendar.day_abbr[event.start_date.weekday()],
+                event_time_final,
+                event.venue_name,
+                event.city,
+                event.img_url,
+                event.pk,
+            )
+        )
+    return saved_events
+
+    @login_required
+    def save_event(request, event_id):
+        saved_events = SavedEvents.objects.get(user=request.user).interestedEvents
+        saved_events.interestedEvents.add(event_id)
+        saved_events.save()
+        return redirect("application:discover_events")

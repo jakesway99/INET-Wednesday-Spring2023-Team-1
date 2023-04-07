@@ -286,6 +286,56 @@
                             </div>
                         </div>
                     </div>
+                    <div class="savedEvents">
+                        <div class="interested-events" id="interested-events">
+                            <h3> Interested Events </h3>
+                            {% for item in interested_events %}
+                                <div class = "interested-event">
+                                    <img src={{item.7}}>
+                                    <div class="date-time">
+                                        <span id = "date" >
+                                            {{ item.1 }} {{ item.2 }}
+                                        </span><br/>
+                                        <span id = "day_time" >
+                                            {{ item.3 }} &#x2022; {{ item.4 }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span id = "event_name" >
+                                            {{ item.0 }}
+                                        </span><br/>
+                                        <span id = "venue_name_city" >
+                                            {{ item.5 }} 
+                                        </span>
+                                    </div>
+                                </div> 
+                            {% endfor %}
+                        </div>
+                        <div class="going-to-events" id="going-to-events">
+                            <h3> Going to Events </h3>
+                            {% for item in going_to_events %}
+                                <div class = "going-to-event">
+                                    <img src={{item.7}}>
+                                    <div class="date-time">
+                                        <span id = "date" >
+                                            {{ item.1 }} {{ item.2 }}
+                                        </span><br/> 
+                                        <span id = "day_time" >
+                                            {{ item.3 }} &#x2022; {{ item.4 }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span id = "event_name" >
+                                            {{ item.0 }}
+                                        </span><br/>
+                                        <span id = "venue_name_city" >
+                                            {{ item.5 }} 
+                                        </span> 
+                                    </div> 
+                                </div> 
+                            {% endfor %}
+                        </div>
+                    </div>
                     <div class="footer footer-swipe">
                         <div class="swipe-button" role="button" id="dislike-button">
                             <img class="swipe-icon" src="https://www.iconsdb.com/icons/preview/purple/cancel-xxl.png" />
@@ -435,7 +485,25 @@
                         $('#discover_artist2').html(response.discover_favorite_artists.artist2_name);
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
-                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+                        $('#discover_artist5').html(response.discover_favorite_artists.artist5_name); 
+                        $('.interested-events').empty();
+                        $('.interested-events').html('<h3> Interested Events </h3>')
+                        for (let item of response.interested_events) {
+                            $('.interested-events').append(
+                                '<div class="interested-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }
+                        $('.going-to-events').empty();
+                        $('.going-to-events').html('<h3> Going to Events </h3>')
+                        for (let item of response.going_to_events) {
+                            $('.going-to-events').append(
+                                '<div class="going-to-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }   
                         $('.match').remove();
                         $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
                         $('#matched-person-first').html(response.previous_user.first_name);
@@ -514,6 +582,24 @@
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
+                        $('.interested-events').empty();
+                        $('.interested-events').html('<h3> Interested Events </h3>')
+                        for (let item of response.interested_events) {
+                            $('.interested-events').append(
+                                '<div class="interested-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }
+                        $('.going-to-events').empty();
+                        $('.going-to-events').html('<h3> Going to Events </h3>')
+                        for (let item of response.going_to_events) {
+                            $('.going-to-events').append(
+                                '<div class="going-to-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }             
                         $('.match').remove();
                         $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
                         $('#matched-person-first').html(response.previous_user.first_name);

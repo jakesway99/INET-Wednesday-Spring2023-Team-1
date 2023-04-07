@@ -18,6 +18,12 @@ class Account(models.Model):
     )
 
 
+class SavedEvents(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    interestedEvents = ArrayField(models.IntegerField(null=True), null=True)
+    goingToEvents = ArrayField(models.IntegerField(null=True), null=True)
+
+
 class FavoriteSong(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     song1_id = models.CharField(max_length=50)
