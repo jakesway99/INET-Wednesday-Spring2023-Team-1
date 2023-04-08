@@ -627,6 +627,7 @@ def discover_events(request):
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
 
         # getting month name and day number from datetime obj
@@ -754,6 +755,7 @@ def getEventList(user_events):
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
         saved_events.append(
             (
