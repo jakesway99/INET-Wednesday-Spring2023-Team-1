@@ -490,10 +490,7 @@ def discover(request):
 @login_required
 def getNextUserPk(request):
     curr_user = request.user
-    try:
-        likes = Likes.objects.get(user=curr_user)
-    except Exception:
-        likes = Likes.objects.create(user=curr_user)
+    likes = Likes.objects.get_or_create(user=curr_user)[0]
     if likes.likes is not None or likes.dislikes is not None:
         if likes.likes is not None and likes.dislikes is not None:
             previous_likes_and_dislikes = likes.likes + likes.dislikes
@@ -722,6 +719,10 @@ def remove_match(request, match_pk):
     user_likes.likes.remove(int(match_pk))
     user_likes.matches.remove(int(match_pk))
     user_likes.save()
+    matched_user_likes = Likes.objects.get(user=match_pk)
+    matched_user_likes.likes.remove(int(request.user.pk))
+    matched_user_likes.matches.remove(int(request.user.pk))
+    matched_user_likes.save()
     return redirect("application:discover")
 
 
