@@ -9,9 +9,10 @@ from .models import (
     Account,
     UserPrompts,
     EventList,
+    Likes,
 )
 import os
-from .views import discover_events, profile_edit, profile, discover
+from .views import discover_events, profile_edit, profile, discover, match_profile
 import datetime
 
 # from bs4 import BeautifulSoup
@@ -260,6 +261,8 @@ class DiscoverPeople(TestCase):
     def setUp(self):
         self.client = Client()
         self.request_factory = RequestFactory()
+        global CURRENT_DISCOVER
+        CURRENT_DISCOVER = -1
 
     @classmethod
     def setUpTestData(cls):
@@ -484,12 +487,28 @@ class DiscoverPeople(TestCase):
             response4="Glimpse of Us - Joji",
             response5="Romantic Homicide - d4vd",
         )
+        cls.likes1 = Likes.objects.create(
+            user=cls.user1,
+            likes=[2],
+            dislikes=[3],
+            matches=[2],
+        )
+        cls.likes2 = Likes.objects.create(
+            user=cls.user2, likes=[1], dislikes=[3], matches=[2]
+        )
 
     def test_Discover_people_page(self):
         self.client.force_login(self.user1)
         request = self.request_factory.get(reverse("application:events"))
         request.user = self.user1
         response = discover(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_match_profile(self):
+        self.client.force_login(self.user1)
+        request = self.request_factory.get(reverse("application:events"))
+        request.user = self.user1
+        response = match_profile(request, self.user2.pk)
         self.assertEqual(response.status_code, 200)
 
 

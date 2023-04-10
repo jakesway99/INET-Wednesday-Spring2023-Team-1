@@ -6,6 +6,13 @@
         <title>Profile Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.css' %}">
+        <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
+        
         <style>
             :root {
                 --badge1: "M125 0L106.292 20.4271L81.5938 7.54167L71.0938 33.0417L43.4167 29.25L42.4167 56.75L15.0938 62.5L23.6667 88.6771L0 103.292L17.1771 125.01L0 146.708L23.6667 161.323L15.0938 187.5L42.4167 193.26L43.4167 220.75L71.0938 216.969L81.5938 242.469L106.292 229.583L125 250L143.719 229.583L168.406 242.469L178.927 216.969L206.594 220.75L207.594 193.26L234.917 187.5L226.333 161.323L250 146.708L232.823 125.01L250 103.292L226.333 88.6771L234.917 62.5L207.594 56.75L206.594 29.25L178.927 33.0417L168.406 7.54167L143.719 20.4271L125 0Z";
@@ -244,6 +251,18 @@
 
             .discover-events-button:hover {
                 background-color: #6f42c1;
+            }
+
+
+            .ui-autocomplete select {
+                background: none repeat scroll 0 0 #FFFFFF;
+                border: 1px solid #E5E5E5;
+                border-radius: 5px 5px 5px 5px;
+                box-shadow: 0 0 10px #E8E8E8 inset;
+                height: 40px;
+                margin: 0 0 0 25px;
+                padding: 10px;
+                width: 110px;
             }
 
             .right-section {
@@ -575,8 +594,37 @@
                 width: 10px;
                 height: 10px;
             }
+
+
         </style>
         <link rel="stylesheet" type="text/css" href="{% static 'application/css/profiles.css' %}" />
+
+        <script>
+          $( function() {
+
+
+            var raw_matches = [
+            {% for match in matches_data %}
+                "{{match.first_name}} {{match.last_name}}{{match.pk}}",
+            {% endfor %}
+            ];
+
+            var matches = [];
+            for (match in raw_matches) {
+                matches.push({label:raw_matches[match].slice(0,-1), value: raw_matches[match].slice(-1)});
+            };
+            $( "#matchsearch" ).autocomplete({
+                source: matches,
+                select: function(event, ui) {
+                    event.preventDefault()
+                    $("#matchsearch").val(ui.item.label);
+                    var pk = ui.item.value;
+                    var url_mask = "{% url 'application:match_profile' 99 %}".replace(/99/, pk.toString())
+                    location.href = url_mask
+                }
+            });
+          });
+        </script>
     </head>
 
     <body>
@@ -612,7 +660,7 @@
                 </div>
                 <h3>Search Matches</h3>
                 <div class="search-container">
-                    <input type="text" placeholder="Search for matches...">
+                    <input type="text" placeholder="Search for matches..." id="matchsearch">
                 </div>
                 <h3>Messages</h3>
                 <div class="messages-section">
