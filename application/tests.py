@@ -499,14 +499,14 @@ class DiscoverPeople(TestCase):
 
     def test_Discover_people_page(self):
         self.client.force_login(self.user1)
-        request = self.request_factory.get(reverse("application:events"))
+        request = self.request_factory.get(reverse("application:discover"))
         request.user = self.user1
         response = discover(request)
         self.assertEqual(response.status_code, 200)
 
     def test_match_profile(self):
         self.client.force_login(self.user1)
-        request = self.request_factory.get(reverse("application:events"))
+        request = self.request_factory.get(reverse("application:discover"))
         request.user = self.user1
         response = match_profile(request, self.user2.pk)
         self.assertEqual(response.status_code, 200)
