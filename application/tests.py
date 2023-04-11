@@ -506,11 +506,7 @@ class DiscoverPeople(TestCase):
 
     def test_match_profile(self):
         self.client.force_login(self.user1)
-        request = self.request_factory.get(
-            reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
-        )
-        request.user = self.user1
-        response = match_profile(request, self.user2.pk)
+        response = self.client.get(reverse("application:match_profile", kwargs={'match_pk':self.user2.pk}))
         self.assertEqual(response.status_code, 200)
 
 
