@@ -60,14 +60,19 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         today = datetime.date.today()
         tm_key = os.environ.get("TICKETMASTER_CLIENT_KEY1")
-        event_list = getTicketmaster(today, today + datetime.timedelta(days=30), tm_key)
+        date_set = set()
+        database_events = EventList.objects.all()
+        for event in database_events:
+            date_set.add(event.start_date)
+        event_list = getTicketmaster(today, today + datetime.timedelta(days=60), tm_key)
         for event in event_list:
-            event_inst = EventList(
-                event_name=event[0],
-                start_date=event[1],
-                start_time=event[2],
-                venue_name=event[3],
-                city=event[4],
-                img_url=event[5],
-            )
-            event_inst.save()
+            if event[1] not in date_set:
+                event_inst = EventList(
+                    event_name=event[0],
+                    start_date=event[1],
+                    start_time=event[2],
+                    venue_name=event[3],
+                    city=event[4],
+                    img_url=event[5],
+                )
+                event_inst.save()
