@@ -21,7 +21,7 @@ script:
   # Run Flake8 linter
   - flake8 .
   # Run Django tests
-  - coverage run manage.py test
+  - coverage run manage.py test --noinput
   
 deploy:
   provider: elasticbeanstalk
