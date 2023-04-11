@@ -50,8 +50,19 @@
                     <p id = "venue_name_city" >
                         {{ item.5 }} 
                     </p> 
-                    <button id="interested" class="button">&#9733; Interested</button>
-                    <button id="going" class="button">&#10003; Going</button>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- {% for item2 in interested_events %}
+                            {% if item.8 == item2.8 %}
+                            <button name="ainterested" id="ainterested" class="button" value="ainterested">&#9733; Interested</button>
+                            {% else %}
+                            <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                            {% endif %}
+                        {% endfor %} -->
+                        <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
+                        <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                        <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                    </form>
                     <br>
                 </div> 
                 {% endfor %}
@@ -68,6 +79,33 @@
                 }
                 });
                 });
+
+                // $(document).ready(function () {
+                //     $("#interestedb").click(function () {
+                //         // console.log("in ajax function")
+                //         // const elem = document.getElementById("event_id").innerHTML;
+                //         // console.log(elem);
+                //         $.ajax({
+                //             url: 'discover_events',
+                //             data: {
+                //                 'action': 'is_interested'
+                //             },
+                //             success: function (response) {}
+                //         });
+                //     });
+                // });
+
+                // $(document).ready(function () {
+                //     $("#goingb").click(function () {
+                //         $.ajax({
+                //             url: 'discover_events',
+                //             data: {
+                //                 'action': 'is_going'
+                //             },
+                //             success: function (response) {}
+                //         });
+                //     });
+                // });
             </script>
         </div>       
     </div>

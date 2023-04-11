@@ -558,6 +558,50 @@
                 width: 100%;
             }
 
+            .interested-event {
+                position: relative;
+                display: inline-block;
+            }  
+            .delete_i {
+                color: transparent;
+                background-color: transparent;
+                border-color: transparent;
+                cursor: pointer;
+                width:30px;
+                
+            }
+            .delete_i:hover {
+                color: purple;
+            }
+
+            span.z {
+                position:absolute;
+                top:-03px;
+                right:-3px;
+            } 
+
+            .going-to-event {
+                position: relative;
+                display: inline-block;
+            }
+
+            .delete_g { 
+                color: transparent;
+                background-color: transparent;
+                border-color: transparent;
+                cursor: pointer;
+                width:30px;
+            }
+            .delete_g:hover {
+                color: purple;
+            }
+
+            span.y {
+                position:absolute;
+                top:-05px;
+                right:-05px;
+            }
+
             .box {
                 padding: 6px;
                 border: 2px solid lightgray;
@@ -843,7 +887,17 @@
                                         <span id = "venue_name_city" >
                                             {{ item.5 }} 
                                         </span>
+                                        <!-- <span> -->
+                                            <!-- <button name = "delete_interested" class="delete_i"> X </button> -->
+                                        <!-- </span> -->
                                     </div>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
+                                        <span class="z"><button name = "delete_interested" class="delete_i" value="interested"> X </button></span>
+                                    </form>
+                                   
+
                                 </div> 
                             {% endfor %}
                         </div>
@@ -868,6 +922,13 @@
                                             {{ item.5 }} 
                                         </span> 
                                     </div> 
+
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
+                                        <span class=y><button name = "delete_going" class="delete_g" value="going"> X </button></span>
+                                    </form>
+
                                 </div> 
                             {% endfor %}
                         </div>

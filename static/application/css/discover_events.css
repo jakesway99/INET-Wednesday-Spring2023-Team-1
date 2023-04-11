@@ -227,6 +227,24 @@ display: inline-block;
     cursor: pointer;
     text-align: center;
 }
+
+#ainterested {
+    position: absolute;
+    font-size: 14px;
+    left: 980px;
+    bottom: 50px;
+    padding: 0 10px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: red;
+    color: paleturquoise;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+}
+
 #going {
     position: absolute;
     font-size: 14px;
@@ -243,6 +261,12 @@ display: inline-block;
     cursor: pointer;
     text-align: center;
 }
+
+#ainterested:hover {
+    background-color: white;
+    border-style: solid;
+    color: purple;
+}
 #interested:hover {
         background-color: white;
         border-style: solid;
@@ -253,6 +277,7 @@ display: inline-block;
         border-style: solid;
         color: purple;
 }
+        
 #load {
     position: relative;
     width: 10%;

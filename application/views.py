@@ -436,6 +436,55 @@ def profile(request):
     context.update({"profile_picture": account.profile_picture})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+
+
+    if request.method == "POST":
+        print("IN POST")
+        curr_event = request.POST.get('item')
+        button1 = request.POST.get('delete_interested')
+        button2 = request.POST.get('delete_going')
+        print("curr user: ", request.user)
+        print("button1: ", button1)
+        print("button2: ", button2)
+        print("curr event: ", curr_event)
+
+        try:
+            saved_events_object = SavedEvents.objects.get(user=request.user)
+        except Exception:
+            saved_events_object = SavedEvents.objects.create(user=request.user)
+
+        saved_events_object.interestedEvents = [] if saved_events_object.interestedEvents is None else saved_events_object.interestedEvents
+        saved_events_object.goingToEvents = [] if saved_events_object.goingToEvents is None else saved_events_object.goingToEvents
+
+        # for x in saved_events_object.interestedEvents:
+        #     print("interested events: ", x)
+        # for x in saved_events_object.goingToEvents:
+        #     print("going events: ", x)
+
+        if button1 == 'interested':
+            if int(curr_event) in saved_events_object.interestedEvents:
+                print("in interested")
+                # remove the event from the table
+                saved_events_object.interestedEvents.remove(int(curr_event))
+                saved_events_object.save()
+                print("removed")
+            else:
+                print("already removed")
+            return redirect("application:profile")
+
+
+        if button2 == 'going':
+            if int(curr_event) in saved_events_object.goingToEvents:
+                print("in going")
+                # remove the event from the table
+                saved_events_object.goingToEvents.remove(int(curr_event))
+                saved_events_object.save()
+                print("removed")
+            else:
+                print("already removed")
+            return redirect("application:profile")
+            
+
     return render(request, "application/profile.html", context)
 
 
@@ -660,7 +709,76 @@ def discover_events(request):
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
 
+    if request.method == "POST":
+        curr_event = request.POST.get('item')
+        button1 = request.POST.get('interested')
+        button2 = request.POST.get('going')
+        print("curr user: ", request.user)
+        print("button1: ", button1)
+        print("button2: ", button2)
+        print("curr event: ", curr_event)
+
+        try:
+            saved_events_object = SavedEvents.objects.get(user=request.user)
+        except Exception:
+            saved_events_object = SavedEvents.objects.create(user=request.user)
+
+        saved_events_object.interestedEvents = [] if saved_events_object.interestedEvents is None else saved_events_object.interestedEvents
+        saved_events_object.goingToEvents = [] if saved_events_object.goingToEvents is None else saved_events_object.goingToEvents
+
+
+        for x in saved_events_object.interestedEvents:
+            print("interested events: ", x)
+        for x in saved_events_object.goingToEvents:
+            print("going events: ", x)
+
+        if button1 == 'interested':
+            if int(curr_event) not in saved_events_object.interestedEvents:
+                print("event not already in list")
+                saved_events_object.interestedEvents.append(curr_event)
+                saved_events_object.save()
+                print("saved event")
+            else:
+                print("already added event to list")
+
+        if button2 == 'going':
+            if int(curr_event) not in saved_events_object.goingToEvents:
+                print("event not already in list")
+                saved_events_object.goingToEvents.append(curr_event)
+                saved_events_object.save()
+                print("saved event")
+            else:
+                print("already added event to list")
+
+    # when the interested button is clicked
+    # if request.method == 'POST':
+    #     event = request.POST.get('item')
+    #     task = request.POST.get('interested')
+    #     # data=request.POST.get('data')
+    #     curr_event = request.POST.get('item')
+    #     # print("data: ", data)
+    #     print("tasK: ", task)
+    #     print("event", event)
+
+        # new = Todo(task=task)
+        # new.save()
+
+    # if request.GET.get("action") == "is_interested":
+    #     print("IN IS INTERESTED ACTION")
+
+    # elif request.GET.get("action") == "is_going":
+    #     print("IN IS GOING ACTION")
+         # print("item: ", request.GET.get('item'))
+        # print("current event: ", request.Get.get('item'))
+        # curr_event = request.POST.get('item')
+        # if curr_event not in saved_events.interestedEvents:
+        #     saved_events.interestedEvents.append(curr_event)
+        #     saved_events.save()
+
     return render(request, "application/discover_events.html", context)
+
+
+    
 
 
 @login_required
@@ -738,7 +856,7 @@ def getSavedEvents(user):
     goingToEvents = (
         [] if saved_events.goingToEvents is None else saved_events.goingToEvents
     )
-    interested_events = getEventList(interestedEvents)
+    interested_events = getEventList(interestedEvents,)
     going_to_events = getEventList(goingToEvents)
 
     return interested_events, going_to_events
@@ -773,9 +891,32 @@ def getEventList(user_events):
         )
     return saved_events
 
-    @login_required
-    def save_event(request, event_id):
-        saved_events = SavedEvents.objects.get(user=request.user).interestedEvents
-        saved_events.interestedEvents.add(event_id)
-        saved_events.save()
-        return redirect("application:discover_events")
+# @login_required
+# def save_event(request, event_id):
+#     print("IN SAVE_EVENT")
+#     curr_user = request.user
+#     curr_event = event_id
+#     print("curr user: ", curr_user)
+#     print("curr event: ", curr_event)
+
+#     # click on interested button, 
+#     # and curr event isn't already saved in their interested events
+#     if request.GET.get("action") == "is_interested":
+#         print("IN IS INTERESTED ACTION")
+#         if curr_event not in saved_events.interestedEvents:
+#             saved_events.interestedEvents.append(curr_event)
+#             saved_events.save()
+    
+#     # click on going button, 
+#     # and curr event isn't already saved in their going events
+#     elif request.Get.get("action") == "is_going":
+#         print("IN IS GOING ACTION")
+#         if curr_event not in saved_events.goingToEvents:
+#             saved_events.goingToEvents.append(curr_event)
+#             saved_events.save()
+
+#     # saved_events = SavedEvents.objects.get(user=request.user).interestedEvents
+#     # saved_events.interestedEvents.add(event_id)
+#     # saved_events.save()
+#     return redirect("application:discover_events")
+
