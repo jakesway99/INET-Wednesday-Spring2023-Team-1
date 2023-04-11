@@ -226,7 +226,9 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
+    z-index: -1;
 }
+
 #going {
     position: absolute;
     font-size: 14px;
@@ -242,6 +244,13 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
+    z-index: -1;
+}
+
+#ainterested:hover {
+    background-color: white;
+    border-style: solid;
+    color: purple;
 }
 #interested:hover {
         background-color: white;
@@ -253,6 +262,7 @@ display: inline-block;
         border-style: solid;
         color: purple;
 }
+        
 #load {
     position: relative;
     width: 10%;
