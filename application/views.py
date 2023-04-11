@@ -38,22 +38,6 @@ from .models import (
 )
 
 
-def returnTime(time_string):
-    if int(time_string[:2]) == 0:
-        return_hr = str(12)
-        am_pm = "AM"
-    elif int(time_string[:2]) <= 11:
-        return_hr = time_string[:2]
-        am_pm = "AM"
-    elif int(time_string[:2]) == 12:
-        return_hr = time_string[:2]
-        am_pm = "PM"
-    else:
-        return_hr = time_string[:2]
-        am_pm = "PM"
-    return return_hr + time_string[2:5] + am_pm
-
-
 def get_pic(artist_id, spotify):
     artist = spotify.artist(artist_id)
     images = artist["images"]

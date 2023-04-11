@@ -262,7 +262,7 @@ class DiscoverPeople(TestCase):
         self.client = Client()
         self.request_factory = RequestFactory()
         global CURRENT_DISCOVER
-        CURRENT_DISCOVER = -1
+        CURRENT_DISCOVER = 3
 
     @classmethod
     def setUpTestData(cls):
@@ -507,12 +507,22 @@ class DiscoverPeople(TestCase):
     def test_match_profile_incorrect(self):
         self.client.force_login(self.user1)
         response = self.client.get(
-            reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
+            reverse("application:match_profile", kwargs={"match_pk": self.user3.pk})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
-    def test_get_discover(self):
+    def test_get_discover_like(self):
         self.client.force_login(self.user1)
+        response = self.client.get(reverse("application:next"), data={"action": "like"})
+        json_context = response.json()
+        self.assertEqual(json_context["previous_user"]["pk"], 3)
+
+    def test_remove_match(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(
+            reverse("application:remove_match", kwargs={"match_pk": self.user2.pk})
+        )
+        self.assertEqual(response.status_code, 302)
 
 
 class DiscoverEvents(TestCase):
