@@ -261,8 +261,7 @@ class DiscoverPeople(TestCase):
     def setUp(self):
         self.client = Client()
         self.request_factory = RequestFactory()
-        global CURRENT_DISCOVER
-        CURRENT_DISCOVER = 3
+
 
     @classmethod
     def setUpTestData(cls):
@@ -489,13 +488,15 @@ class DiscoverPeople(TestCase):
         )
         cls.likes1 = Likes.objects.create(
             user=cls.user1,
-            likes=[2],
+            likes=[cls.user2.pk],
             dislikes=[],
-            matches=[2],
+            matches=[cls.user2.pk],
         )
         cls.likes2 = Likes.objects.create(
-            user=cls.user2, likes=[1], dislikes=[], matches=[1]
+            user=cls.user2, likes=[cls.user2.pk], dislikes=[], matches=[cls.user2.pk]
         )
+        global CURRENT_DISCOVER
+        CURRENT_DISCOVER = cls.user3.pk
 
     def test_Discover_people_page(self):
         self.client.force_login(self.user1)
@@ -504,18 +505,18 @@ class DiscoverPeople(TestCase):
         response = discover(request)
         self.assertEqual(response.status_code, 200)
 
-    def test_match_profile_incorrect(self):
+    def test_match_profile_correct(self):
         self.client.force_login(self.user1)
         response = self.client.get(
-            reverse("application:match_profile", kwargs={"match_pk": self.user3.pk})
+            reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_discover_like(self):
         self.client.force_login(self.user1)
         response = self.client.get(reverse("application:next"), data={"action": "like"})
         json_context = response.json()
-        self.assertEqual(json_context["previous_user"]["pk"], 3)
+        self.assertEqual(json_context["previous_user"]["pk"], self.user3.pk)
 
     def test_remove_match(self):
         self.client.force_login(self.user1)
