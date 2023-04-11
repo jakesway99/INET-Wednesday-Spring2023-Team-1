@@ -12,7 +12,7 @@ from .models import (
     Likes,
 )
 import os
-from .views import discover_events, profile_edit, profile, discover, match_profile
+from .views import discover_events, profile_edit, profile, discover
 import datetime
 
 # from bs4 import BeautifulSoup
@@ -506,7 +506,9 @@ class DiscoverPeople(TestCase):
 
     def test_match_profile(self):
         self.client.force_login(self.user1)
-        response = self.client.get(reverse("application:match_profile", kwargs={'match_pk':self.user2.pk}))
+        response = self.client.get(
+            reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
+        )
         self.assertEqual(response.status_code, 200)
 
 
@@ -514,11 +516,6 @@ class DiscoverEvents(TestCase):
     def setUp(self):
         self.request_factory = RequestFactory()
         self.client = Client()
-        self.client.force_login(self.user1)
-        request = self.request_factory.get(reverse("application:events"))
-        request.user = self.user1
-        response = discover_events(request)
-        self.assertEqual(response.status_code, 200)
 
     @classmethod
     def setUpTestData(cls):
