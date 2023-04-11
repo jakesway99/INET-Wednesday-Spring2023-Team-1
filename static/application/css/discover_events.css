@@ -226,23 +226,7 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
-}
-
-#ainterested {
-    position: absolute;
-    font-size: 14px;
-    left: 980px;
-    bottom: 50px;
-    padding: 0 10px;
-    width: 12%;
-    height: 25%;
-    border-radius: 25px;
-    background-color: red;
-    color: paleturquoise;
-    border-color: purple;
-    border-style: solid;
-    cursor: pointer;
-    text-align: center;
+    z-index: -1;
 }
 
 #going {
@@ -260,6 +244,7 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
+    z-index: -1;
 }
 
 #ainterested:hover {

@@ -701,6 +701,14 @@ def discover_events(request):
     curr_user = request.user
     account = Account.objects.get(user=curr_user)
     interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events_pk = []
+    going_to_events_pk = []
+
+    for item in interested_events:
+        interested_events_pk.append(item[-1])
+    for item in going_to_events:
+        going_to_events_pk.append(item[-1])
+
 
     context = {}
     context.update({"profile_picture": account.profile_picture})
@@ -708,6 +716,8 @@ def discover_events(request):
     context.update({"event_list": event_list})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"interested_events_pk": interested_events_pk})
+    context.update({"going_to_events_pk": going_to_events_pk})
 
     if request.method == "POST":
         curr_event = request.POST.get('item')
