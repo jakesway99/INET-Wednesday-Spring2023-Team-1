@@ -9,6 +9,7 @@ from .models import (
     Account,
     UserPrompts,
     EventList,
+    Likes,
 )
 import os
 from .views import discover_events, profile_edit, profile, discover
@@ -484,24 +485,50 @@ class DiscoverPeople(TestCase):
             response4="Glimpse of Us - Joji",
             response5="Romantic Homicide - d4vd",
         )
+        cls.likes1 = Likes.objects.create(
+            user=cls.user1,
+            likes=[cls.user2.pk],
+            dislikes=[],
+            matches=[cls.user2.pk],
+        )
+        cls.likes2 = Likes.objects.create(
+            user=cls.user2, likes=[cls.user1.pk], dislikes=[], matches=[cls.user1.pk]
+        )
+        global CURRENT_DISCOVER
+        CURRENT_DISCOVER = cls.user3.pk
 
     def test_Discover_people_page(self):
         self.client.force_login(self.user1)
-        request = self.request_factory.get(reverse("application:events"))
+        request = self.request_factory.get(reverse("application:discover"))
         request.user = self.user1
         response = discover(request)
         self.assertEqual(response.status_code, 200)
+
+    def test_match_profile_correct(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(
+            reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_discover_like(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse("application:next"), data={"action": "like"})
+        json_context = response.json()
+        self.assertEqual(json_context["previous_user"]["pk"], self.user3.pk)
+
+    def test_remove_match(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(
+            reverse("application:remove_match", kwargs={"match_pk": self.user2.pk})
+        )
+        self.assertEqual(response.status_code, 302)
 
 
 class DiscoverEvents(TestCase):
     def setUp(self):
         self.request_factory = RequestFactory()
         self.client = Client()
-        self.client.force_login(self.user1)
-        request = self.request_factory.get(reverse("application:events"))
-        request.user = self.user1
-        response = discover_events(request)
-        self.assertEqual(response.status_code, 200)
 
     @classmethod
     def setUpTestData(cls):
