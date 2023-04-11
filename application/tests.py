@@ -262,7 +262,6 @@ class DiscoverPeople(TestCase):
         self.client = Client()
         self.request_factory = RequestFactory()
 
-
     @classmethod
     def setUpTestData(cls):
         cls.user1 = User.objects.create_user(username="TEST_USER1", password="@1234567")
