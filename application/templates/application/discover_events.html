@@ -33,8 +33,7 @@
             <div class="events-box">
                 {% for item in event_list %}
                 <div class = "event">
-                    <!-- <img src={{item.7}} style="width:130px;height:70px;"> -->
-            
+                    <img src={{item.7}} style="width:130px;height:70px;">
                     <p id = "date" >
                        {{ item.1 }} {{ item.2 }} 
                     </p> 
@@ -52,6 +51,12 @@
                     </p> 
                     <form method="POST">
                         {% csrf_token %}
+                        {% if not interested_events_pk %}
+                            <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                        {% endif %}
+                        {% if not going_to_events_pk %}
+                            <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                        {% endif %}
                         {% for item2 in interested_events_pk %}
                             {% if item2 == item.8 %}
                                 <button name="ainterested" id="ainterested" class="button" value="ainterested">&#9733; Interested</button>
@@ -81,7 +86,7 @@
 
                         {% for item2 in going_to_events_pk %}
                             {% if item2 == item.8 %}
-                                <button name="agoing" id="agoing" class="button" value="agoing">&#9733; Going</button>
+                                <button name="agoing" id="agoing" class="button" value="agoing">&#10003; Going</button>
                                 <style>
                                     #agoing {
                                         position: absolute;
@@ -102,10 +107,9 @@
                                     }
                                 </style>
                             {% else %}
-                            <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                                <button name="going" id="going" class="button" value="going">&#10003; Going</button>
                             {% endif %}
                         {% endfor %}
-
                         <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
                     </form>
                     <br>
