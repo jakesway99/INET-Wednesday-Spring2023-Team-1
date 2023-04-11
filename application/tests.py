@@ -490,11 +490,11 @@ class DiscoverPeople(TestCase):
         cls.likes1 = Likes.objects.create(
             user=cls.user1,
             likes=[2],
-            dislikes=[3],
+            dislikes=[],
             matches=[2],
         )
         cls.likes2 = Likes.objects.create(
-            user=cls.user2, likes=[1], dislikes=[3], matches=[2]
+            user=cls.user2, likes=[1], dislikes=[], matches=[1]
         )
 
     def test_Discover_people_page(self):
@@ -504,12 +504,15 @@ class DiscoverPeople(TestCase):
         response = discover(request)
         self.assertEqual(response.status_code, 200)
 
-    def test_match_profile(self):
+    def test_match_profile_incorrect(self):
         self.client.force_login(self.user1)
         response = self.client.get(
             reverse("application:match_profile", kwargs={"match_pk": self.user2.pk})
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_get_discover(self):
+        self.client.force_login(self.user1)
 
 
 class DiscoverEvents(TestCase):
