@@ -889,32 +889,4 @@ def getEventList(user_events):
         )
     return saved_events
 
-# @login_required
-# def save_event(request, event_id):
-#     print("IN SAVE_EVENT")
-#     curr_user = request.user
-#     curr_event = event_id
-#     print("curr user: ", curr_user)
-#     print("curr event: ", curr_event)
-
-#     # click on interested button, 
-#     # and curr event isn't already saved in their interested events
-#     if request.GET.get("action") == "is_interested":
-#         print("IN IS INTERESTED ACTION")
-#         if curr_event not in saved_events.interestedEvents:
-#             saved_events.interestedEvents.append(curr_event)
-#             saved_events.save()
-    
-#     # click on going button, 
-#     # and curr event isn't already saved in their going events
-#     elif request.Get.get("action") == "is_going":
-#         print("IN IS GOING ACTION")
-#         if curr_event not in saved_events.goingToEvents:
-#             saved_events.goingToEvents.append(curr_event)
-#             saved_events.save()
-
-#     # saved_events = SavedEvents.objects.get(user=request.user).interestedEvents
-#     # saved_events.interestedEvents.add(event_id)
-#     # saved_events.save()
-#     return redirect("application:discover_events")
 
