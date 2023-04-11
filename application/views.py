@@ -742,7 +742,7 @@ def discover_events(request):
                 saved_events_object.save()
                 return redirect("application:events")
 
-    # when the interested button is clicked
+    # when the interested button is clicked - if using ajax
     # if request.method == 'POST':
     #     event = request.POST.get('item')
     #     task = request.POST.get('interested')
