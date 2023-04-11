@@ -492,7 +492,7 @@ class DiscoverPeople(TestCase):
             matches=[cls.user2.pk],
         )
         cls.likes2 = Likes.objects.create(
-            user=cls.user2, likes=[cls.user2.pk], dislikes=[], matches=[cls.user2.pk]
+            user=cls.user2, likes=[cls.user1.pk], dislikes=[], matches=[cls.user1.pk]
         )
         global CURRENT_DISCOVER
         CURRENT_DISCOVER = cls.user3.pk
