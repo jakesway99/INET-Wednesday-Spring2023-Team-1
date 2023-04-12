@@ -150,6 +150,7 @@ a {
 
 .event {
     position: relative;
+    z-index: 10000;
     /* left: 170px;
     bottom: -20px; */
     /* transform: translate(-50%, -50%); */
@@ -226,7 +227,7 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
-    z-index: -1;
+    z-index: 2;
 }
 
 #going {
@@ -244,7 +245,7 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
-    z-index: -1;
+    z-index: 2;
 }
 
 #ainterested:hover {
