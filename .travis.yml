@@ -8,8 +8,8 @@ install:
    - pip install -r requirements.txt
 
 before_script:
-  - python manage.py makemigrations
-  - python manage.py migrate
+ # - python manage.py makemigrations
+ # - python manage.py migrate
 
 after_script:
   - coveralls
@@ -21,7 +21,7 @@ script:
   # Run Flake8 linter
   - flake8 .
   # Run Django tests
-  - coverage run manage.py test
+  - coverage run manage.py test --noinput
   
 deploy:
   provider: elasticbeanstalk

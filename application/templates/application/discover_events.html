@@ -34,7 +34,6 @@
                 {% for item in event_list %}
                 <div class = "event">
                     <img src={{item.7}} style="width:130px;height:70px;">
-            
                     <p id = "date" >
                        {{ item.1 }} {{ item.2 }} 
                     </p> 
@@ -48,10 +47,30 @@
                         <span><b>{{ item.0 }}</b></span>
                     </p> 
                     <p id = "venue_name_city" >
-                        {{ item.5 }} 
+                        {{ item.5 }}
                     </p> 
-                    <button id="interested" class="button">&#9733; Interested</button>
-                    <button id="going" class="button">&#10003; Going</button>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% if not interested_events_pk %}
+                            <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                        {% endif %}
+                        {% if not going_to_events_pk %}
+                            <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                        {% endif %}
+                        {% if item.8 in interested_events_pk %}
+                            <button name="ainterested" id="ainterested" class="button" value="ainterested">&#9733; Interested</button>
+                        {% else %}
+                            <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                        {% endif %}
+
+                        {% if item.8 in going_to_events_pk %}
+                            <button name="agoing" id="agoing" class="button" value="agoing">&#10003; Going</button>
+                        {% else %}
+                            <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                        {% endif %}
+                    
+                        <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
+                    </form>
                     <br>
                 </div> 
                 {% endfor %}
@@ -68,6 +87,33 @@
                 }
                 });
                 });
+
+                // $(document).ready(function () {
+                //     $("#interestedb").click(function () {
+                //         // console.log("in ajax function")
+                //         // const elem = document.getElementById("event_id").innerHTML;
+                //         // console.log(elem);
+                //         $.ajax({
+                //             url: 'discover_events',
+                //             data: {
+                //                 'action': 'is_interested'
+                //             },
+                //             success: function (response) {}
+                //         });
+                //     });
+                // });
+
+                // $(document).ready(function () {
+                //     $("#goingb").click(function () {
+                //         $.ajax({
+                //             url: 'discover_events',
+                //             data: {
+                //                 'action': 'is_going'
+                //             },
+                //             success: function (response) {}
+                //         });
+                //     });
+                // });
             </script>
         </div>       
     </div>

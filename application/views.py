@@ -12,6 +12,7 @@ import calendar
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
 import datetime
+from pytz import timezone
 
 # spotify api package
 import spotipy
@@ -35,23 +36,8 @@ from .models import (
     Account,
     Likes,
     EventList,
+    SavedEvents,
 )
-
-
-def returnTime(time_string):
-    if int(time_string[:2]) == 0:
-        return_hr = str(12)
-        am_pm = "AM"
-    elif int(time_string[:2]) <= 11:
-        return_hr = time_string[:2]
-        am_pm = "AM"
-    elif int(time_string[:2]) == 12:
-        return_hr = time_string[:2]
-        am_pm = "PM"
-    else:
-        return_hr = time_string[:2]
-        am_pm = "PM"
-    return return_hr + time_string[2:5] + am_pm
 
 
 def get_pic(artist_id, spotify):
@@ -399,6 +385,8 @@ def profile(request):
     curr_user = request.user
     matches_data = getMatchesData(curr_user)
 
+    interested_events, going_to_events = getSavedEvents(curr_user)
+
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
     user_data["age"] = str(datetime.date.today().year - int(user_data["birth_year"]))
@@ -431,6 +419,86 @@ def profile(request):
     context.update({"user": user_data})
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
+
+    # remove old events from interested/going list
+    tz = timezone("EST")
+    curr_date_time = datetime.datetime.now(tz)
+    curr_date_pre = curr_date_time.strftime("%Y-%m-%d")
+    curr_date = datetime.datetime.strptime(str(curr_date_pre), "%Y-%m-%d").date()
+
+    interested_events, going_to_events = getSavedEvents(curr_user)
+
+    try:
+        saved_events_object = SavedEvents.objects.get(user=request.user)
+    except Exception:
+        saved_events_object = SavedEvents.objects.create(user=request.user)
+
+    saved_events_object.interestedEvents = (
+        []
+        if saved_events_object.interestedEvents is None
+        else saved_events_object.interestedEvents
+    )
+    saved_events_object.goingToEvents = (
+        []
+        if saved_events_object.goingToEvents is None
+        else saved_events_object.goingToEvents
+    )
+
+    for item in interested_events:
+        curr_event = item[-2]
+        # remove interested event if the event has already passed
+        if curr_date > item[-1]:
+            if int(curr_event) in saved_events_object.interestedEvents:
+                # remove the event from the table
+                saved_events_object.interestedEvents.remove(int(curr_event))
+                saved_events_object.save()
+
+    for item in going_to_events:
+        curr_event = item[-2]
+        # remove going to event if the event has already passed
+        if curr_date > item[-1]:
+            if int(curr_event) in saved_events_object.goingToEvents:
+                # remove the event from the table
+                saved_events_object.goingToEvents.remove(int(curr_event))
+                saved_events_object.save()
+
+    if request.method == "POST":
+        curr_event = request.POST.get("item")
+        button1 = request.POST.get("delete_interested")
+        button2 = request.POST.get("delete_going")
+
+        try:
+            saved_events_object = SavedEvents.objects.get(user=request.user)
+        except Exception:
+            saved_events_object = SavedEvents.objects.create(user=request.user)
+
+        saved_events_object.interestedEvents = (
+            []
+            if saved_events_object.interestedEvents is None
+            else saved_events_object.interestedEvents
+        )
+        saved_events_object.goingToEvents = (
+            []
+            if saved_events_object.goingToEvents is None
+            else saved_events_object.goingToEvents
+        )
+
+        if button1 == "interested":
+            if int(curr_event) in saved_events_object.interestedEvents:
+                # remove the event from the table
+                saved_events_object.interestedEvents.remove(int(curr_event))
+                saved_events_object.save()
+                return redirect("application:profile")
+
+        if button2 == "going":
+            if int(curr_event) in saved_events_object.goingToEvents:
+                # remove the event from the table
+                saved_events_object.goingToEvents.remove(int(curr_event))
+                saved_events_object.save()
+                return redirect("application:profile")
+
     return render(request, "application/profile.html", context)
 
 
@@ -460,6 +528,7 @@ def discover(request):
         artist_art,
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
+    interested_events, going_to_events = getSavedEvents(discover_user)
 
     account = Account.objects.get(user=curr_user)
     discover_account = Account.objects.get(user=discover_user)
@@ -476,16 +545,15 @@ def discover(request):
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
     context.update({"discover_profile_picture": discover_account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return render(request, "application/discover.html", context)
 
 
 @login_required
 def getNextUserPk(request):
     curr_user = request.user
-    try:
-        likes = Likes.objects.get(user=curr_user)
-    except Exception:
-        likes = Likes.objects.create(user=curr_user)
+    likes = Likes.objects.get_or_create(user=curr_user)[0]
     if likes.likes is not None or likes.dislikes is not None:
         if likes.likes is not None and likes.dislikes is not None:
             previous_likes_and_dislikes = likes.likes + likes.dislikes
@@ -563,6 +631,7 @@ def getDiscoverProfile(request):
     # Get a random user not seen before
     next_user_pk = getNextUserPk(request)
     next_user = User.objects.get(pk=next_user_pk)
+    interested_events, going_to_events = getSavedEvents(next_user)
 
     # Pass next user to front end
     CURRENT_DISCOVER = next_user.pk
@@ -600,6 +669,8 @@ def getDiscoverProfile(request):
             "pk": discover_user.pk,
         },
     }
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return JsonResponse(context)
 
 
@@ -609,6 +680,8 @@ def discover_events(request):
     all_events = EventList.objects.all()
     for event in all_events:
         time_string = event.start_time
+        if event.start_date < datetime.date.today():
+            continue
         if time_string == "TBA":
             event_time_final = "TBA"
         else:
@@ -616,7 +689,13 @@ def discover_events(request):
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
+
+        # needed to remove old events from interested/going lists
+        this_event_date = datetime.datetime.strptime(
+            str(event.start_date), "%Y-%m-%d"
+        ).date()
 
         # getting month name and day number from datetime obj
         month_num = event.start_date.month
@@ -637,14 +716,110 @@ def discover_events(request):
                 event.venue_name,
                 event.city,
                 event.img_url,
+                event.pk,
+                this_event_date,
             )
         )
     curr_user = request.user
     account = Account.objects.get(user=curr_user)
+    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events_pk = []
+    going_to_events_pk = []
+
+    for item in interested_events:
+        curr_event = item[-2]
+        interested_events_pk.append(curr_event)
+
+    for item in going_to_events:
+        curr_event = item[-2]
+        going_to_events_pk.append(curr_event)
+
     context = {}
     context.update({"profile_picture": account.profile_picture})
     context.update({"first_name": account.first_name})
     context.update({"event_list": event_list})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
+    context.update({"interested_events_pk": interested_events_pk})
+    context.update({"going_to_events_pk": going_to_events_pk})
+
+    if request.method == "POST":
+        curr_event = request.POST.get("item")
+        button1 = request.POST.get("interested")
+        button2 = request.POST.get("going")
+        button3 = request.POST.get("ainterested")
+        button4 = request.POST.get("agoing")
+
+        try:
+            saved_events_object = SavedEvents.objects.get(user=request.user)
+        except Exception:
+            saved_events_object = SavedEvents.objects.create(user=request.user)
+
+        saved_events_object.interestedEvents = (
+            []
+            if saved_events_object.interestedEvents is None
+            else saved_events_object.interestedEvents
+        )
+        saved_events_object.goingToEvents = (
+            []
+            if saved_events_object.goingToEvents is None
+            else saved_events_object.goingToEvents
+        )
+
+        # adding event to interested list
+        if button1 == "interested":
+            if int(curr_event) not in saved_events_object.interestedEvents:
+                saved_events_object.interestedEvents.append(curr_event)
+                saved_events_object.save()
+                return redirect("application:events")
+
+        # adding event to going list
+        if button2 == "going":
+            if int(curr_event) not in saved_events_object.goingToEvents:
+                saved_events_object.goingToEvents.append(curr_event)
+                saved_events_object.save()
+                return redirect("application:events")
+
+        # removing event from interested list
+        if button3 == "ainterested":
+            if int(curr_event) in saved_events_object.interestedEvents:
+                # remove the event from the table
+                saved_events_object.interestedEvents.remove(int(curr_event))
+                saved_events_object.save()
+                return redirect("application:events")
+
+        # removing event from going list
+        if button4 == "agoing":
+            if int(curr_event) in saved_events_object.goingToEvents:
+                # remove the event from the table
+                saved_events_object.goingToEvents.remove(int(curr_event))
+                saved_events_object.save()
+                return redirect("application:events")
+
+    # when the interested button is clicked - if using ajax
+    # if request.method == 'POST':
+    #     event = request.POST.get('item')
+    #     task = request.POST.get('interested')
+    #     # data=request.POST.get('data')
+    #     curr_event = request.POST.get('item')
+    #     # print("data: ", data)
+    #     print("tasK: ", task)
+    #     print("event", event)
+
+    # new = Todo(task=task)
+    # new.save()
+
+    # if request.GET.get("action") == "is_interested":
+    #     print("IN IS INTERESTED ACTION")
+
+    # elif request.GET.get("action") == "is_going":
+    #     print("IN IS GOING ACTION")
+    # print("item: ", request.GET.get('item'))
+    # print("current event: ", request.Get.get('item'))
+    # curr_event = request.POST.get('item')
+    # if curr_event not in saved_events.interestedEvents:
+    #     saved_events.interestedEvents.append(curr_event)
+    #     saved_events.save()
 
     return render(request, "application/discover_events.html", context)
 
@@ -679,6 +854,8 @@ def match_profile(request, match_pk):
 
     account = Account.objects.get(user=curr_user)
     matched_account = Account.objects.get(user=matched_user)
+    interested_events, going_to_events = getSavedEvents(matched_user)
+
     context = {}
     context.update(initial_songs)
     context.update(initial_artists)
@@ -692,6 +869,8 @@ def match_profile(request, match_pk):
     context.update({"matches_data": matches_data})
     context.update({"profile_picture": account.profile_picture})
     context.update({"matched_profile_picture": matched_account.profile_picture})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
     return render(request, "application/match_profile.html", context)
 
 
@@ -701,4 +880,64 @@ def remove_match(request, match_pk):
     user_likes.likes.remove(int(match_pk))
     user_likes.matches.remove(int(match_pk))
     user_likes.save()
+    matched_user_likes = Likes.objects.get(user=match_pk)
+    matched_user_likes.likes.remove(int(request.user.pk))
+    matched_user_likes.matches.remove(int(request.user.pk))
+    matched_user_likes.save()
     return redirect("application:discover")
+
+
+def getSavedEvents(user):
+    try:
+        saved_events = SavedEvents.objects.get(user=user)
+    except Exception:
+        saved_events = SavedEvents.objects.create(user=user)
+
+    interestedEvents = (
+        [] if saved_events.interestedEvents is None else saved_events.interestedEvents
+    )
+    goingToEvents = (
+        [] if saved_events.goingToEvents is None else saved_events.goingToEvents
+    )
+    interested_events = getEventList(
+        interestedEvents,
+    )
+    going_to_events = getEventList(goingToEvents)
+
+    return interested_events, going_to_events
+
+
+def getEventList(user_events):
+    saved_events = []
+    for event_id in user_events:
+        event = EventList.objects.get(pk=event_id)
+        if event.start_date < datetime.date.today():
+            continue
+        time_string = event.start_time
+        if time_string == "TBA":
+            event_time_final = "TBA"
+        else:
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+            mil_time = time_object.time()
+            std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            # std_time = mil_time.strftime("%M").lower()
+            event_time_final = std_time
+            this_event_date = datetime.datetime.strptime(
+                str(event.start_date), "%Y-%m-%d"
+            ).date()
+        saved_events.append(
+            (
+                event.event_name,
+                calendar.month_abbr[event.start_date.month],
+                event.start_date.day,
+                calendar.day_abbr[event.start_date.weekday()],
+                event_time_final,
+                event.venue_name,
+                event.city,
+                event.img_url,
+                event.pk,
+                this_event_date,
+            )
+        )
+    return saved_events
