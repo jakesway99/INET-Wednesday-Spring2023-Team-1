@@ -12,6 +12,7 @@ import calendar
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
 import datetime
+from pytz import timezone
 
 # spotify api package
 import spotipy
@@ -421,6 +422,48 @@ def profile(request):
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
 
+    # remove old events from interested/going list
+    tz = timezone("EST")
+    curr_date_time = datetime.datetime.now(tz)
+    curr_date_pre = curr_date_time.strftime("%Y-%m-%d")
+    curr_date = datetime.datetime.strptime(str(curr_date_pre), "%Y-%m-%d").date()
+
+    interested_events, going_to_events = getSavedEvents(curr_user)
+
+    try:
+        saved_events_object = SavedEvents.objects.get(user=request.user)
+    except Exception:
+        saved_events_object = SavedEvents.objects.create(user=request.user)
+
+    saved_events_object.interestedEvents = (
+        []
+        if saved_events_object.interestedEvents is None
+        else saved_events_object.interestedEvents
+    )
+    saved_events_object.goingToEvents = (
+        []
+        if saved_events_object.goingToEvents is None
+        else saved_events_object.goingToEvents
+    )
+
+    for item in interested_events:
+        curr_event = item[-2]
+        # remove interested event if the event has already passed
+        if curr_date > item[-1]:
+            if int(curr_event) in saved_events_object.interestedEvents:
+                # remove the event from the table
+                saved_events_object.interestedEvents.remove(int(curr_event))
+                saved_events_object.save()
+
+    for item in going_to_events:
+        curr_event = item[-2]
+        # remove going to event if the event has already passed
+        if curr_date > item[-1]:
+            if int(curr_event) in saved_events_object.goingToEvents:
+                # remove the event from the table
+                saved_events_object.goingToEvents.remove(int(curr_event))
+                saved_events_object.save()
+
     if request.method == "POST":
         curr_event = request.POST.get("item")
         button1 = request.POST.get("delete_interested")
@@ -649,6 +692,11 @@ def discover_events(request):
             # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
 
+        # needed to remove old events from interested/going lists
+        this_event_date = datetime.datetime.strptime(
+            str(event.start_date), "%Y-%m-%d"
+        ).date()
+
         # getting month name and day number from datetime obj
         month_num = event.start_date.month
         month_name = calendar.month_abbr[month_num]
@@ -669,6 +717,7 @@ def discover_events(request):
                 event.city,
                 event.img_url,
                 event.pk,
+                this_event_date,
             )
         )
     curr_user = request.user
@@ -678,9 +727,12 @@ def discover_events(request):
     going_to_events_pk = []
 
     for item in interested_events:
-        interested_events_pk.append(item[-1])
+        curr_event = item[-2]
+        interested_events_pk.append(curr_event)
+
     for item in going_to_events:
-        going_to_events_pk.append(item[-1])
+        curr_event = item[-2]
+        going_to_events_pk.append(curr_event)
 
     context = {}
     context.update({"profile_picture": account.profile_picture})
@@ -871,6 +923,9 @@ def getEventList(user_events):
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
             # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
+            this_event_date = datetime.datetime.strptime(
+                str(event.start_date), "%Y-%m-%d"
+            ).date()
         saved_events.append(
             (
                 event.event_name,
@@ -882,6 +937,7 @@ def getEventList(user_events):
                 event.city,
                 event.img_url,
                 event.pk,
+                this_event_date,
             )
         )
     return saved_events

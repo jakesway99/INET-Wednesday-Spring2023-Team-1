@@ -57,59 +57,18 @@
                         {% if not going_to_events_pk %}
                             <button name="going" id="going" class="button" value="going">&#10003; Going</button>
                         {% endif %}
-                        {% for item2 in interested_events_pk %}
-                            {% if item2 == item.8 %}
-                                <button name="ainterested" id="ainterested" class="button" value="ainterested">&#9733; Interested</button>
-                                <style>
-                                    #ainterested {
-                                        position: absolute;
-                                        font-size: 14px;
-                                        left: 950px;
-                                        bottom: 50px;
-                                        padding: 0 10px;
-                                        width: 12%;
-                                        height: 25%;
-                                        border-radius: 25px;
-                                        background-color: white;
-                                        color: purple;
-                                        border-color: purple;
-                                        border-style: solid;
-                                        cursor: pointer;
-                                        text-align: center;
-                                        z-index: 1;
-                                    }
-                                </style>
-                            {% else %}
-                                <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
-                            {% endif %}
-                        {% endfor %}
+                        {% if item.8 in interested_events_pk %}
+                            <button name="ainterested" id="ainterested" class="button" value="ainterested">&#9733; Interested</button>
+                        {% else %}
+                            <button name="interested" id="interested" class="button" value="interested">&#9733; Interested</button>
+                        {% endif %}
 
-                        {% for item2 in going_to_events_pk %}
-                            {% if item2 == item.8 %}
-                                <button name="agoing" id="agoing" class="button" value="agoing">&#10003; Going</button>
-                                <style>
-                                    #agoing {
-                                        position: absolute;
-                                        font-size: 14px;
-                                        left: 950px;
-                                        bottom: 20px;
-                                        padding: 0 10px;
-                                        width: 12%;
-                                        height: 25%;
-                                        border-radius: 25px;
-                                        background-color: white;
-                                        color: purple;
-                                        border-color: purple;
-                                        border-style: solid;
-                                        cursor: pointer;
-                                        text-align: center;
-                                        z-index: 1;
-                                    }
-                                </style>
-                            {% else %}
-                                <button name="going" id="going" class="button" value="going">&#10003; Going</button>
-                            {% endif %}
-                        {% endfor %}
+                        {% if item.8 in going_to_events_pk %}
+                            <button name="agoing" id="agoing" class="button" value="agoing">&#10003; Going</button>
+                        {% else %}
+                            <button name="going" id="going" class="button" value="going">&#10003; Going</button>
+                        {% endif %}
+                    
                         <input type="hidden" id="item" name="item" value="{{ item.8 }}"/>
                     </form>
                     <br>
