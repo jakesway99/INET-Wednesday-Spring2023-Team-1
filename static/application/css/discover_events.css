@@ -227,7 +227,7 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
-    z-index: 2;
+    /* z-index: 2; */
 }
 
 #going {
@@ -245,7 +245,43 @@ display: inline-block;
     border-style: solid;
     cursor: pointer;
     text-align: center;
-    z-index: 2;
+    /* z-index: 2; */
+}
+
+#ainterested {
+    position: absolute;
+    font-size: 14px;
+    left: 950px;
+    bottom: 50px;
+    padding: 0 10px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: white;
+    color: purple;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+    /* z-index: 2; */
+}
+
+#agoing {
+    position: absolute;
+    font-size: 14px;
+    left: 950px;
+    bottom: 20px;
+    padding: 0 10px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: white;
+    color: purple;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+    /* z-index: 2; */
 }
 
 #ainterested:hover {
