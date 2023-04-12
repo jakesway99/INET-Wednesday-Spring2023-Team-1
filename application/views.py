@@ -637,6 +637,8 @@ def discover_events(request):
     all_events = EventList.objects.all()
     for event in all_events:
         time_string = event.start_time
+        if event.start_date < datetime.date.today():
+            continue
         if time_string == "TBA":
             event_time_final = "TBA"
         else:
@@ -857,6 +859,8 @@ def getEventList(user_events):
     saved_events = []
     for event_id in user_events:
         event = EventList.objects.get(pk=event_id)
+        if event.start_date < datetime.date.today():
+            continue
         time_string = event.start_time
         if time_string == "TBA":
             event_time_final = "TBA"
