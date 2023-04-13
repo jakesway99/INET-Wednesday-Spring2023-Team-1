@@ -682,10 +682,9 @@
                         </a>
                     </div>
                     <div class="profile">
-                        <span class="profile-name">{{user.first_name}}</span>
-                        <span class="profile-name">{{user.last_name}},</span>
-                        <span class="profile-name">{{user.age}}</span>
-                        <p class="location">{{user.location}}</p>
+                        <span class="profile-name">
+                            <a href="{% url 'application:profile' %}" class="name">{{user.first_name}} {{user.last_name}}</a>
+                        </span>
                     </div>
                 </div>
                 <h2>Matches</h2>
