@@ -694,8 +694,9 @@
                         <a href="{% url 'application:match_profile' match_pk=match.pk %}">
                             <img src={{match.profile_picture}} alt="Match 1">
                         </a>
-                        <p>{{match.first_name}}</p>
-
+                        <span class="profile-name">
+                            <a href="{% url 'application:match_profile' match_pk=match.pk %}">{{match.first_name}}</a>
+                        </span>
                     </div>
                     {% endfor %}
                 </div>

@@ -94,11 +94,12 @@ body {
     margin-bottom: 5px;
 }
 
-.left .match p {
+.left .match .profile-name {
     font-size: 16px;
     font-weight: bold;
     text-align: center;
     margin: 0;
+    text-decoration: none;
 }
 
 .left h3 {

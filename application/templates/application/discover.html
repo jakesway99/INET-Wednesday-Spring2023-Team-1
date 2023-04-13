@@ -67,7 +67,9 @@
                         <a href="{% url 'application:match_profile' match_pk=match.pk %}">
                             <img src={{match.profile_picture}} alt="Match 1">
                         </a>
-                        <p>{{match.first_name}}</p>
+                        <span class="profile-name">
+                            <a href="{% url 'application:match_profile' match_pk=match.pk %}">{{match.first_name}}</a>
+                        </span>
                     </div>
                     {% endfor %}
                 </div>
@@ -541,7 +543,8 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a>' +
+                                '<span class="profile-name"><a href="profile/match/'+match.pk+'/">' + match.first_name + '</a></span></div>'
                             )
                         }
                         if (response.is_match) {
@@ -637,7 +640,8 @@
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
                             $('.matches').append(
-                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a><p>' + match.first_name + '</p> </div>'
+                                '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a>' +
+                                '<span class="profile-name"><a href="profile/match/'+match.pk+'/">' + match.first_name + '</a></span></div>'
                             )
                         }
                     }
