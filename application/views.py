@@ -66,6 +66,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "song3_name_artist": user_fav_songs.song3_name_artist,
             "song4_name_artist": user_fav_songs.song4_name_artist,
             "song5_name_artist": user_fav_songs.song5_name_artist,
+            "song1_disp": user_fav_songs.song1_name_artist,
+            "song2_disp": user_fav_songs.song2_name_artist,
+            "song3_disp": user_fav_songs.song3_name_artist,
+            "song4_disp": user_fav_songs.song4_name_artist,
+            "song5_disp": user_fav_songs.song5_name_artist,
             "song1_id": user_fav_songs.song1_id,
             "song2_id": user_fav_songs.song2_id,
             "song3_id": user_fav_songs.song3_id,
@@ -83,6 +88,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "artist3_name": user_fav_artists.artist3_name,
             "artist4_name": user_fav_artists.artist4_name,
             "artist5_name": user_fav_artists.artist5_name,
+            "artist1_disp": user_fav_artists.artist1_name,
+            "artist2_disp": user_fav_artists.artist2_name,
+            "artist3_disp": user_fav_artists.artist3_name,
+            "artist4_disp": user_fav_artists.artist4_name,
+            "artist5_disp": user_fav_artists.artist5_name,
             "artist1_id": user_fav_artists.artist1_id,
             "artist2_id": user_fav_artists.artist2_id,
             "artist3_id": user_fav_artists.artist3_id,
@@ -100,6 +110,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "album3_name_artist": user_fav_albums.album3_name_artist,
             "album4_name_artist": user_fav_albums.album4_name_artist,
             "album5_name_artist": user_fav_albums.album5_name_artist,
+            "album1_disp": user_fav_albums.album1_name_artist,
+            "album2_disp": user_fav_albums.album2_name_artist,
+            "album3_disp": user_fav_albums.album3_name_artist,
+            "album4_disp": user_fav_albums.album4_name_artist,
+            "album5_disp": user_fav_albums.album5_name_artist,
             "album1_id": user_fav_albums.album1_id,
             "album2_id": user_fav_albums.album2_id,
             "album3_id": user_fav_albums.album3_id,
@@ -229,7 +244,6 @@ def profile_edit(request):
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
-        print("POST REQUEST: ", request.POST)
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -691,7 +705,6 @@ def discover_events(request):
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
             # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
-
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
             str(event.start_date), "%Y-%m-%d"
@@ -744,57 +757,66 @@ def discover_events(request):
     context.update({"going_to_events_pk": going_to_events_pk})
 
     if request.method == "POST":
-        curr_event = request.POST.get("item")
-        button1 = request.POST.get("interested")
-        button2 = request.POST.get("going")
-        button3 = request.POST.get("ainterested")
-        button4 = request.POST.get("agoing")
+        if request.POST.get("search-button"):
+            search_string = request.POST.get("search-events").lower()
+            filtered_events = []
+            for event in event_list:
+                if search_string in event[0].lower():
+                    filtered_events.append(event)
+            del context["event_list"]
+            context.update({"event_list": filtered_events})
+        else:
+            curr_event = request.POST.get("item")
+            button1 = request.POST.get("interested")
+            button2 = request.POST.get("going")
+            button3 = request.POST.get("ainterested")
+            button4 = request.POST.get("agoing")
 
-        try:
-            saved_events_object = SavedEvents.objects.get(user=request.user)
-        except Exception:
-            saved_events_object = SavedEvents.objects.create(user=request.user)
+            try:
+                saved_events_object = SavedEvents.objects.get(user=request.user)
+            except Exception:
+                saved_events_object = SavedEvents.objects.create(user=request.user)
 
-        saved_events_object.interestedEvents = (
-            []
-            if saved_events_object.interestedEvents is None
-            else saved_events_object.interestedEvents
-        )
-        saved_events_object.goingToEvents = (
-            []
-            if saved_events_object.goingToEvents is None
-            else saved_events_object.goingToEvents
-        )
+            saved_events_object.interestedEvents = (
+                []
+                if saved_events_object.interestedEvents is None
+                else saved_events_object.interestedEvents
+            )
+            saved_events_object.goingToEvents = (
+                []
+                if saved_events_object.goingToEvents is None
+                else saved_events_object.goingToEvents
+            )
 
-        # adding event to interested list
-        if button1 == "interested":
-            if int(curr_event) not in saved_events_object.interestedEvents:
-                saved_events_object.interestedEvents.append(curr_event)
-                saved_events_object.save()
-                return redirect("application:events")
+            # adding event to interested list
+            if button1 == "interested":
+                if int(curr_event) not in saved_events_object.interestedEvents:
+                    saved_events_object.interestedEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # adding event to going list
-        if button2 == "going":
-            if int(curr_event) not in saved_events_object.goingToEvents:
-                saved_events_object.goingToEvents.append(curr_event)
-                saved_events_object.save()
-                return redirect("application:events")
+            # adding event to going list
+            if button2 == "going":
+                if int(curr_event) not in saved_events_object.goingToEvents:
+                    saved_events_object.goingToEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # removing event from interested list
-        if button3 == "ainterested":
-            if int(curr_event) in saved_events_object.interestedEvents:
-                # remove the event from the table
-                saved_events_object.interestedEvents.remove(int(curr_event))
-                saved_events_object.save()
-                return redirect("application:events")
+            # removing event from interested list
+            if button3 == "ainterested":
+                if int(curr_event) in saved_events_object.interestedEvents:
+                    # remove the event from the table
+                    saved_events_object.interestedEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # removing event from going list
-        if button4 == "agoing":
-            if int(curr_event) in saved_events_object.goingToEvents:
-                # remove the event from the table
-                saved_events_object.goingToEvents.remove(int(curr_event))
-                saved_events_object.save()
-                return redirect("application:events")
+            # removing event from going list
+            if button4 == "agoing":
+                if int(curr_event) in saved_events_object.goingToEvents:
+                    # remove the event from the table
+                    saved_events_object.goingToEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:events")
 
     # when the interested button is clicked - if using ajax
     # if request.method == 'POST':

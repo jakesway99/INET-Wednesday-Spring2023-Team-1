@@ -148,6 +148,23 @@ a {
     margin-top: 10px;
 } */
 
+.ui-autocomplete{
+    z-index: 10001 !important;
+}
+.search-button {
+    position: relative;
+    font-size: 14px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: purple;
+    color: white;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+    /* z-index: 2; */
+}
 .event {
     position: relative;
     z-index: 10000;

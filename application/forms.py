@@ -79,6 +79,12 @@ PasswordChangeForm.base_fields = OrderedDict(
 
 
 class SongEdit(ModelForm):
+    song1_disp = forms.CharField(required=False)
+    song2_disp = forms.CharField(required=False)
+    song3_disp = forms.CharField(required=False)
+    song4_disp = forms.CharField(required=False)
+    song5_disp = forms.CharField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(SongEdit, self).__init__(*args, **kwargs)
 
@@ -91,27 +97,27 @@ class SongEdit(ModelForm):
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Songs: </strong> "),
             Field(
-                "song1_name_artist",
+                "song1_disp",
                 placeholder="1. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "song2_name_artist",
+                "song2_disp",
                 placeholder="2. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "song3_name_artist",
+                "song3_disp",
                 placeholder="3. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "song4_name_artist",
+                "song4_disp",
                 placeholder="4. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "song5_name_artist",
+                "song5_disp",
                 placeholder="5. ",
                 css_class="form-control form-control-lg",
             ),
@@ -120,6 +126,11 @@ class SongEdit(ModelForm):
             Field("song3_id", type="hidden"),
             Field("song4_id", type="hidden"),
             Field("song5_id", type="hidden"),
+            Field("song1_name_artist", type="hidden"),
+            Field("song2_name_artist", type="hidden"),
+            Field("song3_name_artist", type="hidden"),
+            Field("song4_name_artist", type="hidden"),
+            Field("song5_name_artist", type="hidden"),
         )
         self.helper.form_show_labels = False
 
@@ -140,6 +151,12 @@ class SongEdit(ModelForm):
 
 
 class ArtistEdit(ModelForm):
+    artist1_disp = forms.CharField(required=False)
+    artist2_disp = forms.CharField(required=False)
+    artist3_disp = forms.CharField(required=False)
+    artist4_disp = forms.CharField(required=False)
+    artist5_disp = forms.CharField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(ArtistEdit, self).__init__(*args, **kwargs)
 
@@ -152,27 +169,27 @@ class ArtistEdit(ModelForm):
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Artists: </strong> "),
             Field(
-                "artist1_name",
+                "artist1_disp",
                 placeholder="1. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "artist2_name",
+                "artist2_disp",
                 placeholder="2. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "artist3_name",
+                "artist3_disp",
                 placeholder="3. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "artist4_name",
+                "artist4_disp",
                 placeholder="4. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "artist5_name",
+                "artist5_disp",
                 placeholder="5. ",
                 css_class="form-control form-control-lg",
             ),
@@ -181,6 +198,11 @@ class ArtistEdit(ModelForm):
             Field("artist3_id", type="hidden"),
             Field("artist4_id", type="hidden"),
             Field("artist5_id", type="hidden"),
+            Field("artist1_name", type="hidden"),
+            Field("artist2_name", type="hidden"),
+            Field("artist3_name", type="hidden"),
+            Field("artist4_name", type="hidden"),
+            Field("artist5_name", type="hidden"),
         )
         self.helper.form_show_labels = False
 
@@ -201,6 +223,12 @@ class ArtistEdit(ModelForm):
 
 
 class AlbumEdit(ModelForm):
+    album1_disp = forms.CharField(required=False)
+    album2_disp = forms.CharField(required=False)
+    album3_disp = forms.CharField(required=False)
+    album4_disp = forms.CharField(required=False)
+    album5_disp = forms.CharField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(AlbumEdit, self).__init__(*args, **kwargs)
 
@@ -213,27 +241,27 @@ class AlbumEdit(ModelForm):
         self.helper.layout = Layout(
             Fieldset("<strong>Enter Your Top 5 Albums: </strong> "),
             Field(
-                "album1_name_artist",
+                "album1_disp",
                 placeholder="1. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "album2_name_artist",
+                "album2_disp",
                 placeholder="2. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "album3_name_artist",
+                "album3_disp",
                 placeholder="3. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "album4_name_artist",
+                "album4_disp",
                 placeholder="4. ",
                 css_class="form-control form-control-lg",
             ),
             Field(
-                "album5_name_artist",
+                "album5_disp",
                 placeholder="5. ",
                 css_class="form-control form-control-lg",
             ),
@@ -242,6 +270,11 @@ class AlbumEdit(ModelForm):
             Field("album3_id", type="hidden"),
             Field("album4_id", type="hidden"),
             Field("album5_id", type="hidden"),
+            Field("album1_name_artist", type="hidden"),
+            Field("album2_name_artist", type="hidden"),
+            Field("album3_name_artist", type="hidden"),
+            Field("album4_name_artist", type="hidden"),
+            Field("album5_name_artist", type="hidden"),
         )
         self.helper.form_show_labels = False
 
