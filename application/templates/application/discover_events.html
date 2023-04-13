@@ -4,19 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Discover Events</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
     <link rel="stylesheet" type="text/css" href="{% static 'application/css/discover_events.css' %}" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.css' %}">
+    <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
+
+    <script>
+          $( function() {
+            var event_names = [
+            {% for event in event_list %}
+                "{{event.0}}",
+            {% endfor %}
+            ];
+            $( "#event_search" ).autocomplete({
+                source: event_names,
+                select: function(event, ui) {
+                    $("#matchsearch").val(ui.item.value);
+                }
+            });
+          });
+        </script>
 </head>
+
 <body>
     <div class="container">
         <div class="nav-bar">
             <div class="events-header">
-                <a href="{% url 'application:events' %}" class="title">Events in NYC</a>
+                <a href="{% url 'application:events' %}" class="title">All Events in NYC</a>
             </div>
             <div class="search-container">
-                <input class="search-events" placeholder="Find experiences in NYC" type="text">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input name ="search-events" id = "event_search" placeholder="Find experiences in NYC" type="text">
+                    <button name="search-button" id="search-button" class="search-button" value="search" type="submit">Search</button>
+                </form>
             </div>
             <div class="profile">
                 <div class="profile-picture">
