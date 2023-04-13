@@ -66,6 +66,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "song3_name_artist": user_fav_songs.song3_name_artist,
             "song4_name_artist": user_fav_songs.song4_name_artist,
             "song5_name_artist": user_fav_songs.song5_name_artist,
+            "song1_disp": user_fav_songs.song1_name_artist,
+            "song2_disp": user_fav_songs.song2_name_artist,
+            "song3_disp": user_fav_songs.song3_name_artist,
+            "song4_disp": user_fav_songs.song4_name_artist,
+            "song5_disp": user_fav_songs.song5_name_artist,
             "song1_id": user_fav_songs.song1_id,
             "song2_id": user_fav_songs.song2_id,
             "song3_id": user_fav_songs.song3_id,
@@ -83,6 +88,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "artist3_name": user_fav_artists.artist3_name,
             "artist4_name": user_fav_artists.artist4_name,
             "artist5_name": user_fav_artists.artist5_name,
+            "artist1_disp": user_fav_artists.artist1_name,
+            "artist2_disp": user_fav_artists.artist2_name,
+            "artist3_disp": user_fav_artists.artist3_name,
+            "artist4_disp": user_fav_artists.artist4_name,
+            "artist5_disp": user_fav_artists.artist5_name,
             "artist1_id": user_fav_artists.artist1_id,
             "artist2_id": user_fav_artists.artist2_id,
             "artist3_id": user_fav_artists.artist3_id,
@@ -100,6 +110,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "album3_name_artist": user_fav_albums.album3_name_artist,
             "album4_name_artist": user_fav_albums.album4_name_artist,
             "album5_name_artist": user_fav_albums.album5_name_artist,
+            "album1_disp": user_fav_albums.album1_name_artist,
+            "album2_disp": user_fav_albums.album2_name_artist,
+            "album3_disp": user_fav_albums.album3_name_artist,
+            "album4_disp": user_fav_albums.album4_name_artist,
+            "album5_disp": user_fav_albums.album5_name_artist,
             "album1_id": user_fav_albums.album1_id,
             "album2_id": user_fav_albums.album2_id,
             "album3_id": user_fav_albums.album3_id,
@@ -229,7 +244,6 @@ def profile_edit(request):
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
-        print("POST REQUEST: ", request.POST)
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -931,7 +945,6 @@ def getEventList(user_events):
             std_time = mil_time.strftime("%-I:%M" "%p").lower()
             # std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
-            event_time_final = "6PM"
             this_event_date = datetime.datetime.strptime(
                 str(event.start_date), "%Y-%m-%d"
             ).date()
