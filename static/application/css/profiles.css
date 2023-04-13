@@ -618,20 +618,24 @@ a {
     margin-bottom: 15px;
     font-size: 30px;
     font-weight: 600; 
-    font-family: Averta;
+    font-family: Verdana;
+    text-shadow: 2px 2px 2px white;
     color: rgb(94, 60, 100); 
 }
 
 .interested-events {
     border: 2px solid black;
     padding: 10px;
-    margin: 10px;
+    margin-top: 5px;
+    width: 50%;
 }
 
 .going-to-events {
     border: 2px solid black;
     padding: 10px;
-    margin: 10px;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 50%;
 }
 
 .interested-event img {
