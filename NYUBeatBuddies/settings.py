@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
     "dev.nyubeatbuddies.com",
     "development-nbb.us-west-2.elasticbeanstalk.com",
     "172.31.18.103",
-    "172.31.16.88"
+    "172.31.16.88",
 ]
 
 # Application definition
