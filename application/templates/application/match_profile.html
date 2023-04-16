@@ -137,6 +137,7 @@
                     </div>
                     <div class="edit-profile">
                         <a href="{% url 'application:remove_match' match_pk=matched_user.user_id %}">Remove Match</a>
+                        <a href="{% url 'chat:room' %}?friend_pk={{matched_user.user_id}}">Chat</a>
                     </div>
                 </div>
                 <div class="right-section-content">

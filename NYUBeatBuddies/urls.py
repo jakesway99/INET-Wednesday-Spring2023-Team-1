@@ -27,6 +27,7 @@ urlpatterns = [
         include(("application.urls", "application"), namespace="application"),
     ),
     path("account/", include(("account.urls", "account"), namespace="account")),
+    path("chat/", include(("chat.urls", "chat"), namespace="chat")),
     path("", RedirectView.as_view(url="account/login", permanent=True)),
     path("", include("django.contrib.auth.urls")),
 ]

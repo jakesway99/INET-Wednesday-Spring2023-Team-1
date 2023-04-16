@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "spotipy",
     "application",
     "account",
+    "chat",
     "crispy_forms",
     "crispy_bootstrap4",
     "django.contrib.admin",

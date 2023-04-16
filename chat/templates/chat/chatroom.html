@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+{% load crispy_forms_tags %}
+<html>
+  <head>
+    <style>
+      body, html {
+        height: 100%;
+      }
+
+      .message-container {
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message-box-right {
+        width: 80%;
+        border: 2px solid blue;
+        background-color: yellow;
+        align-self: flex-end;
+        text-align: right;
+        min-height: 20px;
+      }
+
+      .message-box-left {
+        width: 80%;
+        border: 2px solid blue;
+        background-color: orange;
+        align-self: flex-start;
+        min-height: 20px;
+      }
+    </style>
+    <title>Chatroom</title>
+  </head>
+  <body>
+    <h1>Test</h1>
+    <div class="message-container" id="">
+      {% for m in messages %} {% if m.author == cur_user %} 
+      <div class="message-box-left">
+        {{m.content}}
+      </div>
+      {% endif %} {% if m.author != cur_user %}
+      <div class="message-box-right">
+        {{m.content}}
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+    <form id="message-form">
+        {% csrf_token %}
+        <input
+          type="text"
+          id="message-input"
+          name="message"
+          placeholder="Type your message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
+  <script>
+    $('#message-form').on('submit', function(event){
+            event.preventDefault();
+            var message = $('#message-input').val();
+              $.ajax({
+                url: '/chat/postMessage',
+                data: {
+                  'content': message,
+                  'room':{{room.pk}},
+                  'user':{{cur_user.pk}}
+                },
+                  success: function (response) {
+                    var cur_user_pk = {{cur_user.pk}}
+                    console.log("\n\n\n\n we have",cur_user_pk,"\n\n\n")
+                    $('.message-box-left').remove();
+                    $('.message-box-right').remove();
+                    for (let message of response.messages) {
+                        if (message.author == cur_user_pk) {
+                        $('.message-container').append('<div class="message-box-left">'+message.content+'</div>')
+                        } else  {
+                        $('.message-container').append('<div class="message-box-right">'+message.content+'</div>')
+                        }
+                    }
+                  }
+              });
+          });
+  </script>
+</html>
