@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from application.models import Account
 
+
 def getChatRoom(user1, user2):
     room = Room.objects.filter(
         (Q(started_by=user1) & Q(started_for=user2))
