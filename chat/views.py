@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.db.models import Q
+
+from application.views import getMatchesData
 from .models import Room, Message
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-
+from application.models import Account
 
 def getChatRoom(user1, user2):
     room = Room.objects.filter(
@@ -42,20 +44,25 @@ def postMessage(request):
         }
         for message in messages
     ]
-    print("\n\nupdated_messages\n\n", updated_messages, "\n\n")
     return JsonResponse({"messages": updated_messages})
 
 
 @login_required
 def enterChat(request):
     friend_pk = request.GET.get("friend_pk")
-    print("\n\n\nFRIEND PK IS\n\n", friend_pk, "\n\n")
-    cur_user = request.user
+    print("\n\n\nFRIEND_PK:", friend_pk, "\n\n\n")
+    user = request.user
+    account = Account.objects.get(user=user)
+    matches_data = getMatchesData(user)
     friend = User.objects.get(pk=friend_pk)
-    chat_room = getChatRoom(cur_user, friend)
+    chat_room = getChatRoom(user, friend)
+    user_data = Account.objects.get(user=user).__dict__
+    user_data.pop("_state")
     context = {
         "messages": chat_room.messages.all(),
-        "cur_user": cur_user,
+        "user": user_data,
         "room": chat_room,
     }
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"matches_data": matches_data})
     return render(request, "chat/chatroom.html", context)
