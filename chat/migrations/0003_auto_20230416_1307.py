@@ -5,19 +5,22 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('chat', '0002_message_is_read'),
+        ("chat", "0002_message_is_read"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['timestamp']},
+            name="message",
+            options={"ordering": ["timestamp"]},
         ),
         migrations.AlterField(
-            model_name='message',
-            name='room',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='chat.room'),
+            model_name="message",
+            name="room",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="messages",
+                to="chat.room",
+            ),
         ),
     ]
