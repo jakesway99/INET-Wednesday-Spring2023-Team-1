@@ -9,6 +9,7 @@ urlpatterns = [
     path("discover", views.discover, name="discover"),
     path("next", views.getDiscoverProfile, name="next"),
     path("discover_events", views.discover_events, name="events"),
+    path("your_events", views.your_events, name="your_events"),
     path("profile/match/<int:match_pk>/", views.match_profile, name="match_profile"),
     path(
         "profile/match/remove/<int:match_pk>/", views.remove_match, name="remove_match"
