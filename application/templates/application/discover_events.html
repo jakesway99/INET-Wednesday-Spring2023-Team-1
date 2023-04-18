@@ -36,8 +36,17 @@
 <body>
     <div class="container">
         <div class="nav-bar">
-            <div class="events-header">
-                <a href="{% url 'application:events' %}" class="title">All Events in NYC</a>
+            <div class="dropdown">
+                <ul class="first">
+                    <li class="dd"> <a href="#"> Discover Events — All NYC Events</a>
+                        <div class="sub_menu">
+                            <ul class="second">
+                                <li><a href="{% url 'application:events' %}"> All Events </a></li>
+                                <li><a href="{% url 'application:your_events' %}"> Your Saved Events </a></li>
+                            </ul>
+                        </div>
+                    </li> 
+                </ul>
             </div>
             <div class="search-container">
                 <form method="POST">
@@ -106,14 +115,21 @@
             </div>
             <script>
                 $(function(){
-                    $("div").slice(0, 15).show(); // select the first ten
+                    $(".event").slice(0, 10).show(); // select the first ten
                     $("#load").click(function(e){ // click event for load more
                     e.preventDefault();
-                    $("div:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
-                    if($("div:hidden").length == 0){ // check if any hidden divs still exist
-                    alert("No more concerts to display"); // alert if there are none left
-                }
+                    $(".event:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
+                    if($(".event:hidden").length == 0){ // check if any hidden divs still exist
+                        $("#load").hide();
+                        // alert("No more concerts to display"); // alert if there are none left
+                    }
+                    });
                 });
+
+                $(document).ready(function(){
+                        if($(".event:hidden").length == 0){ // check if any hidden divs still exist
+                            $("#load").hide();
+                        }
                 });
 
                 // $(document).ready(function () {
