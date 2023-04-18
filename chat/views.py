@@ -63,6 +63,7 @@ def enterChat(request):
         "messages": chat_room.messages.all(),
         "user": user_data,
         "room": chat_room,
+        "friend": friend,
     }
     context.update({"profile_picture": account.profile_picture})
     context.update({"matches_data": matches_data})
