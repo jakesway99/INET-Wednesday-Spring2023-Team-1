@@ -118,8 +118,9 @@ a {
 
 
 .search-container {
+    position: relative;
     width: 40%;
-    left: 50px;
+    left: 150px;
 }
 
 .search-events {

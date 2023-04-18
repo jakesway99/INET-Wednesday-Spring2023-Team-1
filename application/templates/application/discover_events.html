@@ -115,7 +115,7 @@
             </div>
             <script>
                 $(function(){
-                    $(".event").slice(0, 15).show(); // select the first ten
+                    $(".event").slice(0, 10).show(); // select the first ten
                     $("#load").click(function(e){ // click event for load more
                     e.preventDefault();
                     $(".event:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
