@@ -845,6 +845,7 @@ def discover_events(request):
 
     return render(request, "application/discover_events.html", context)
 
+
 @login_required
 def your_events(request):
     event_list = []
