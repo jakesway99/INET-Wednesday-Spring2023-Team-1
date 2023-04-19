@@ -10,6 +10,7 @@ from .models import (
     UserPrompts,
     EventList,
     Likes,
+    SavedEvents,
 )
 import os
 from .views import discover_events, profile_edit, profile, discover
@@ -541,13 +542,26 @@ class DiscoverEvents(TestCase):
             location="NYC",
             profile_picture="placeholder",
         )
-        cls.events = EventList.objects.create(
+        cls.event1 = EventList.objects.create(
             event_name="testevent1",
             start_date=datetime.date.today(),
             start_time="19:30:00",
             venue_name="testvenue1",
             city="New York",
             img_url="placeholder.jpg",
+        )
+        cls.event2 = EventList.objects.create(
+            event_name="testevent2",
+            start_date=datetime.date.today(),
+            start_time="18:30:00",
+            venue_name="testvenue2",
+            city="New York",
+            img_url="placeholder.jpg",
+        )
+        cls.saved = SavedEvents.objects.create(
+            user=cls.user1,
+            interestedEvents=[cls.event1.pk],
+            goingToEvents=[cls.event2.pk],
         )
 
     def test_discover_events_page(self):
@@ -556,3 +570,19 @@ class DiscoverEvents(TestCase):
         request.user = self.user1
         response = discover_events(request)
         self.assertEqual(response.status_code, 200)
+
+    def test_your_events(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse("application:your_events"))
+        self.assertEqual(
+            response.context.dicts[3]["interested_events_pk"][0], self.event1.pk
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_your_events_search(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(
+            reverse("application:your_events"),
+            {"search-button": "1", "search-events": "event1"},
+        )
+        self.assertEqual(response.context.dicts[3]["event_list"].__len__(), 1)
