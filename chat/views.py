@@ -25,7 +25,6 @@ def getChatRoom(user1, user2):
 
 @login_required
 def postMessage(request):
-    print("\n\n\nGot a message\n\n\n")
     user = request.GET.get("user")
     user = User.objects.get(pk=user)
     room = request.GET.get("room")
@@ -51,7 +50,6 @@ def postMessage(request):
 @login_required
 def enterChat(request):
     friend_pk = request.GET.get("friend_pk")
-    print("\n\n\nFRIEND_PK:", friend_pk, "\n\n\n")
     user = request.user
     account = Account.objects.get(user=user)
     matches_data = getMatchesData(user)
