@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+from chat.views import chat_history
 
 # import os
 # from datetime import datetime
@@ -422,7 +423,9 @@ def profile(request):
     ):
         return redirect("application:profile_edit")
     account = Account.objects.get(user=curr_user)
+    chat_history = chat_history(curr_user)
     context = {}
+    context.update({"chat_history":chat_history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -702,9 +705,9 @@ def discover_events(request):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
-            event_time_final = std_time
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
+            # event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
             str(event.start_date), "%Y-%m-%d"
@@ -860,8 +863,8 @@ def your_events(request):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
@@ -1075,8 +1078,8 @@ def getEventList(user_events):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
             this_event_date = datetime.datetime.strptime(
                 str(event.start_date), "%Y-%m-%d"
