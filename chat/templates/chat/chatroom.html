@@ -186,34 +186,39 @@
               <a href="{% url 'account:logout' %}">Logout</a>
           </div>
         </div>
-        <div class="message-container" id="">          
-          <span class="close-chat">
-            <a href="{% url 'application:match_profile' match_pk=friend.pk %}">&#x2715</a>
-          </span>
-          <span class="profile-name"> {{friend.first_name}} {{friend.last_name}}</span>
-
-          {% for m in messages %} {% if m.author.pk == user.user_id %}
-          <div class="message-box-right">
-            <span class="message-content">{{m.content}}</span>
-            <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
+        <div class="message-section-right"> 
+          <div class="message-container" id="">          
+            <div class="chat-header">             
+              <div class="profile-name"> {{friend.first_name}} {{friend.last_name}}</div>
+              <div class="close-chat">
+                <a href="{% url 'application:match_profile' match_pk=friend.pk %}">&#x2715</a>
+              </div>
+            </div>
+            <div class="messages">
+              {% for m in messages %} {% if m.author.pk == user.user_id %}
+              <div class="message-box-right">
+                <span class="message-content">{{m.content}}</span>
+                <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
+              </div>
+              {% endif %} {% if m.author.pk != user.user_id %}
+              <div class="message-box-left">
+                <span class="message-content">{{m.content}}</span>
+                <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
+              </div>
+              {% endif %} {% endfor %}
+            </div>
           </div>
-          {% endif %} {% if m.author.pk != user.user_id %}
-          <div class="message-box-left">
-            <span class="message-content">{{m.content}}</span>
-            <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
-          </div>
-          {% endif %} {% endfor %}
+          <form class="message-form" id="message-form">
+            {% csrf_token %}
+            <input
+              type="text"
+              id="message-input"
+              name="message"
+              placeholder="Type your message..."
+            />
+            <button type="submit">Send</button>
+          </form>
         </div>
-        <form class="message-form" id="message-form">
-          {% csrf_token %}
-          <input
-            type="text"
-            id="message-input"
-            name="message"
-            placeholder="Type your message..."
-          />
-          <button type="submit">Send</button>
-        </form>
       </div>
     </div>
   </body>
@@ -224,104 +229,6 @@
     href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css"
   />
 
-  <style>
-    body,
-    html {
-      height: 100%;
-    }
-
-    .message-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      border: 2px solid #4a2555;
-      padding: 0px 10px;
-      margin-top: 15px;
-      border-radius: 10px;
-    }
-
-    .message-box-right {
-      width: 80%;
-      align-self: flex-end;
-      text-align: right;
-      min-height: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message-box-right .message-content{
-      background-color: rgb(105, 103, 103);
-      width: auto; 
-      color: white;
-      border-radius: 50px;
-      padding: 5px 10px;
-      margin: 5px;
-    }
-
-    .message-box-left {
-      width: 80%;
-      align-self: flex-start;
-      min-height: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message-box-left .message-content {
-      background-color: rgb(38, 34, 34);
-      width: auto; 
-      color: white;
-      border-radius: 50px;
-      padding: 5px 10px;
-      margin: 5px;
-    }
-
-    .message-form {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      margin: 5px;
-    }
-
-    .message-form input {
-      width: 88%;
-      min-width: 200px;
-      border-radius: 50px;
-      border: 1px solid black;
-      margin: 5px;
-    }
-
-    .message-form button {
-      width: 10%;
-      padding: 2px 10px;
-      font-size: 15px;
-      color: #fff;
-      background-color: purple;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      min-width: 60px;
-    }
-
-    .chatroom {
-      width: 100%;
-      margin-left: 20px;
-      margin-right: 20px;
-      padding: 10px;
-    }
-
-    .timestamp {
-      color: black;
-      font-size: 10px;
-      padding: 0px 10px;
-    }
-
-    .close-chat {
-      align-self: flex-end;
-      text-align: right;
-    }
-
-  </style>
   <script>
     $('#message-form').on('submit', function(event){
             event.preventDefault();
@@ -345,7 +252,7 @@
                         var options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
                         var time = date.toLocaleString('en-US', options);
                         var displaySide = message.author == cur_user_pk ? 'right' : 'left'
-                        $('.message-container').append('<div class="message-box-'+displaySide+'"><span class="message-content">'+message.content+'</span><span class="timestamp">'+time+'</span></div>')
+                        $('.messages').append('<div class="message-box-'+displaySide+'"><span class="message-content">'+message.content+'</span><span class="timestamp">'+time+'</span></div>')
 
                     }
                     $('#message-input').val(''); 
