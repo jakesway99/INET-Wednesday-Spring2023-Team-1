@@ -709,11 +709,11 @@ def discover_events(request):
             event_time_final = "TBA"
         # else:
         # getting stripped standard time from datetime obj
-        # time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
-        # mil_time = time_object.time()
-        # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+        time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+        mil_time = time_object.time()
+        std_time = mil_time.strftime("%-I:%M" "%p").lower()
         # std_time = mil_time.strftime("%M").lower()
-        # event_time_final = std_time
+        event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
             str(event.start_date), "%Y-%m-%d"

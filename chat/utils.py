@@ -43,11 +43,13 @@ def chat_history(request, matched_pks):
             latest_message = r.messages.last()
             latest_message_content = None
             time = None
+            og_time = None
             if latest_message is not None:
                 latest_message_content = latest_message.content
                 time = getFormattedTime(latest_message.timestamp)
                 if len(latest_message_content) > 25:
                     latest_message_content = f"{latest_message_content[:25]}..."
+                og_time = latest_message.timestamp
             unread_messages = r.messages.filter(
                 Q(is_read=False) & Q(author=friend)
             ).count()
@@ -59,7 +61,7 @@ def chat_history(request, matched_pks):
                     "friend_name": f"{friend_account.first_name} {friend_account.last_name}",
                     "timestamp": time,
                     "unread_messages": unread_messages,
-                    "original_time": latest_message.timestamp,
+                    "original_time": og_time,
                 }
             )
 
