@@ -108,66 +108,31 @@
         </div>
         <h3>Messages</h3>
         <div class="messages-section">
+          {% for message in chat_history %}
           <div class="message-card">
-            <img
-              src="https://via.placeholder.com/70x70"
-              alt="Profile Picture"
-              class="message-picture"
-            />
+            <a
+              href="{% url 'chat:room' %}?friend_pk={{message.friend_pk}}"
+              class="message-link"
+            >
+              <img
+                src="{{message.friend_picture}}"
+                alt="Profile Picture"
+                class="message-picture"
+              />
+            </a>
             <div class="message-details">
-              <h3 class="message-sender">Jane Doe</h3>
-              <p class="message-preview">Hey there! How's it going?</p>
+              <h3 class="message-sender">{{message.friend_name}}</h3>
+              <p class="message-preview">{{message.latest_message}}</p>
             </div>
             <div class="message-time">
-              <p>3 mins</p>
-              <div class="message-count">1</div>
+              <p>{{message.timestamp}}</p>
+              {% if message.unread_messages > 0 %}
+              <div class="message-count">{{message.unread_messages}}</div>
+              {% endif %}
             </div>
           </div>
-          <div class="message-card">
-            <img
-              src="https://via.placeholder.com/70x70"
-              alt="Profile Picture"
-              class="message-picture"
-            />
-            <div class="message-details">
-              <h3 class="message-sender">Bob Smith</h3>
-              <p class="message-preview">What are you up to this weekend?</p>
-            </div>
-            <div class="message-time">
-              <p>10 mins</p>
-              <div class="message-count">3</div>
-            </div>
-          </div>
-          <div class="message-card">
-            <img
-              src="https://via.placeholder.com/70x70"
-              alt="Profile Picture"
-              class="message-picture"
-            />
-            <div class="message-details">
-              <h3 class="message-sender">Bob Smith</h3>
-              <p class="message-preview">What are you up to this weekend?</p>
-            </div>
-            <div class="message-time">
-              <p>10 mins</p>
-              <div class="message-count">3</div>
-            </div>
-          </div>
-          <div class="message-card">
-            <img
-              src="https://via.placeholder.com/70x70"
-              alt="Profile Picture"
-              class="message-picture"
-            />
-            <div class="message-details">
-              <h3 class="message-sender">Bob Smith</h3>
-              <p class="message-preview">What are you up to this weekend?</p>
-            </div>
-            <div class="message-time">
-              <p>10 mins</p>
-              <div class="message-count">3</div>
-            </div>
-          </div>
+
+          {% endfor %}
         </div>
         <div class="footer">
           <div class="discover-events-wrapper">

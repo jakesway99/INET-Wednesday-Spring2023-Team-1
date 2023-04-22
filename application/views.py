@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 
+
 # import os
 # from datetime import datetime
 import calendar
@@ -38,6 +39,7 @@ from .models import (
     EventList,
     SavedEvents,
 )
+from chat.utils import chat_history
 
 
 def get_pic(artist_id, spotify):
@@ -421,8 +423,12 @@ def profile(request):
         or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
+
     account = Account.objects.get(user=curr_user)
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -546,7 +552,10 @@ def discover(request):
 
     account = Account.objects.get(user=curr_user)
     discover_account = Account.objects.get(user=discover_user)
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -698,13 +707,13 @@ def discover_events(request):
             continue
         if time_string == "TBA":
             event_time_final = "TBA"
-        else:
-            # getting stripped standard time from datetime obj
-            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
-            mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
-            event_time_final = std_time
+        # else:
+        # getting stripped standard time from datetime obj
+        time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+        mil_time = time_object.time()
+        std_time = mil_time.strftime("%-I:%M" "%p").lower()
+        # std_time = mil_time.strftime("%M").lower()
+        event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
             str(event.start_date), "%Y-%m-%d"
@@ -860,8 +869,8 @@ def your_events(request):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
@@ -1011,7 +1020,10 @@ def match_profile(request, match_pk):
     matched_account = Account.objects.get(user=matched_user)
     interested_events, going_to_events = getSavedEvents(matched_user)
 
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -1075,8 +1087,8 @@ def getEventList(user_events):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
             this_event_date = datetime.datetime.strptime(
                 str(event.start_date), "%Y-%m-%d"

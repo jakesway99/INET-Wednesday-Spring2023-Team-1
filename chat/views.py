@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.db.models import Q
-
-from application.views import getMatchesData
 from .models import Room, Message
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from application.models import Account
+from application.views import getMatchesData
+from .utils import chat_history
 
 
 def getChatRoom(user1, user2):
@@ -57,12 +57,20 @@ def enterChat(request):
     chat_room = getChatRoom(user, friend)
     user_data = Account.objects.get(user=user).__dict__
     user_data.pop("_state")
-    context = {
-        "messages": chat_room.messages.all(),
-        "user": user_data,
-        "room": chat_room,
-        "friend": friend,
-    }
-    context.update({"profile_picture": account.profile_picture})
-    context.update({"matches_data": matches_data})
+    unread = chat_room.messages.exclude(is_read=True).exclude(author=user)
+    unread.update(is_read=True)
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
+    context = {}
+    context.update({"chat_history": history})
+    context.update(
+        {
+            "messages": chat_room.messages.all(),
+            "user": user_data,
+            "room": chat_room,
+            "friend": friend,
+        }
+    )
+    context["profile_picture"] = account.profile_picture
+    context["matches_data"] = matches_data
     return render(request, "chat/chatroom.html", context)
