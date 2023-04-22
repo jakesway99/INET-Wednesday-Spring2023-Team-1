@@ -23,6 +23,8 @@ def getFormattedTime(timestamp):
         mins_ago = int(delta.total_seconds()) // 60
         if mins_ago == 0:
             return "Now"
+        if mins_ago == 1:
+            return f"{mins_ago} minute ago"
         return f"{mins_ago} minutes ago"
     elif timestamp.date() == yesterday:
         return "Yesterday"
