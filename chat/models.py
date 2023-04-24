@@ -10,6 +10,12 @@ class Room(models.Model):
         User, on_delete=models.CASCADE, related_name="rooms_started_for"
     )
 
+    def __str__(self):
+        return (
+            f"{self.started_by.account.first_name} {self.started_by.account.last_name} - "
+            f"{self.started_for.account.first_name} {self.started_for.account.last_name} "
+        )
+
 
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="messages")
@@ -20,3 +26,6 @@ class Message(models.Model):
 
     class Meta:
         ordering = ["timestamp"]
+
+    def __str__(self):
+        return f"from: {self.author.account.first_name} {self.author.account.last_name}"
