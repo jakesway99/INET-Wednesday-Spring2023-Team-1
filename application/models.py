@@ -4,9 +4,6 @@ from django.core.validators import MinLengthValidator
 from django.contrib.postgres.fields import ArrayField
 
 
-# from django.contrib.postgres.fields import ArrayField
-
-
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
@@ -17,11 +14,17 @@ class Account(models.Model):
         upload_to="images/", default="images/placeholder.png"
     )
 
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
+
 
 class SavedEvents(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     interestedEvents = ArrayField(models.IntegerField(null=True), null=True)
     goingToEvents = ArrayField(models.IntegerField(null=True), null=True)
+
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
 
 
 class FavoriteSong(models.Model):
@@ -37,6 +40,9 @@ class FavoriteSong(models.Model):
     song5_id = models.CharField(max_length=50)
     song5_name_artist = models.CharField(max_length=300)
 
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
+
 
 class FavoriteArtist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,6 +57,9 @@ class FavoriteArtist(models.Model):
     artist5_id = models.CharField(max_length=50)
     artist5_name = models.CharField(max_length=300)
 
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
+
 
 class FavoriteAlbum(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -64,6 +73,9 @@ class FavoriteAlbum(models.Model):
     album4_name_artist = models.CharField(max_length=300)
     album5_id = models.CharField(max_length=50)
     album5_name_artist = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
 
 
 class GenreList(models.Model):
@@ -80,6 +92,9 @@ class FavoriteGenre(models.Model):
     genre3 = models.CharField(max_length=300)
     genre4 = models.CharField(max_length=300)
     genre5 = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
 
 
 class PromptList(models.Model):
@@ -102,12 +117,18 @@ class UserPrompts(models.Model):
     response4 = models.CharField(max_length=300)
     response5 = models.CharField(max_length=300)
 
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
+
 
 class Likes(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     likes = ArrayField(models.IntegerField(null=True), null=True)
     dislikes = ArrayField(models.IntegerField(null=True), null=True)
     matches = ArrayField(models.IntegerField(null=True), null=True)
+
+    def __str__(self):
+        return f"{self.user.account.first_name} {self.user.account.last_name}"
 
 
 class EventList(models.Model):

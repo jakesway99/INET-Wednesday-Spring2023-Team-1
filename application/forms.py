@@ -14,6 +14,7 @@ from .models import PromptList
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, Div
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
+from django.core.exceptions import ValidationError
 import datetime
 
 
@@ -134,6 +135,17 @@ class SongEdit(ModelForm):
         )
         self.helper.form_show_labels = False
 
+    def clean(self):
+        cleaned_data = super().clean()
+        song1 = cleaned_data.get('song1_id')
+        song2 = cleaned_data.get('song2_id')
+        song3 = cleaned_data.get('song3_id')
+        song4 = cleaned_data.get('song4_id')
+        song5 = cleaned_data.get('song5_id')
+
+        if len(set([song1, song2, song3, song4, song5])) != 5:
+            raise ValidationError('All songs must be unique.')
+
     class Meta:
         model = FavoriteSong
         fields = (
@@ -205,6 +217,17 @@ class ArtistEdit(ModelForm):
             Field("artist5_name", type="hidden"),
         )
         self.helper.form_show_labels = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        artist1 = cleaned_data.get('artist1_id')
+        artist2 = cleaned_data.get('artist2_id')
+        artist3 = cleaned_data.get('artist3_id')
+        artist4 = cleaned_data.get('artist4_id')
+        artist5 = cleaned_data.get('artist5_id')
+
+        if len(set([artist1, artist2, artist3, artist4, artist5])) != 5:
+            raise ValidationError('All artists must be unique.')
 
     class Meta:
         model = FavoriteArtist
@@ -278,6 +301,17 @@ class AlbumEdit(ModelForm):
         )
         self.helper.form_show_labels = False
 
+    def clean(self):
+        cleaned_data = super().clean()
+        album1 = cleaned_data.get('album1_id')
+        album2 = cleaned_data.get('album2_id')
+        album3 = cleaned_data.get('album3_id')
+        album4 = cleaned_data.get('album4_id')
+        album5 = cleaned_data.get('album5_id')
+
+        if len(set([album1, album2, album3, album4, album5])) != 5:
+            raise ValidationError('All albums must be unique.')
+
     class Meta:
         model = FavoriteAlbum
         fields = (
@@ -333,6 +367,17 @@ class GenreEdit(ModelForm):
             ),
         )
         self.helper.form_show_labels = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        genre1 = cleaned_data.get('genre1')
+        genre2 = cleaned_data.get('genre2')
+        genre3 = cleaned_data.get('genre3')
+        genre4 = cleaned_data.get('genre4')
+        genre5 = cleaned_data.get('genre5')
+
+        if len(set([genre1, genre2, genre3,genre4, genre5])) != 5:
+            raise ValidationError('All genres must be unique.')
 
     class Meta:
         model = FavoriteGenre
@@ -453,6 +498,17 @@ class PromptEdit(ModelForm):
             ),
         )
         self.helper.form_show_labels = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        prompt1 = cleaned_data.get('prompt1')
+        prompt2 = cleaned_data.get('prompt2')
+        prompt3 = cleaned_data.get('prompt3')
+        prompt4 = cleaned_data.get('prompt4')
+        prompt5 = cleaned_data.get('prompt5')
+
+        if len(set([prompt1, prompt2, prompt3, prompt4, prompt5])) != 5:
+            raise ValidationError('All prompt choices must be unique.')
 
     class Meta:
         model = UserPrompts
