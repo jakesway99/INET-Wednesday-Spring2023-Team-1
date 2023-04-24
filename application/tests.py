@@ -37,7 +37,7 @@ class HomeTestCase(TestCase):
     def test_profile_response(self):
         response = self.client.get(self.url)
         # Test if the response status code is 301 - redirect to login
-        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.status_code, 302)
 
     def test_account_register_page_exists(self):
         response = self.client.get("/account/register")

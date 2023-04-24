@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.views.generic import RedirectView
+from application import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,7 +29,7 @@ urlpatterns = [
     ),
     path("account/", include(("account.urls", "account"), namespace="account")),
     path("chat/", include(("chat.urls", "chat"), namespace="chat")),
-    path("", RedirectView.as_view(url="account/login", permanent=True)),
+    path("", views.home, name="home"),
     path("", include("django.contrib.auth.urls")),
 ]
 

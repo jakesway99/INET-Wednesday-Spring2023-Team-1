@@ -192,7 +192,10 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 
 def home(request):
-    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
+    if request.user.is_authenticated:
+        return redirect('application:profile')
+    else:
+        return redirect('account:login')
 
 
 @login_required
