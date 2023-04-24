@@ -150,6 +150,11 @@ body {
     margin-right: 20px;
 }
 
+.messages-section a {
+    text-decoration: none;
+    color: black;
+}
+
 .message-details {
     flex-grow: 1;
 }
