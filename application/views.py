@@ -256,6 +256,7 @@ def profile_edit(request):
             "genre_list": genres,
             "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
         }
+        validation_error = False
 
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
