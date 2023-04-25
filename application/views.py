@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -194,7 +194,10 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 
 def home(request):
-    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
+    if request.user.is_authenticated:
+        return redirect("application:profile")
+    else:
+        return redirect("account:login")
 
 
 @login_required
@@ -246,6 +249,20 @@ def profile_edit(request):
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
+        # used to display form validation errors
+        context = {
+            "OAuth": token,
+            "song_form": SongEdit(None, initial=initial_songs),
+            "artist_form": ArtistEdit(None, initial=initial_artists),
+            "album_form": AlbumEdit(None, initial=initial_albums),
+            "genre_form": GenreEdit(None, initial=initial_genres),
+            "prompt_form": PromptEdit(None, initial=initial_prompts),
+            "account_edit": AccountSettingsForm(initial=initial_acct_info),
+            "genre_list": genres,
+            "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
+        }
+        validation_error = False
+
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -262,6 +279,9 @@ def profile_edit(request):
                 )  # don't form yet, add user first
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["song_form"] = form
+                validation_error = True
 
         if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
@@ -277,6 +297,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["album_form"] = form
+                validation_error = True
 
         if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
@@ -292,6 +315,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["genre_form"] = form
+                validation_error = True
 
         if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
@@ -307,6 +333,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["artist_form"] = form
+                validation_error = True
 
         if "response1" in request.POST:
             if UserPrompts.objects.filter(
@@ -322,6 +351,12 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["prompt_form"] = form
+                validation_error = True
+
+        if validation_error:
+            return render(request, "application/profile_edit.html", context)
 
         if "first_name" in request.POST:
             if Account.objects.filter(
@@ -727,7 +762,7 @@ def discover_events(request):
         # getting stripped standard time from datetime obj
         time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
         mil_time = time_object.time()
-        std_time = mil_time.strftime("%-I:%M" "%p").lower()
+        std_time = mil_time.strftime("%I:%M %p").lstrip("0").lower()
         # std_time = mil_time.strftime("%M").lower()
         event_time_final = std_time
         # needed to remove old events from interested/going lists

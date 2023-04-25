@@ -37,7 +37,7 @@ class HomeTestCase(TestCase):
     def test_profile_response(self):
         response = self.client.get(self.url)
         # Test if the response status code is 301 - redirect to login
-        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.status_code, 302)
 
     def test_account_register_page_exists(self):
         response = self.client.get("/account/register")
@@ -46,38 +46,6 @@ class HomeTestCase(TestCase):
     def test_account_login_page_exists(self):
         response = self.client.get("/account/login")
         self.assertEqual(response.status_code, 200)
-
-    # def test_account_login_page_exists(self):
-    #     self.client.login(username=TEST_USER, password=TEST_USER_PASSWORD)
-    #     response = self.client.get("/application/profile")
-    #     self.assertEqual(response.status_code, 302)
-
-    def test_matches_section_exists(self):
-        # response = self.client.get(self.url)
-        # soup = BeautifulSoup(response.content, "html.parser")
-        # heading = soup.select_one("h2")
-        # self.assertIsNotNone(heading)
-        # self.assertEqual(heading.text, "Matches")
-        return
-
-    def test_meaningful_song_exists(self):
-        # response = self.client.get(self.url)
-        # Test if the response status code is 200
-        # self.assertEqual(response.status_code, 200)
-        # Test if the response contains the expected heading and paragraph
-        # soup = BeautifulSoup(response.content, "html.parser")
-        # heading = soup.select_one("h4")
-        # self.assertIsNotNone(heading)
-        # self.assertEqual(heading.text, "A song that has meaning to you")
-        return
-
-    # def test_discover_people_exists(self):
-    #     response = self.client.get('/application/profile')
-    #     self.assertEqual(response.status_code, 200)
-    #     soup = BeautifulSoup(response.content, "html.parser")
-    #     button = soup.select_one('button')
-    #     self.assertIsNotNone(button)
-    #     # self.assertEqual(button.text, "Discover People")
 
 
 class Profile(TestCase):
@@ -586,3 +554,27 @@ class DiscoverEvents(TestCase):
             {"search-button": "1", "search-events": "event1"},
         )
         self.assertEqual(response.context.dicts[3]["event_list"].__len__(), 1)
+
+    def test_discover_events_search(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(
+            reverse("application:events"),
+            {"search-button": "1", "search-events": "event1"},
+        )
+        self.assertEqual(response.context.dicts[3]["event_list"].__len__(), 1)
+
+    def test_discover_events_ainterested(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(
+            reverse("application:events"),
+            {"ainterested": "ainterested", "item": self.event1.pk},
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_discover_events_agoing(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(
+            reverse("application:events"),
+            {"agoing": "agoing", "item": self.event2.pk},
+        )
+        self.assertEqual(response.status_code, 302)

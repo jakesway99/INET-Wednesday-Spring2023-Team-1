@@ -83,28 +83,25 @@
                 <h3>Messages</h3>
                 <div class="messages-section">
                     {% for message in chat_history %}
-                    <div class="message-card">
-                      <a
-                        href="{% url 'chat:room' %}?friend_pk={{message.friend_pk}}"
-                        class="message-link"
-                      >
-                        <img
-                          src="{{message.friend_picture}}"
-                          alt="Profile Picture"
-                          class="message-picture"
-                        />
-                      </a>
-                      <div class="message-details">
-                        <h3 class="message-sender">{{message.friend_name}}</h3>
-                        <p class="message-preview">{{message.latest_message}}</p>
-                      </div>
-                      <div class="message-time">
-                        <p>{{message.timestamp}}</p>
-                        {% if message.unread_messages > 0 %}
-                        <div class="message-count">{{message.unread_messages}}</div>
-                        {% endif %}
-                      </div>
-                    </div>
+                    <a href="{% url 'chat:room' %}?friend_pk={{message.friend_pk}}" class="message-link">
+                        <div class="message-card">
+                            <img
+                            src="{{message.friend_picture}}"
+                            alt="Profile Picture"
+                            class="message-picture"
+                            />
+                            <div class="message-details">
+                                <h3 class="message-sender">{{message.friend_name}}</h3>
+                                <p class="message-preview">{{message.latest_message}}</p>
+                            </div>
+                            <div class="message-time">
+                                <p>{{message.timestamp}}</p>
+                                {% if message.unread_messages > 0 %}
+                                <div class="message-count">{{message.unread_messages}}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
                     {% endfor %}
                 </div>
 
