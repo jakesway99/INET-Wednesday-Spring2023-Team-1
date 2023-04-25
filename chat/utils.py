@@ -51,19 +51,18 @@ def chat_history(request, matched_pks):
                 if len(latest_message_content) > 25:
                     latest_message_content = f"{latest_message_content[:25]}..."
                 og_time = latest_message.timestamp
-            unread_messages = r.messages.filter(
-                Q(is_read=False) & Q(author=friend)
-            ).count()
-            response.append(
-                {
-                    "friend_pk": friend.pk,
-                    "latest_message": latest_message_content,
-                    "friend_picture": friend_account.profile_picture.url,
-                    "friend_name": f"{friend_account.first_name} {friend_account.last_name}",
-                    "timestamp": time,
-                    "unread_messages": unread_messages,
-                    "original_time": og_time,
-                }
-            )
-
+                unread_messages = r.messages.filter(
+                    Q(is_read=False) & Q(author=friend)
+                ).count()
+                response.append(
+                    {
+                        "friend_pk": friend.pk,
+                        "latest_message": latest_message_content,
+                        "friend_picture": friend_account.profile_picture.url,
+                        "friend_name": f"{friend_account.first_name} {friend_account.last_name}",
+                        "timestamp": time,
+                        "unread_messages": unread_messages,
+                        "original_time": og_time,
+                    }
+                )
     return sorted(response, key=lambda k: k["original_time"], reverse=True)
