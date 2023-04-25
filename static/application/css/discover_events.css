@@ -29,15 +29,79 @@ a {
 .nav-bar {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    z-index: 3;
-    height: 60px;
+    min-width: 100%;
+    z-index: 10001 !important;
+    min-height: 60px;
     align-items: center;
     justify-content: space-around;
     background: #e2b7cd 60%;
 }
 
-.events-header {
+.nav-bar ul {
+    display: inline-flex;
+    list-style: none;
+    color: rgb(94, 60, 100); 
+    font-size: 25px;
+    font-weight: 600; 
+    font-family: Averta;
+}
+
+.dropdown {
+    position: relative;
+    right: 100px;
+    top: 5px;
+}
+
+.dd {
+    width: 120px;
+    margin: 15px;
+    padding: 15px;
+    white-space: nowrap;
+}
+
+.nav-bar ul li a {
+    text-decoration: none;
+    color: rgb(94, 60, 100); 
+}
+
+.nav-bar ul li:hover {
+    background: pink;
+    border-radius: 2px;
+}
+
+.sub_menu {
+    display: none !important;
+}
+
+.nav-bar ul li:hover .sub_menu {
+    display: block !important;
+    position: absolute;
+    margin-top: 15px;
+    margin-left: -15px;
+    left: 10px;
+    background-color: #e2b7cd;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.nav-bar ul li:hover .sub_menu ul {
+    display: block !important;
+    margin: 10px;
+}
+
+.nav-bar ul li:hover .sub_menu ul li {
+    padding: 0px;
+    border-bottom: 1px dotted #fff;
+    background: transparent;
+    text-align: left;
+    font-size: 20px;
+
+}
+.nav-bar ul li:hover .sub_menu ul li a:hover {
+    color: white;
+}   
+
+
+/* .events-header {
     display: flex;
     padding: 10px;
     width: 30%;
@@ -49,10 +113,14 @@ a {
     font-weight: 600; 
     font-family: Averta;
     color: rgb(94, 60, 100); 
-}
+} */
+
+
 
 .search-container {
+    position: relative;
     width: 40%;
+    left: 150px;
 }
 
 .search-events {
@@ -148,6 +216,23 @@ a {
     margin-top: 10px;
 } */
 
+.ui-autocomplete{
+    z-index: 10001 !important;
+}
+.search-button {
+    position: relative;
+    font-size: 14px;
+    width: 12%;
+    height: 25%;
+    border-radius: 25px;
+    background-color: purple;
+    color: white;
+    border-color: purple;
+    border-style: solid;
+    cursor: pointer;
+    text-align: center;
+    /* z-index: 2; */
+}
 .event {
     position: relative;
     z-index: 10000;
@@ -322,4 +407,18 @@ display: inline-block;
     background-color: white;
     border-style: solid;
     color: purple;
+}
+
+.no_events {
+    position: relative;
+    width: 640px;
+    border: 15px solid #e2b7cd;
+    padding: 50px;
+    margin: 20px;
+    left: 380px;
+    color: rgb(94, 60, 100); 
+    text-align: center;
+    border: groove 1em #e2b7cd;
+    border-radius: 50%;
+    background: #cfd5d3;
 }

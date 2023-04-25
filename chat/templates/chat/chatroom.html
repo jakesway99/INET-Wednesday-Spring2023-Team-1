@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <title>Chatroom</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.css' %}"
+    />
+    <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
+
+    <script>
+      $( function() {
+        var raw_matches = [
+        {% for match in matches_data %}
+            "{{match.first_name}} {{match.last_name}}{{match.pk}}",
+        {% endfor %}
+        ];
+
+        var matches = [];
+        for (match in raw_matches) {
+            matches.push({label:raw_matches[match].slice(0,-1), value: raw_matches[match].slice(-1)});
+        };
+        $( "#matchsearch" ).autocomplete({
+            source: matches,
+            select: function(event, ui) {
+                event.preventDefault()
+                $("#matchsearch").val(ui.item.label);
+                var pk = ui.item.value;
+                var url_mask = "{% url 'application:match_profile' 99 %}".replace(/99/, pk.toString())
+                location.href = url_mask
+            }
+        });
+      });
+    </script>
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'application/css/profiles.css' %}"
+    />
+  </head>
+
+  <body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <div class="container">
+      <div class="left">
+        <div class="sidebar-profile">
+          <div class="profile-picture">
+            <a href="{% url 'application:profile' %}">
+              <img
+                src="{{ profile_picture.url }}"
+                alt="Image"
+                draggable="false"
+              />
+            </a>
+          </div>
+          <div class="profile">
+            <span class="profile-name">
+              <a href="{% url 'application:profile' %}" class="name"
+                >{{user.first_name}} {{user.last_name}}</a
+              >
+            </span>
+          </div>
+        </div>
+        <h2>Matches</h2>
+        <div class="matches" id="matches">
+          {% for match in matches_data %}
+          <div class="match">
+            <a href="{% url 'application:match_profile' match_pk=match.pk %}">
+              <img src="{{match.profile_picture}}" alt="Match 1" />
+            </a>
+            <span class="profile-name">
+              <a href="{% url 'application:match_profile' match_pk=match.pk %}"
+                >{{match.first_name}}</a
+              >
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        <h3>Search Matches</h3>
+        <div class="search-container">
+          <input
+            type="text"
+            placeholder="Search for matches..."
+            id="matchsearch"
+          />
+        </div>
+        <h3>Messages</h3>
+        <div class="messages-section">
+          {% for message in chat_history %}
+          <a href="{% url 'chat:room' %}?friend_pk={{message.friend_pk}}" class="message-link">
+            <div class="message-card">
+              <img
+                  src="{{message.friend_picture}}"
+                  alt="Profile Picture"
+                  class="message-picture"
+              />
+              <div class="message-details">
+                <h3 class="message-sender">{{message.friend_name}}</h3>
+                <p class="message-preview">{{message.latest_message}}</p>
+              </div>
+              <div class="message-time">
+                <p>{{message.timestamp}}</p>
+                {% if message.unread_messages > 0 %}
+                <div class="message-count">{{message.unread_messages}}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        <div class="footer">
+          <div class="discover-events-wrapper">
+            <a href="{% url 'application:events' %}">
+              <button class="discover-events-button">Discover Events</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="chatroom">
+        <div class="right-header">
+          <div class="logo">
+              <h3>NYUBeatBuddies</h3>
+          </div>
+          <div class="edit-profile">
+              <a href="{% url 'account:logout' %}">Logout</a>
+          </div>
+        </div>
+        <div class="message-section-right"> 
+          <div class="message-container" id="">          
+            <div class="chat-header">             
+              <div class="profile-name"> {{friend.first_name}} {{friend.last_name}}</div>
+              <div class="close-chat">
+                <a href="{% url 'application:match_profile' match_pk=friend.pk %}">&#x2715</a>
+              </div>
+            </div>
+            <div class="messages">
+              {% for m in messages %} {% if m.author.pk == user.user_id %}
+              <div class="message-box-right">
+                <span class="message-content">{{m.content}}</span>
+                <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
+              </div>
+              {% endif %} {% if m.author.pk != user.user_id %}
+              <div class="message-box-left">
+                <span class="message-content">{{m.content}}</span>
+                <span class="timestamp">{{ m.timestamp|date:"F j, Y, g:i a" }}</span>           
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+          <form class="message-form" id="message-form">
+            {% csrf_token %}
+            <input
+              type="text"
+              id="message-input"
+              name="message"
+              placeholder="Type your message..."
+            />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css"
+  />
+
+  <script>
+    $('#message-form').on('submit', function(event){
+            event.preventDefault();
+            var message = $('#message-input').val();
+            if ( message.replace(/\s/g, "") != "") {
+              $.ajax({
+                url: '/chat/postMessage',
+                data: {
+                  'content': message,
+                  'room':{{room.pk}},
+                  'user':{{user.user_id}}
+                },
+                  success: function (response) {
+                    var cur_user_pk = {{user.user_id}}
+
+                    $('.message-box-left').remove();
+                    $('.message-box-right').remove();
+                    for (let message of response.messages) {
+                        console.log("\n\n\n\n we have time",message.timestamp,typeof(message.timestamp),"\n\n\n")
+                        var date = new Date(message.timestamp);
+                        var options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+                        var time = date.toLocaleString('en-US', options);
+                        var displaySide = message.author == cur_user_pk ? 'right' : 'left'
+                        $('.messages').append('<div class="message-box-'+displaySide+'"><span class="message-content">'+message.content+'</span><span class="timestamp">'+time+'</span></div>')
+
+                    }
+                    $('#message-input').val(''); 
+                  }
+              })};
+          });
+  </script>
+</html>

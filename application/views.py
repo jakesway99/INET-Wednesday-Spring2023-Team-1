@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+
 
 # import os
 # from datetime import datetime
@@ -38,6 +39,7 @@ from .models import (
     EventList,
     SavedEvents,
 )
+from chat.utils import chat_history
 
 
 def get_pic(artist_id, spotify):
@@ -66,6 +68,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "song3_name_artist": user_fav_songs.song3_name_artist,
             "song4_name_artist": user_fav_songs.song4_name_artist,
             "song5_name_artist": user_fav_songs.song5_name_artist,
+            "song1_disp": user_fav_songs.song1_name_artist,
+            "song2_disp": user_fav_songs.song2_name_artist,
+            "song3_disp": user_fav_songs.song3_name_artist,
+            "song4_disp": user_fav_songs.song4_name_artist,
+            "song5_disp": user_fav_songs.song5_name_artist,
             "song1_id": user_fav_songs.song1_id,
             "song2_id": user_fav_songs.song2_id,
             "song3_id": user_fav_songs.song3_id,
@@ -83,6 +90,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "artist3_name": user_fav_artists.artist3_name,
             "artist4_name": user_fav_artists.artist4_name,
             "artist5_name": user_fav_artists.artist5_name,
+            "artist1_disp": user_fav_artists.artist1_name,
+            "artist2_disp": user_fav_artists.artist2_name,
+            "artist3_disp": user_fav_artists.artist3_name,
+            "artist4_disp": user_fav_artists.artist4_name,
+            "artist5_disp": user_fav_artists.artist5_name,
             "artist1_id": user_fav_artists.artist1_id,
             "artist2_id": user_fav_artists.artist2_id,
             "artist3_id": user_fav_artists.artist3_id,
@@ -100,6 +112,11 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
             "album3_name_artist": user_fav_albums.album3_name_artist,
             "album4_name_artist": user_fav_albums.album4_name_artist,
             "album5_name_artist": user_fav_albums.album5_name_artist,
+            "album1_disp": user_fav_albums.album1_name_artist,
+            "album2_disp": user_fav_albums.album2_name_artist,
+            "album3_disp": user_fav_albums.album3_name_artist,
+            "album4_disp": user_fav_albums.album4_name_artist,
+            "album5_disp": user_fav_albums.album5_name_artist,
             "album1_id": user_fav_albums.album1_id,
             "album2_id": user_fav_albums.album2_id,
             "album3_id": user_fav_albums.album3_id,
@@ -177,7 +194,10 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 
 def home(request):
-    return HttpResponse("Hello, world. You're at the NYUBeatBuddies application!")
+    if request.user.is_authenticated:
+        return redirect("application:profile")
+    else:
+        return redirect("account:login")
 
 
 @login_required
@@ -229,7 +249,20 @@ def profile_edit(request):
         return render(request, "application/profile_edit.html", context)
 
     elif request.method == "POST":
-        print("POST REQUEST: ", request.POST)
+        # used to display form validation errors
+        context = {
+            "OAuth": token,
+            "song_form": SongEdit(None, initial=initial_songs),
+            "artist_form": ArtistEdit(None, initial=initial_artists),
+            "album_form": AlbumEdit(None, initial=initial_albums),
+            "genre_form": GenreEdit(None, initial=initial_genres),
+            "prompt_form": PromptEdit(None, initial=initial_prompts),
+            "account_edit": AccountSettingsForm(initial=initial_acct_info),
+            "genre_list": genres,
+            "passw_change": PasswordChangeForm(None, initial=initial_passw_info),
+        }
+        validation_error = False
+
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
                 user=curr_user
@@ -246,6 +279,9 @@ def profile_edit(request):
                 )  # don't form yet, add user first
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["song_form"] = form
+                validation_error = True
 
         if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
@@ -261,6 +297,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["album_form"] = form
+                validation_error = True
 
         if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
@@ -276,6 +315,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["genre_form"] = form
+                validation_error = True
 
         if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
@@ -291,6 +333,9 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["artist_form"] = form
+                validation_error = True
 
         if "response1" in request.POST:
             if UserPrompts.objects.filter(
@@ -306,6 +351,12 @@ def profile_edit(request):
                 profile_update = form.save(commit=False)
                 profile_update.user = curr_user
                 profile_update.save()
+            else:
+                context["prompt_form"] = form
+                validation_error = True
+
+        if validation_error:
+            return render(request, "application/profile_edit.html", context)
 
         if "first_name" in request.POST:
             if Account.objects.filter(
@@ -407,8 +458,12 @@ def profile(request):
         or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
+
     account = Account.objects.get(user=curr_user)
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -532,7 +587,10 @@ def discover(request):
 
     account = Account.objects.get(user=curr_user)
     discover_account = Account.objects.get(user=discover_user)
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -684,14 +742,13 @@ def discover_events(request):
             continue
         if time_string == "TBA":
             event_time_final = "TBA"
-        else:
-            # getting stripped standard time from datetime obj
-            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
-            mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
-            event_time_final = std_time
-
+        # else:
+        # getting stripped standard time from datetime obj
+        time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+        mil_time = time_object.time()
+        std_time = mil_time.strftime("%I:%M %p").lstrip("0").lower()
+        # std_time = mil_time.strftime("%M").lower()
+        event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
             str(event.start_date), "%Y-%m-%d"
@@ -744,57 +801,66 @@ def discover_events(request):
     context.update({"going_to_events_pk": going_to_events_pk})
 
     if request.method == "POST":
-        curr_event = request.POST.get("item")
-        button1 = request.POST.get("interested")
-        button2 = request.POST.get("going")
-        button3 = request.POST.get("ainterested")
-        button4 = request.POST.get("agoing")
+        if request.POST.get("search-button"):
+            search_string = request.POST.get("search-events").lower()
+            filtered_events = []
+            for event in event_list:
+                if search_string in event[0].lower():
+                    filtered_events.append(event)
+            del context["event_list"]
+            context.update({"event_list": filtered_events})
+        else:
+            curr_event = request.POST.get("item")
+            button1 = request.POST.get("interested")
+            button2 = request.POST.get("going")
+            button3 = request.POST.get("ainterested")
+            button4 = request.POST.get("agoing")
 
-        try:
-            saved_events_object = SavedEvents.objects.get(user=request.user)
-        except Exception:
-            saved_events_object = SavedEvents.objects.create(user=request.user)
+            try:
+                saved_events_object = SavedEvents.objects.get(user=request.user)
+            except Exception:
+                saved_events_object = SavedEvents.objects.create(user=request.user)
 
-        saved_events_object.interestedEvents = (
-            []
-            if saved_events_object.interestedEvents is None
-            else saved_events_object.interestedEvents
-        )
-        saved_events_object.goingToEvents = (
-            []
-            if saved_events_object.goingToEvents is None
-            else saved_events_object.goingToEvents
-        )
+            saved_events_object.interestedEvents = (
+                []
+                if saved_events_object.interestedEvents is None
+                else saved_events_object.interestedEvents
+            )
+            saved_events_object.goingToEvents = (
+                []
+                if saved_events_object.goingToEvents is None
+                else saved_events_object.goingToEvents
+            )
 
-        # adding event to interested list
-        if button1 == "interested":
-            if int(curr_event) not in saved_events_object.interestedEvents:
-                saved_events_object.interestedEvents.append(curr_event)
-                saved_events_object.save()
-                return redirect("application:events")
+            # adding event to interested list
+            if button1 == "interested":
+                if int(curr_event) not in saved_events_object.interestedEvents:
+                    saved_events_object.interestedEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # adding event to going list
-        if button2 == "going":
-            if int(curr_event) not in saved_events_object.goingToEvents:
-                saved_events_object.goingToEvents.append(curr_event)
-                saved_events_object.save()
-                return redirect("application:events")
+            # adding event to going list
+            if button2 == "going":
+                if int(curr_event) not in saved_events_object.goingToEvents:
+                    saved_events_object.goingToEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # removing event from interested list
-        if button3 == "ainterested":
-            if int(curr_event) in saved_events_object.interestedEvents:
-                # remove the event from the table
-                saved_events_object.interestedEvents.remove(int(curr_event))
-                saved_events_object.save()
-                return redirect("application:events")
+            # removing event from interested list
+            if button3 == "ainterested":
+                if int(curr_event) in saved_events_object.interestedEvents:
+                    # remove the event from the table
+                    saved_events_object.interestedEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:events")
 
-        # removing event from going list
-        if button4 == "agoing":
-            if int(curr_event) in saved_events_object.goingToEvents:
-                # remove the event from the table
-                saved_events_object.goingToEvents.remove(int(curr_event))
-                saved_events_object.save()
-                return redirect("application:events")
+            # removing event from going list
+            if button4 == "agoing":
+                if int(curr_event) in saved_events_object.goingToEvents:
+                    # remove the event from the table
+                    saved_events_object.goingToEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:events")
 
     # when the interested button is clicked - if using ajax
     # if request.method == 'POST':
@@ -822,6 +888,139 @@ def discover_events(request):
     #     saved_events.save()
 
     return render(request, "application/discover_events.html", context)
+
+
+@login_required
+def your_events(request):
+    event_list = []
+    all_events = EventList.objects.all()
+    for event in all_events:
+        time_string = event.start_time
+        if event.start_date < datetime.date.today():
+            continue
+        if time_string == "TBA":
+            event_time_final = "TBA"
+        else:
+            # getting stripped standard time from datetime obj
+            time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
+            mil_time = time_object.time()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
+            event_time_final = std_time
+        # needed to remove old events from interested/going lists
+        this_event_date = datetime.datetime.strptime(
+            str(event.start_date), "%Y-%m-%d"
+        ).date()
+
+        # getting month name and day number from datetime obj
+        month_num = event.start_date.month
+        month_name = calendar.month_abbr[month_num]
+        day_num = event.start_date.day
+
+        # getting day of the week based on datetime obj
+        dow_num = event.start_date.weekday()
+        day_name = calendar.day_abbr[dow_num]
+
+        event_list.append(
+            (
+                event.event_name,
+                month_name,
+                day_num,
+                day_name,
+                event_time_final,
+                event.venue_name,
+                event.city,
+                event.img_url,
+                event.pk,
+                this_event_date,
+            )
+        )
+    curr_user = request.user
+    account = Account.objects.get(user=curr_user)
+    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events_pk = []
+    going_to_events_pk = []
+
+    for item in interested_events:
+        curr_event = item[-2]
+        interested_events_pk.append(curr_event)
+
+    for item in going_to_events:
+        curr_event = item[-2]
+        going_to_events_pk.append(curr_event)
+
+    context = {}
+    context.update({"profile_picture": account.profile_picture})
+    context.update({"first_name": account.first_name})
+    context.update({"event_list": event_list})
+    context.update({"interested_events": interested_events})
+    context.update({"going_to_events": going_to_events})
+    context.update({"interested_events_pk": interested_events_pk})
+    context.update({"going_to_events_pk": going_to_events_pk})
+
+    if request.method == "POST":
+        if request.POST.get("search-button"):
+            search_string = request.POST.get("search-events").lower()
+            filtered_events = []
+            for event in event_list:
+                if search_string in event[0].lower():
+                    filtered_events.append(event)
+            del context["event_list"]
+            context.update({"event_list": filtered_events})
+        else:
+            curr_event = request.POST.get("item")
+            button1 = request.POST.get("interested")
+            button2 = request.POST.get("going")
+            button3 = request.POST.get("ainterested")
+            button4 = request.POST.get("agoing")
+
+            try:
+                saved_events_object = SavedEvents.objects.get(user=request.user)
+            except Exception:
+                saved_events_object = SavedEvents.objects.create(user=request.user)
+
+            saved_events_object.interestedEvents = (
+                []
+                if saved_events_object.interestedEvents is None
+                else saved_events_object.interestedEvents
+            )
+            saved_events_object.goingToEvents = (
+                []
+                if saved_events_object.goingToEvents is None
+                else saved_events_object.goingToEvents
+            )
+
+            # adding event to interested list
+            if button1 == "interested":
+                if int(curr_event) not in saved_events_object.interestedEvents:
+                    saved_events_object.interestedEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:your_events")
+
+            # adding event to going list
+            if button2 == "going":
+                if int(curr_event) not in saved_events_object.goingToEvents:
+                    saved_events_object.goingToEvents.append(curr_event)
+                    saved_events_object.save()
+                    return redirect("application:your_events")
+
+            # removing event from interested list
+            if button3 == "ainterested":
+                if int(curr_event) in saved_events_object.interestedEvents:
+                    # remove the event from the table
+                    saved_events_object.interestedEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:your_events")
+
+            # removing event from going list
+            if button4 == "agoing":
+                if int(curr_event) in saved_events_object.goingToEvents:
+                    # remove the event from the table
+                    saved_events_object.goingToEvents.remove(int(curr_event))
+                    saved_events_object.save()
+                    return redirect("application:your_events")
+
+    return render(request, "application/your_events.html", context)
 
 
 @login_required
@@ -856,7 +1055,10 @@ def match_profile(request, match_pk):
     matched_account = Account.objects.get(user=matched_user)
     interested_events, going_to_events = getSavedEvents(matched_user)
 
+    matched_pks = [match["pk"] for match in matches_data]
+    history = chat_history(request, matched_pks)
     context = {}
+    context.update({"chat_history": history})
     context.update(initial_songs)
     context.update(initial_artists)
     context.update(initial_albums)
@@ -920,8 +1122,8 @@ def getEventList(user_events):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            # std_time = mil_time.strftime("%M").lower()
+            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
+            std_time = mil_time.strftime("%M").lower()
             event_time_final = std_time
             this_event_date = datetime.datetime.strptime(
                 str(event.start_date), "%Y-%m-%d"

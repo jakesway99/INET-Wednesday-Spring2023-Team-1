@@ -39,16 +39,13 @@ ALLOWED_HOSTS = [
     "nyubeatbuddies-env.eba-vkfe3kpa.us-west-2.elasticbeanstalk.com",
     "dev.nyubeatbuddies.com",
     "development-nbb.us-west-2.elasticbeanstalk.com",
+    "172.31.18.103",
+    "172.31.16.88",
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
-    "spotipy",
-    "application",
-    "account",
-    "crispy_forms",
-    "crispy_bootstrap4",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -57,6 +54,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "storages",
+    "spotipy",
+    "application",
+    "account",
+    "chat",
+    "crispy_forms",
+    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [

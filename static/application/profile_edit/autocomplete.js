@@ -1,89 +1,89 @@
     $( function() {
 
-      $( "#id_song1_name_artist" ).autocomplete({
+      $( "#id_song1_disp" ).autocomplete({
         source: getSongList,
         select: saveTrkOnClick1,
         change: selectOnly,
       });
 
-       $( "#id_song2_name_artist" ).autocomplete({
+       $( "#id_song2_disp" ).autocomplete({
         source: getSongList,
         select: saveTrkOnClick2,
         change: selectOnly,
       });
 
-       $( "#id_song3_name_artist" ).autocomplete({
+       $( "#id_song3_disp" ).autocomplete({
         source: getSongList,
         select: saveTrkOnClick3,
         change: selectOnly,
       });
-       $( "#id_song4_name_artist" ).autocomplete({
+       $( "#id_song4_disp" ).autocomplete({
         source: getSongList,
         select: saveTrkOnClick4,
         change: selectOnly,
       });
-       $( "#id_song5_name_artist" ).autocomplete({
+       $( "#id_song5_disp" ).autocomplete({
         source: getSongList,
         select: saveTrkOnClick5,
         change: selectOnly,
       });
 
-       $( "#id_album1_name_artist" ).autocomplete({
+       $( "#id_album1_disp" ).autocomplete({
         source: getAlbumList,
         select: saveAlbOnClick1,
         change: selectOnly,
       });
 
-      $( "#id_album2_name_artist" ).autocomplete({
+      $( "#id_album2_disp" ).autocomplete({
         source: getAlbumList,
         select: saveAlbOnClick2,
         change: selectOnly,
       });
 
-      $( "#id_album3_name_artist" ).autocomplete({
+      $( "#id_album3_disp" ).autocomplete({
         source: getAlbumList,
         select: saveAlbOnClick3,
         change: selectOnly,
       });
 
-      $( "#id_album4_name_artist" ).autocomplete({
+      $( "#id_album4_disp" ).autocomplete({
         source: getAlbumList,
         select: saveAlbOnClick4,
         change: selectOnly,
       });
 
-      $( "#id_album5_name_artist" ).autocomplete({
+      $( "#id_album5_disp" ).autocomplete({
         source: getAlbumList,
         select: saveAlbOnClick5,
         change: selectOnly,
       });
 
 
-      $( "#id_artist1_name" ).autocomplete({
+      $( "#id_artist1_disp" ).autocomplete({
         source: getArtistList,
         select: saveArtOnClick1,
         change: selectOnly,
       });
 
-      $( "#id_artist2_name" ).autocomplete({
+      $( "#id_artist2_disp" ).autocomplete({
         source: getArtistList,
         select: saveArtOnClick2,
         change: selectOnly,
       });
 
-      $( "#id_artist3_name" ).autocomplete({
+      $( "#id_artist3_disp" ).autocomplete({
         source: getArtistList,
         select: saveArtOnClick3,
         change: selectOnly,
       });
 
-      $( "#id_artist4_name" ).autocomplete({
+      $( "#id_artist4_disp" ).autocomplete({
         source: getArtistList,
         select: saveArtOnClick4,
         change: selectOnly,
       });
 
-      $( "#id_artist5_name" ).autocomplete({
+      $( "#id_artist5_disp" ).autocomplete({
         source: getArtistList,
         select: saveArtOnClick5,
         change: selectOnly,
@@ -172,31 +172,35 @@
           event.preventDefault();
           $("#id_song1_id").val(ui.item.value);
           $("#id_song1_name_artist").val(ui.item.label);
+          $("#id_song1_disp").val(ui.item.label);
 
-          <!-- var test1 = $("#songID1").val(); -->
       };
       function saveTrkOnClick2(event, ui) {
           event.preventDefault();
           $("#id_song2_id").val(ui.item.value);
           $("#id_song2_name_artist").val(ui.item.label);
+          $("#id_song2_disp").val(ui.item.label);
 
       };
       function saveTrkOnClick3(event, ui) {
           event.preventDefault();
           $("#id_song3_id").val(ui.item.value);
           $("#id_song3_name_artist").val(ui.item.label);
+          $("#id_song3_disp").val(ui.item.label);
 
       };
       function saveTrkOnClick4(event, ui) {
           event.preventDefault();
           $("#id_song4_id").val(ui.item.value);
           $("#id_song4_name_artist").val(ui.item.label);
+          $("#id_song4_disp").val(ui.item.label);
 
       };
       function saveTrkOnClick5(event, ui) {
           event.preventDefault();
           $("#id_song5_id").val(ui.item.value);
           $("#id_song5_name_artist").val(ui.item.label);
+          $("#id_song5_disp").val(ui.item.label);
 
       };
 
@@ -232,30 +236,35 @@
         event.preventDefault();
         $("#id_album1_id").val(ui.item.value);
         $("#id_album1_name_artist").val(ui.item.label);
+        $("#id_album1_disp").val(ui.item.label);
 
       };
       function saveAlbOnClick2(event, ui) {
         event.preventDefault();
         $("#id_album2_id").val(ui.item.value);
         $("#id_album2_name_artist").val(ui.item.label);
+        $("#id_album2_disp").val(ui.item.label);
 
       };
       function saveAlbOnClick3(event, ui) {
         event.preventDefault();
         $("#id_album3_id").val(ui.item.value);
         $("#id_album3_name_artist").val(ui.item.label);
+        $("#id_album3_disp").val(ui.item.label);
 
       };
       function saveAlbOnClick4(event, ui) {
         event.preventDefault();
         $("#id_album4_id").val(ui.item.value);
         $("#id_album4_name_artist").val(ui.item.label);
+        $("#id_album4_disp").val(ui.item.label);
 
       };
       function saveAlbOnClick5(event, ui) {
         event.preventDefault();
         $("#id_album5_id").val(ui.item.value);
         $("#id_album5_name_artist").val(ui.item.label);
+        $("#id_album5_disp").val(ui.item.label);
 
       };
 
@@ -283,30 +292,35 @@
         event.preventDefault();
         $("#id_artist1_id").val(ui.item.value);
         $("#id_artist1_name").val(ui.item.label);
+        $("#id_artist1_disp").val(ui.item.label);
 
       };
       function saveArtOnClick2(event, ui) {
         event.preventDefault();
         $("#id_artist2_id").val(ui.item.value);
         $("#id_artist2_name").val(ui.item.label);
+        $("#id_artist2_disp").val(ui.item.label);
 
       };
       function saveArtOnClick3(event, ui) {
         event.preventDefault();
         $("#id_artist3_id").val(ui.item.value);
         $("#id_artist3_name").val(ui.item.label);
+        $("#id_artist3_disp").val(ui.item.label);
 
       };
       function saveArtOnClick4(event, ui) {
         event.preventDefault();
         $("#id_artist4_id").val(ui.item.value);
         $("#id_artist4_name").val(ui.item.label);
+        $("#id_artist4_disp").val(ui.item.label);
 
       };
       function saveArtOnClick5(event, ui) {
         event.preventDefault();
         $("#id_artist5_id").val(ui.item.value);
         $("#id_artist5_name").val(ui.item.label);
+        $("#id_artist5_disp").val(ui.item.label);
 
       };
 
