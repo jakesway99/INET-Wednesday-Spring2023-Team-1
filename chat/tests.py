@@ -3,9 +3,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .views import getChatRoom
 from application.models import Account, Likes
-from datetime import datetime, timedelta
-from .utils import getFormattedTime
-from pytz import timezone
 
 
 class ChatTests(TestCase):
