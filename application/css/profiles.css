@@ -296,6 +296,10 @@ a {
     text-decoration: none;
 }
 
+.edit-profile .report {
+    font-size: 40px;
+}
+
 .right-section-content {
     padding: 20px;
     padding-bottom: 0;

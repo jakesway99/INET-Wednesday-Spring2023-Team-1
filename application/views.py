@@ -565,7 +565,7 @@ def discover(request):
     curr_user = request.user
     # Set variable to see if the user is out of matches
     if curr_user.pk == CURRENT_DISCOVER:
-        out_of_users = True # out of users = true
+        out_of_users = True # out of users = true       
     else:
         out_of_users = False # out of users = false
 

@@ -119,6 +119,7 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
+                        <a href="#"style="font-size: 22px;"title="Report User">&#9872;</a>
                         <a href="{% url 'account:logout' %}">Logout</a>
                     </div>
                 </div>
@@ -497,8 +498,8 @@
 
     </style>
     <script>
-        $(document).ready(function () {
-            if (out_of_users) {
+        $(document).ready(function () {         
+            if (out_of_users === "True") {
                 $('#no-more-users').dialog({
                     width: 300,
                     height: 365,
