@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -195,9 +195,9 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect('application:profile')
+        return redirect("application:profile")
     else:
-        return redirect('account:login')
+        return redirect("account:login")
 
 
 @login_required
@@ -746,7 +746,7 @@ def discover_events(request):
         # getting stripped standard time from datetime obj
         time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
         mil_time = time_object.time()
-        std_time = mil_time.strftime("%-I:%M" "%p").lower()
+        std_time = mil_time.strftime("%I:%M %p").lstrip("0").lower()
         # std_time = mil_time.strftime("%M").lower()
         event_time_final = std_time
         # needed to remove old events from interested/going lists

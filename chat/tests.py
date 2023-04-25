@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .views import getChatRoom
 from application.models import Account, Likes
+from datetime import datetime, timedelta
+from .utils import getFormattedTime
+from pytz import timezone
 
 
 class ChatTests(TestCase):
@@ -67,3 +70,19 @@ class ChatTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context.dicts[3]["friend"], self.user2)
+
+    def test_time(self):
+        tz = timezone("EST")
+        now = datetime.now(tz)
+        one_hour = now - timedelta(hours=1)
+        two_hour = now - timedelta(hours=2)
+        yesterday = now - timedelta(hours=24)
+        five_days = now - timedelta(days=5)
+        res1 = getFormattedTime(one_hour)
+        res2 = getFormattedTime(two_hour)
+        res3 = getFormattedTime(yesterday)
+        res4 = getFormattedTime(five_days)
+        self.assertEqual(res1, "1 hour ago")
+        self.assertEqual(res2, "2 hours ago")
+        self.assertEqual(res3, "Yesterday")
+        self.assertEqual(res4, five_days.strftime("%m/%d"))

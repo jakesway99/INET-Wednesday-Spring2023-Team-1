@@ -28,7 +28,6 @@ def getFormattedTime(timestamp):
         return f"{mins_ago} minutes ago"
     elif timestamp.date() == yesterday:
         return "Yesterday"
-    print("\n\n\n", today, yesterday, "\n\n\n")
     return timestamp.strftime("%m/%d")
 
 
