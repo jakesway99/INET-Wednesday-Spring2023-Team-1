@@ -563,6 +563,12 @@ def discover(request):
     CURRENT_DISCOVER = getNextUserPk(request)
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
+    # Set variable to see if the user is out of matches
+    if curr_user.pk == CURRENT_DISCOVER:
+        out_of_users = True
+    else:
+        out_of_users = False
+
     matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
@@ -605,6 +611,7 @@ def discover(request):
     context.update({"discover_profile_picture": discover_account.profile_picture})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"out_of_users": out_of_users})
     return render(request, "application/discover.html", context)
 
 
@@ -689,6 +696,13 @@ def getDiscoverProfile(request):
     # Get a random user not seen before
     next_user_pk = getNextUserPk(request)
     next_user = User.objects.get(pk=next_user_pk)
+
+    # Set variable to see if the user is out of matches
+    if curr_user.pk == next_user_pk:
+        out_of_users = True  # out of users = true
+    else:
+        out_of_users = False  # out of users = false
+
     interested_events, going_to_events = getSavedEvents(next_user)
 
     # Pass next user to front end
@@ -729,6 +743,7 @@ def getDiscoverProfile(request):
     }
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"out_of_users": out_of_users})
     return JsonResponse(context)
 
 

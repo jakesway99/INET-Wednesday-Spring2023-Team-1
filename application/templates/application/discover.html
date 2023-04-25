@@ -15,6 +15,9 @@
         <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
 
         <script>
+
+          var out_of_users = "{{ out_of_users }}";
+
           $( function() {
             var raw_matches = [
             {% for match in matches_data %}
@@ -116,6 +119,7 @@
                         <h3>NYUBeatBuddies</h3>
                     </div>
                     <div class="edit-profile">
+                        <a href="#"style="font-size: 22px;"title="Report User">&#9872;</a>
                         <a href="{% url 'account:logout' %}">Logout</a>
                     </div>
                 </div>
@@ -379,6 +383,24 @@
                     </div>
                 </div>
             </div>
+            <div id="no-more-users" style="display:none;">
+                <div style="display: flex;justify-content: center;flex-direction: column;align-items: center;">
+                    <p class="no_users_title" style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">No more potential matches</p>
+                    <p class="no_users_sub" style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 17px; margin: 0;">
+                    You've seen all potential matches in your area. <br> Please check back later to find more people to connect with!</p>
+                    <div style="display: flex;justify-content: center;flex-direction: row">
+                        <button class="close-discover-button"
+                            onClick="javascript:clickinner(this);">Back To Profile</button>
+                    </div>
+                </div>
+                <script>
+                    // redirect back to profile
+                    function clickinner(mybtn){
+                       location.href="{% url 'application:profile' %}";
+                    };
+                </script>
+            </div>
+        
         </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -428,6 +450,28 @@
             text-align: center;
         }
 
+        .close-discover-button {
+            display: block;
+            position: relative;
+            top: 50px;
+            padding: 15px 20px;
+            font-size: 20px;
+            color: #fff;
+            background-color: purple;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            width: 180px;
+            text-align: center;
+        }
+
+        /* .close-discover-button:hover {
+            background-color: white;
+            color: purple;
+            border:4px solid purple;
+        } */
+
         .chat-match-button {
             display: block;
             padding: 10px 20px;
@@ -441,8 +485,30 @@
             width: 100px;
             text-align: center;
         }
+
+        .no_users_title {
+            text-align: center;
+        }
+
+        .no_users_sub {
+            text-align: center;
+            position: relative;
+            top: 20px;
+        }
+
     </style>
     <script>
+        $(document).ready(function () {         
+            if (out_of_users === "True") {
+                $('#no-more-users').dialog({
+                    width: 300,
+                    height: 365,
+                    modal: true,
+                    resizable: false,
+                    draggable: true,
+                })
+            }
+        });
         $(document).ready(function () {
             $('#like-button').click(function () {
                 $.ajax({
@@ -535,6 +601,17 @@
 
                             })
                         }
+                        if (response.out_of_users) {
+                            $('#no-more-users').dialog({
+                                width: 300,
+                                height: 365,
+                                modal: true,
+                                resizable: false,
+                                draggable: true,
+
+                            })
+                        }
+
 
                     }
                 });
@@ -621,6 +698,16 @@
                                 '<div class="match"><a href="profile/match/'+match.pk+'/"><img src=' + match.profile_picture + ' alt="Match 1"></a>' +
                                 '<span class="profile-name"><a href="profile/match/'+match.pk+'/">' + match.first_name + '</a></span></div>'
                             )
+                        }
+                        if (response.out_of_users) {
+                            $('#no-more-users').dialog({
+                                width: 300,
+                                height: 365,
+                                modal: true,
+                                resizable: false,
+                                draggable: true,
+
+                            })
                         }
                     }
                 });
