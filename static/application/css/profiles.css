@@ -814,11 +814,12 @@ a {
     border-radius: 50px;
     border: 1px solid black;
     margin: 5px;
+    padding: 10px;
 }
 
 .message-form button {
     width: 10%;
-    padding: 2px 10px;
+    padding: 10px;
     font-size: 15px;
     color: #fff;
     background-color: purple;
@@ -838,3 +839,4 @@ a {
     font-size: 10px;
     padding: 0px 10px;
 }
+
