@@ -565,9 +565,9 @@ def discover(request):
     curr_user = request.user
     # Set variable to see if the user is out of matches
     if curr_user.pk == CURRENT_DISCOVER:
-        out_of_users = True # out of users = true       
+        out_of_users = True
     else:
-        out_of_users = False # out of users = false
+        out_of_users = False
 
     matches_data = getMatchesData(curr_user)
     user_data = Account.objects.get(user=curr_user).__dict__
@@ -699,10 +699,9 @@ def getDiscoverProfile(request):
 
     # Set variable to see if the user is out of matches
     if curr_user.pk == next_user_pk:
-        out_of_users = True    # out of users = true
+        out_of_users = True  # out of users = true
     else:
-        out_of_users = False    # out of users = false
-
+        out_of_users = False  # out of users = false
 
     interested_events, going_to_events = getSavedEvents(next_user)
 
