@@ -294,15 +294,11 @@ a {
 }
 
 .edit-profile {
-    padding: 15px;
     text-align: right;
 }
 
 .edit-profile a {
-    color: purple;
     font-weight: bold;
-    font-size: 18px;
-    margin-right: 10px;
     text-decoration: none;
 }
 
@@ -840,3 +836,27 @@ a {
     padding: 0px 10px;
 }
 
+.edit-button {
+    display: block;
+    padding: 5px 10px;
+    margin: 15px 0px;
+    font-size: 12px;
+    color: #fff;
+    background-color: purple;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.logout {
+    text-align: right;
+}
+
+.logout a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.report-user {
+    padding-top: 10px;
+}
