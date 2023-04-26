@@ -276,7 +276,7 @@ a {
 .right-header {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: right;
 }
 
 .logo {
@@ -294,7 +294,10 @@ a {
 }
 
 .edit-profile {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    text-align: center;
+    padding: 10px 5px;
 }
 
 .edit-profile a {
@@ -303,7 +306,7 @@ a {
 }
 
 .right-section-content {
-    padding: 20px;
+    padding: 5px 20px;
     padding-bottom: 0;
     overflow-x: hidden;
     overflow-y: auto;
@@ -616,11 +619,18 @@ a {
     height: 10px;
 }
 
-.savedEvents {
+.events {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     width: 100%;
+}
+
+.savedEvents {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 50%;
 }
 
 .savedEvents h3 {
@@ -638,15 +648,31 @@ a {
     border: 2px solid black;
     padding: 10px;
     margin-top: 5px;
-    width: 50%;
+    margin-right: 5px;
 }
 
 .going-to-events {
     border: 2px solid black;
     padding: 10px;
     margin-top: 5px;
-    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.pastEvents {
+    display: flex;
+    flex-direction: column;
     width: 50%;
+}
+
+.pastEvents h3 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 30px;
+    font-weight: 600; 
+    font-family: Verdana;
+    text-shadow: 2px 2px 2px white;
+    color: rgb(94, 60, 100); 
 }
 
 .interested-event img {
@@ -846,10 +872,14 @@ a {
     border: none;
     border-radius: 50px;
     cursor: pointer;
+    text-align: center;
 }
 
 .logout {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    text-align: center;
+    padding: 10px 5px;
 }
 
 .logout a {
@@ -858,5 +888,6 @@ a {
 }
 
 .report-user {
-    padding-top: 10px;
+    padding: 10px 10px;
+    margin-top: 10px;
 }
