@@ -919,8 +919,7 @@ def your_events(request):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            std_time = mil_time.strftime("%M").lower()
+            std_time = mil_time.strftime("%I:%M %p").lstrip("0").lower()
             event_time_final = std_time
         # needed to remove old events from interested/going lists
         this_event_date = datetime.datetime.strptime(
@@ -1137,8 +1136,7 @@ def getEventList(user_events):
             # getting stripped standard time from datetime obj
             time_object = datetime.datetime.strptime(event.start_time, "%H:%M:%S")
             mil_time = time_object.time()
-            # std_time = mil_time.strftime("%-I:%M" "%p").lower()
-            std_time = mil_time.strftime("%M").lower()
+            std_time = mil_time.strftime("%I:%M %p").lstrip("0").lower()
             event_time_final = std_time
             this_event_date = datetime.datetime.strptime(
                 str(event.start_date), "%Y-%m-%d"
