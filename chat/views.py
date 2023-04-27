@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.db.models import Q
 from .models import Room, Message
@@ -7,6 +8,7 @@ from django.http import JsonResponse
 from application.models import Account
 from application.views import getMatchesData
 from .utils import chat_history
+import pusher
 
 
 def getChatRoom(user1, user2):
@@ -44,6 +46,21 @@ def postMessage(request):
         }
         for message in messages
     ]
+    pusher_client = pusher.Pusher(
+        app_id=os.environ["PUSHER_APP_ID"],
+        key=os.environ["PUSHER_KEY"],
+        secret=os.environ["PUSHER_SECRET"],
+        cluster="us3",
+        ssl=True,
+    )
+
+    channel_name = f"room-{message.room.pk}"
+    event_name = f"new-message-{user.pk}"
+    pusher_client.trigger(
+        channel_name,
+        event_name,
+        {"content": message.content, "timestamp": str(message.timestamp)},
+    )
     return JsonResponse({"messages": updated_messages})
 
 
