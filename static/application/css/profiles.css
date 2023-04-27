@@ -438,6 +438,21 @@ a {
     padding: 5px;
 }
 
+.iframe-container {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    height: 175px
+}
+
+.click_song {
+    cursor: pointer;
+}
+
+.right-section-top .left-column .click_song:hover {
+    color: #bc62d8;
+}
+
 .image-frame {
     display: flex;
     flex-wrap: wrap;

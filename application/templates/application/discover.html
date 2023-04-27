@@ -14,8 +14,29 @@
         <link rel="stylesheet" href="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.css' %}">
         <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
 
-        <script>
+        <script type="text/javascript">
+            window.onSpotifyIframeApiReady = (IFrameAPI) => {
+            const element = document.getElementById('embed-iframe');
+            const options = {
+              width: '100%',
+              height: '200',
+              uri: 'spotify:track:{{song1_id}}'
+            };
 
+            const callback = (EmbedController) => {
+              document.querySelectorAll('.click_song').forEach(
+                click_song => {
+                  click_song.addEventListener('click', () => {
+                    EmbedController.loadUri(click_song.dataset.spotifyId)
+                    EmbedController.togglePlay();
+                  });
+                })
+            };
+            IFrameAPI.createController(element, options, callback);
+          };
+        </script>
+
+        <script>
           var out_of_users = "{{ out_of_users }}";
 
           $( function() {
@@ -145,14 +166,28 @@
                             <div class="songs-column">
                                 <h3>Top Songs</h3>
                                 <ul>
-                                    <li id="discover_song1" style="background-color:#cdb4db;">{{song1_name_artist}}</li>
-                                    <li id="discover_song2" style="background-color:#ffc8dd;">{{song2_name_artist}}</li>
-                                    <li id="discover_song3" style="background-color:#ffafcc;">{{song3_name_artist}}</li>
-                                    <li id="discover_song4" style="background-color:#bde0fe;">{{song4_name_artist}}</li>
-                                    <li id="discover_song5" style="background-color:#a2d2ff;">{{song5_name_artist}}</li>
+
+                                <li class="click_song" data-spotify-id="spotify:track:{{song1_id}}" style="background-color: #cdb4db">
+                                    {{song1_name_artist}}
+                                </li>
+                                <li class="click_song" data-spotify-id="spotify:track:{{song2_id}}" style="background-color: #ffc8dd">
+                                    {{song2_name_artist}}
+                                </li>
+                                <li class="click_song" data-spotify-id="spotify:track:{{song3_id}}" style="background-color: #ffafcc">
+                                    {{song3_name_artist}}
+                                </li>
+                                <li class="click_song" data-spotify-id="spotify:track:{{song4_id}}" style="background-color: #bde0fe">
+                                    {{song4_name_artist}}
+                                </li>
+                                <li class="click_song" data-spotify-id="spotify:track:{{song5_id}}" style="background-color: #a2d2ff">
+                                    {{song5_name_artist}}
                                 </ul>
                             </div>
                             <ul>
+                                <div class="iframe-container">
+                                    <div id="embed-iframe"></div>
+                                    <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
+                                </div>
                                 <div>
                                     <h3>About me</h3>
                                 </div>

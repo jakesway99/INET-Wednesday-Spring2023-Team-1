@@ -24,6 +24,8 @@
     />
     <script src="{% static 'application/profile_edit/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
 
+
+
     <style>
       :root {
         --badge1: "M125 0L106.292 20.4271L81.5938 7.54167L71.0938 33.0417L43.4167 29.25L42.4167 56.75L15.0938 62.5L23.6667 88.6771L0 103.292L17.1771 125.01L0 146.708L23.6667 161.323L15.0938 187.5L42.4167 193.26L43.4167 220.75L71.0938 216.969L81.5938 242.469L106.292 229.583L125 250L143.719 229.583L168.406 242.469L178.927 216.969L206.594 220.75L207.594 193.26L234.917 187.5L226.333 161.323L250 146.708L232.823 125.01L250 103.292L226.333 88.6771L234.917 62.5L207.594 56.75L206.594 29.25L178.927 33.0417L168.406 7.54167L143.719 20.4271L125 0Z";
@@ -632,8 +634,29 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="{% static 'application/css/profiles.css' %}"
-    />
+      href="{% static 'application/css/profiles.css' %}"/>
+
+    <script type="text/javascript">
+      window.onSpotifyIframeApiReady = (IFrameAPI) => {
+        const element = document.getElementById('embed-iframe');
+        const options = {
+          width: '100%',
+          height: '200',
+          uri: 'spotify:track:{{song1_id}}'
+        };
+
+        const callback = (EmbedController) => {
+          document.querySelectorAll('.click_song').forEach(
+            click_song => {
+              click_song.addEventListener('click', () => {
+                EmbedController.loadUri(click_song.dataset.spotifyId)
+                EmbedController.togglePlay();
+              });
+            })
+        };
+        IFrameAPI.createController(element, options, callback);
+      };
+    </script>
 
     <script>
       $( function() {
@@ -659,14 +682,14 @@
         });
       });
     </script>
-  </head>
-
-  <body>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous">
+    </script>
+  </head>
+
+  <body>
     <div class="container">
       <div class="left">
         <div class="sidebar-profile">
@@ -760,24 +783,28 @@
               <div class="songs-column">
                 <h3>Your Top Songs</h3>
                 <ul>
-                  <li style="background-color: #cdb4db">
+                  <li class="click_song" data-spotify-id="spotify:track:{{song1_id}}" style="background-color: #cdb4db">
                     {{song1_name_artist}}
                   </li>
-                  <li style="background-color: #ffc8dd">
+                  <li class="click_song" data-spotify-id="spotify:track:{{song2_id}}" style="background-color: #ffc8dd">
                     {{song2_name_artist}}
                   </li>
-                  <li style="background-color: #ffafcc">
+                  <li class="click_song" data-spotify-id="spotify:track:{{song3_id}}" style="background-color: #ffafcc">
                     {{song3_name_artist}}
                   </li>
-                  <li style="background-color: #bde0fe">
+                  <li class="click_song" data-spotify-id="spotify:track:{{song4_id}}" style="background-color: #bde0fe">
                     {{song4_name_artist}}
                   </li>
-                  <li style="background-color: #a2d2ff">
+                  <li class="click_song" data-spotify-id="spotify:track:{{song5_id}}" style="background-color: #a2d2ff">
                     {{song5_name_artist}}
-                  </li>
                 </ul>
               </div>
               <ul>
+                <div class="iframe-container">
+                  <div id="embed-iframe"></div>
+                  <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
+                </div>
+
                 <div>
                   <h3>About you</h3>
                 </div>
