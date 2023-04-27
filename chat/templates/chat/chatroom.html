@@ -49,6 +49,12 @@
         });
       });
     </script>
+    <script>
+      $(document).ready(function() {
+        var container = $('.messages');
+        container.scrollTop(container.prop("scrollHeight"));
+      });
+    </script>
 
     <link
       rel="stylesheet"
@@ -218,6 +224,7 @@
 
                     }
                     $('#message-input').val(''); 
+                    $('.messages').scrollTop($('.messages')[0].scrollHeight);
                   }
               })};
           });
@@ -240,8 +247,17 @@
       var date = new Date(message.timestamp);
       var options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
       var time = date.toLocaleString('en-US', options);
-      console.log("Time in pusher: ", time)
-      $('.messages').append('<div class="message-box-left"><span class="message-content">'+message.content+'</span><span class="timestamp">'+time+'</span></div>')
+      var newMessage = $('<div class="message-box-left"><span class="message-content">'+message.content+'</span><span class="timestamp">'+time+'</span></div>');
+      $('.messages').append(newMessage);
+      $('.messages').scrollTop($('.messages')[0].scrollHeight);
+      newMessage.addClass('highlight');
+      setTimeout(function() {
+        newMessage.animate({backgroundColor: 'transparent'}, 3000, function() {
+          console.log("\n\n\n Timeout time \n\n\n\n")
+          newMessage.removeClass('highlight');
+        });
+      }, 4000);
+      
     });
   </script>
 </html>
