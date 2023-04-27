@@ -951,78 +951,127 @@
               </div>
             </div>
           </div>
-          <div class="savedEvents">
-            <div class="interested-events" id="interested-events">
-              <h3>Interested Events</h3>
-              {% for item in interested_events %}
-              <div class="interested-event">
-                <img src="{{item.7}}" />
-                <div class="date-time">
-                  <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
-                  <span id="day_time">
-                    {{ item.3 }} &#x2022; {{ item.4 }}
-                  </span>
-                </div>
-                <div>
-                  <span id="event_name"> {{ item.0 }} </span><br />
-                  <span id="venue_name_city"> {{ item.5 }} </span>
-                  <!-- <span> -->
-                  <!-- <button name = "delete_interested" class="delete_i"> X </button> -->
-                  <!-- </span> -->
-                </div>
-                <form method="POST">
-                  {% csrf_token %}
-                  <input
-                    type="hidden"
-                    id="item"
-                    name="item"
-                    value="{{ item.8 }}"
-                  />
-                  <span class="z"
-                    ><button
-                      name="delete_interested"
-                      class="delete_i"
-                      value="interested"
+          <div class="events">
+            <div class="pastEvents">
+              {% if past_events %}
+              <div class="interested-events" id="past-events">
+                <h3>Past Events</h3>
+                {% for item in past_events %}
+                <div class="interested-event">
+                  <img src="{{item.7}}" />
+                  <div class="date-time">
+                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                    <span id="day_time">
+                      {{ item.3 }} &#x2022; {{ item.4 }}
+                    </span>
+                  </div>
+                  <div>
+                    <span id="event_name"> {{ item.0 }} </span><br />
+                    <span id="venue_name_city"> {{ item.5 }} </span>
+                    <!-- <span> -->
+                    <!-- <button name = "delete_interested" class="delete_i"> X </button> -->
+                    <!-- </span> -->
+                  </div>
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input
+                      type="hidden"
+                      id="item"
+                      name="item"
+                      value="{{ item.8 }}"
+                    />
+                    <span class="z"
+                      ><button
+                        name="delete_going"
+                        class="delete_g"
+                        value="going"
+                      >
+                        X
+                      </button></span
                     >
-                      X
-                    </button></span
-                  >
-                </form>
+                  </form>
+                </div>
+                {% endfor %}
               </div>
-              {% endfor %}
+              {% endif %}
             </div>
-            <div class="going-to-events" id="going-to-events">
-              <h3>Going to Events</h3>
-              {% for item in going_to_events %}
-              <div class="going-to-event">
-                <img src="{{item.7}}" />
-                <div class="date-time">
-                  <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
-                  <span id="day_time">
-                    {{ item.3 }} &#x2022; {{ item.4 }}
-                  </span>
+            <div class="savedEvents">
+              {% if interested_events %}
+              <div class="interested-events" id="interested-events">
+                <h3>Interested Events</h3>
+                {% for item in interested_events %}
+                <div class="interested-event">
+                  <img src="{{item.7}}" />
+                  <div class="date-time">
+                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                    <span id="day_time">
+                      {{ item.3 }} &#x2022; {{ item.4 }}
+                    </span>
+                  </div>
+                  <div>
+                    <span id="event_name"> {{ item.0 }} </span><br />
+                    <span id="venue_name_city"> {{ item.5 }} </span>
+                    <!-- <span> -->
+                    <!-- <button name = "delete_interested" class="delete_i"> X </button> -->
+                    <!-- </span> -->
+                  </div>
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input
+                      type="hidden"
+                      id="item"
+                      name="item"
+                      value="{{ item.8 }}"
+                    />
+                    <span class="z"
+                      ><button
+                        name="delete_interested"
+                        class="delete_i"
+                        value="interested"
+                      >
+                        X
+                      </button></span
+                    >
+                  </form>
                 </div>
-                <div>
-                  <span id="event_name"> {{ item.0 }} </span><br />
-                  <span id="venue_name_city"> {{ item.5 }} </span>
-                </div>
-
-                <form method="POST">
-                  {% csrf_token %}
-                  <input
-                    type="hidden"
-                    id="item"
-                    name="item"
-                    value="{{ item.8 }}"
-                  />
-                  <span class="y"
-                    ><button name="delete_going" class="delete_g" value="going">
-                      X
-                    </button></span
-                  >
-                </form>
+                {% endfor %}
               </div>
-              {% endfor %}
+              {% endif %}
+              {% if going_to_events %}
+              <div class="going-to-events" id="going-to-events">
+                <h3>Going to Events</h3>
+                {% for item in going_to_events %}
+                <div class="going-to-event">
+                  <img src="{{item.7}}" />
+                  <div class="date-time">
+                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                    <span id="day_time">
+                      {{ item.3 }} &#x2022; {{ item.4 }}
+                    </span>
+                  </div>
+                  <div>
+                    <span id="event_name"> {{ item.0 }} </span><br />
+                    <span id="venue_name_city"> {{ item.5 }} </span>
+                  </div>
+
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input
+                      type="hidden"
+                      id="item"
+                      name="item"
+                      value="{{ item.8 }}"
+                    />
+                    <span class="y"
+                      ><button name="delete_going" class="delete_g" value="going">
+                        X
+                      </button></span
+                    >
+                  </form>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
             </div>
           </div>
           <div class="footer">

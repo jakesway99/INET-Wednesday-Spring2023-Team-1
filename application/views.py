@@ -436,7 +436,7 @@ def profile(request):
     curr_user = request.user
     matches_data = getMatchesData(curr_user)
 
-    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events, going_to_events, past_events = getSavedEvents(curr_user)
 
     user_data = Account.objects.get(user=curr_user).__dict__
     user_data.pop("_state")
@@ -476,6 +476,7 @@ def profile(request):
     context.update({"profile_picture": account.profile_picture})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
 
     # remove old events from interested/going list
     tz = timezone("EST")
@@ -483,7 +484,7 @@ def profile(request):
     curr_date_pre = curr_date_time.strftime("%Y-%m-%d")
     curr_date = datetime.datetime.strptime(str(curr_date_pre), "%Y-%m-%d").date()
 
-    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events, going_to_events, past_events = getSavedEvents(curr_user)
 
     try:
         saved_events_object = SavedEvents.objects.get(user=request.user)
@@ -589,7 +590,7 @@ def discover(request):
         artist_art,
         album_art,
     ) = get_favorite_data(discover_user, spotify, True)
-    interested_events, going_to_events = getSavedEvents(discover_user)
+    interested_events, going_to_events, past_events = getSavedEvents(discover_user)
 
     account = Account.objects.get(user=curr_user)
     discover_account = Account.objects.get(user=discover_user)
@@ -611,6 +612,7 @@ def discover(request):
     context.update({"discover_profile_picture": discover_account.profile_picture})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
     context.update({"out_of_users": out_of_users})
     return render(request, "application/discover.html", context)
 
@@ -703,7 +705,7 @@ def getDiscoverProfile(request):
     else:
         out_of_users = False  # out of users = false
 
-    interested_events, going_to_events = getSavedEvents(next_user)
+    interested_events, going_to_events, past_events = getSavedEvents(next_user)
 
     # Pass next user to front end
     CURRENT_DISCOVER = next_user.pk
@@ -743,6 +745,7 @@ def getDiscoverProfile(request):
     }
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
     context.update({"out_of_users": out_of_users})
     return JsonResponse(context)
 
@@ -794,9 +797,10 @@ def discover_events(request):
         )
     curr_user = request.user
     account = Account.objects.get(user=curr_user)
-    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events, going_to_events, past_events = getSavedEvents(curr_user)
     interested_events_pk = []
     going_to_events_pk = []
+    past_events_pk = []
 
     for item in interested_events:
         curr_event = item[-2]
@@ -812,8 +816,10 @@ def discover_events(request):
     context.update({"event_list": event_list})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
     context.update({"interested_events_pk": interested_events_pk})
     context.update({"going_to_events_pk": going_to_events_pk})
+    context.update({"past_events_pk": past_events_pk})
 
     if request.method == "POST":
         if request.POST.get("search-button"):
@@ -951,9 +957,10 @@ def your_events(request):
         )
     curr_user = request.user
     account = Account.objects.get(user=curr_user)
-    interested_events, going_to_events = getSavedEvents(curr_user)
+    interested_events, going_to_events, past_events = getSavedEvents(curr_user)
     interested_events_pk = []
     going_to_events_pk = []
+    past_events_pk = []
 
     for item in interested_events:
         curr_event = item[-2]
@@ -969,8 +976,10 @@ def your_events(request):
     context.update({"event_list": event_list})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
     context.update({"interested_events_pk": interested_events_pk})
     context.update({"going_to_events_pk": going_to_events_pk})
+    context.update({"past_events_pk": past_events_pk})
 
     if request.method == "POST":
         if request.POST.get("search-button"):
@@ -1067,7 +1076,7 @@ def match_profile(request, match_pk):
 
     account = Account.objects.get(user=curr_user)
     matched_account = Account.objects.get(user=matched_user)
-    interested_events, going_to_events = getSavedEvents(matched_user)
+    interested_events, going_to_events, past_events = getSavedEvents(matched_user)
 
     matched_pks = [match["pk"] for match in matches_data]
     history = chat_history(request, matched_pks)
@@ -1087,6 +1096,7 @@ def match_profile(request, match_pk):
     context.update({"matched_profile_picture": matched_account.profile_picture})
     context.update({"interested_events": interested_events})
     context.update({"going_to_events": going_to_events})
+    context.update({"past_events": past_events})
     return render(request, "application/match_profile.html", context)
 
 
@@ -1115,20 +1125,24 @@ def getSavedEvents(user):
     goingToEvents = (
         [] if saved_events.goingToEvents is None else saved_events.goingToEvents
     )
-    interested_events = getEventList(
-        interestedEvents,
-    )
-    going_to_events = getEventList(goingToEvents)
 
-    return interested_events, going_to_events
+    interested_events = getEventList(interestedEvents, False)
+    going_to_events = getEventList(goingToEvents, False)
+    past_events = getEventList(goingToEvents, True)
+
+    return interested_events, going_to_events, past_events
 
 
-def getEventList(user_events):
+def getEventList(user_events, pastEvents):
     saved_events = []
     for event_id in user_events:
         event = EventList.objects.get(pk=event_id)
         if event.start_date < datetime.date.today():
-            continue
+            if pastEvents is False:
+                continue
+        else:
+            if pastEvents is True:
+                continue
         time_string = event.start_time
         if time_string == "TBA":
             event_time_final = "TBA"
