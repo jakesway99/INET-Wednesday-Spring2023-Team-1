@@ -276,13 +276,14 @@ a {
 .right-header {
     display: flex;
     flex-direction: row;
-    justify-content: right;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .logo {
     display: flex;
     padding-top: 10px;
-    width: 70%;
+    min-width: 80%;
     justify-content: center;
 }
 
@@ -295,9 +296,10 @@ a {
 
 .edit-profile {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     text-align: center;
     padding: 10px 5px;
+    min-width: fit-content;
 }
 
 .edit-profile a {
@@ -874,9 +876,10 @@ a {
 
 .logout {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     text-align: center;
     padding: 10px 5px;
+    min-width: fit-content;
 }
 
 .logout a {
