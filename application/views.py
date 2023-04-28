@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-
+from common.decorators import moderator_no_access, moderator_only
 
 # import os
 # from datetime import datetime
@@ -195,12 +195,22 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect("application:profile")
+        if request.user.groups.filter(name="Moderator").exists():
+            return redirect("application:reports")
+        else:
+            return redirect("application:profile")
     else:
         return redirect("account:login")
 
 
+@moderator_only
+def reports(request):
+    context = {}
+    return render(request, "application/reports.html", context)
+
+
 @login_required
+@moderator_no_access
 def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
@@ -430,6 +440,7 @@ def getMatchesData(user):
 
 
 @login_required
+@moderator_no_access
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -558,6 +569,7 @@ def profile(request):
 
 
 @login_required
+@moderator_no_access
 def discover(request):
     global CURRENT_DISCOVER
     CURRENT_DISCOVER = getNextUserPk(request)
@@ -632,11 +644,15 @@ def getNextUserPk(request):
     all_users_pks = list(
         User.objects.filter(is_superuser=False).values_list("pk", flat=True)
     )
-    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
-        return curr_user.pk
     for pk in previous_likes_and_dislikes:
         if pk in all_users_pks:
             all_users_pks.remove(pk)
+    all_moderators = Group.objects.get(name="Moderator").user_set.all()
+    for mod in all_moderators:
+        if mod.pk in all_users_pks:
+            all_users_pks.remove(mod.pk)
+    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
+        return curr_user.pk
     random_user_pk = random.choice(all_users_pks)
     return random_user_pk
 
@@ -748,6 +764,7 @@ def getDiscoverProfile(request):
 
 
 @login_required
+@moderator_no_access
 def discover_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -906,6 +923,7 @@ def discover_events(request):
 
 
 @login_required
+@moderator_no_access
 def your_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -1038,6 +1056,7 @@ def your_events(request):
 
 
 @login_required
+@moderator_no_access
 def match_profile(request, match_pk):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
@@ -1091,6 +1110,7 @@ def match_profile(request, match_pk):
 
 
 @login_required
+@moderator_no_access
 def remove_match(request, match_pk):
     user_likes = Likes.objects.get(user=request.user)
     user_likes.likes.remove(int(match_pk))

@@ -14,4 +14,5 @@ urlpatterns = [
     path(
         "profile/match/remove/<int:match_pk>/", views.remove_match, name="remove_match"
     ),
+    path("reports", views.reports, name="reports"),
 ]
