@@ -407,6 +407,21 @@
         color: darkred;
         padding: 5px;
       }
+<!--      .about-you {-->
+<!--        display: flex;-->
+<!--        flex-direction: column;-->
+<!--      }-->
+
+<!--      .about-you ul {-->
+<!--        list-style-type: none;-->
+<!--        padding: 0;-->
+<!--        margin: 0;-->
+<!--      }-->
+
+<!--      .about-you h3,-->
+<!--      .about-you h4 {-->
+<!--        text-align: center;-->
+<!--      }-->
 
       .bottom-column {
         display: flex;
@@ -804,14 +819,14 @@
                   <div id="embed-iframe"></div>
                   <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
                 </div>
-
+                <div class = "about-you">
                 <div>
-                  <h3>About you</h3>
+                  <h3>About You</h3>
                 </div>
 
                 <li>
                   <div>
-                    <h4>{{prompt1}}</h4>
+                    <h4>{{prompt1}}:</h4>
                     <div class="answer">
                       <div class="box">{{response1}}</div>
                     </div>
@@ -819,7 +834,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt2}}</h4>
+                    <h4>{{prompt2}}:</h4>
                     <div class="answer">
                       <div class="box">{{response2}}</div>
                     </div>
@@ -827,7 +842,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt3}}</h4>
+                    <h4>{{prompt3}}:</h4>
                     <div class="answer">
                       <div class="box">{{response3}}</div>
                     </div>
@@ -835,7 +850,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt4}}</h4>
+                    <h4>{{prompt4}}:</h4>
                     <div class="answer">
                       <div class="box">{{response4}}</div>
                     </div>
@@ -843,12 +858,13 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt5}}</h4>
+                    <h4>{{prompt5}}:</h4>
                     <div class="answer">
                       <div class="box">{{response5}}</div>
                     </div>
                   </div>
                 </li>
+                </div>
               </ul>
               <ul>
                 <div id="favorite-genres">

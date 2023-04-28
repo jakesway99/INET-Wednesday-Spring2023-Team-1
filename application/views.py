@@ -647,7 +647,8 @@ def getNextUserPk(request):
     for pk in previous_likes_and_dislikes:
         if pk in all_users_pks:
             all_users_pks.remove(pk)
-    all_moderators = Group.objects.get(name="Moderator").user_set.all()
+    moderators = Group.objects.get_or_create(name="Moderator")[0]
+    all_moderators = moderators.user_set.all()
     for mod in all_moderators:
         if mod.pk in all_users_pks:
             all_users_pks.remove(mod.pk)
