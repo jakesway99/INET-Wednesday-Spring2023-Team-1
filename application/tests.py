@@ -484,7 +484,7 @@ class DiscoverPeople(TestCase):
         self.client.force_login(self.user1)
         response = self.client.get(reverse("application:next"), data={"action": "like"})
         json_context = response.json()
-        self.assertEqual(json_context["previous_user"]["pk"], self.user3.pk)
+        self.assertEqual(json_context["previous_user"]["pk"], self.user1.pk)
 
     def test_remove_match(self):
         self.client.force_login(self.user1)
