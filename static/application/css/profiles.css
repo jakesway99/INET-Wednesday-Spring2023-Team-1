@@ -446,6 +446,22 @@ a {
     cursor: pointer;
 }
 
+.about-you {
+display: flex;
+flex-direction: column;
+}
+
+.about-you ul {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.about-you h3,
+.about-you h4 {
+text-align: center;
+}
+
 .right-section-top .left-column .click_song:hover {
     color: #bc62d8;
 }
@@ -874,4 +890,32 @@ a {
 
 .report-user {
     padding-top: 10px;
+}
+
+.report_user_title {
+    text-align: center;
+}
+
+.report_user_sub {
+    text-align: center;
+    position: relative;
+    top: 5px;
+}
+
+.report-text-area {
+    margin-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 21px;
+    font-size: 0.95em;
+}
+
+.submit-report-button {
+    display: block;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: purple;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
 }
