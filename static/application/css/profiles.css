@@ -651,13 +651,13 @@ a {
     width: 100%;
 }
 
-.savedEvents {
+.saved-events {
     display: flex;
     flex-direction: column;
     width: 50%;
 }
 
-.savedEvents h3 {
+.saved-events h3 {
     display: flex;
     justify-content: center;
     margin-bottom: 15px;
@@ -666,6 +666,12 @@ a {
     font-family: Verdana;
     text-shadow: 2px 2px 2px white;
     color: rgb(94, 60, 100); 
+}
+
+.past-events {
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 .interested-events {
@@ -684,6 +690,7 @@ a {
     display: flex;
     flex-direction: column;
     width: 50%;
+    justify-content: center;
 }
 
 .pastEvents h3 {

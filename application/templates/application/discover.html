@@ -340,54 +340,70 @@
                             </div>
                         </div>
                     </div>
-                    <div class="savedEvents">
-                        <div class="interested-events" id="interested-events">
-                            <h3> Interested Events </h3>
-                            {% for item in interested_events %}
-                                <div class = "interested-event">
-                                    <img src={{item.7}}>
-                                    <div class="date-time">
-                                        <span id = "date" >
-                                            {{ item.1 }} {{ item.2 }}
-                                        </span><br/>
-                                        <span id = "day_time" >
-                                            {{ item.3 }} &#x2022; {{ item.4 }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span id = "event_name" >
-                                            {{ item.0 }}
-                                        </span><br/>
-                                        <span id = "venue_name_city" >
-                                            {{ item.5 }} 
-                                        </span>
-                                    </div>
-                                </div> 
-                            {% endfor %}
+                    <div class="events">
+                        {% if past_events %}
+                        <div class="pastEvents" id="pastEvents">
+                            <div class="past-events">
+                                <h3>Past Events</h3>
+                                {% for item in past_events %}
+                                <div class="interested-event">
+                                <img src="{{item.7}}" />
+                                <div class="date-time">
+                                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                    <span id="day_time">
+                                    {{ item.3 }} &#x2022; {{ item.4 }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span id="event_name"> {{ item.0 }} </span><br />
+                                    <span id="venue_name_city"> {{ item.5 }} </span>
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </div>    
                         </div>
-                        <div class="going-to-events" id="going-to-events">
-                            <h3> Going to Events </h3>
-                            {% for item in going_to_events %}
-                                <div class = "going-to-event">
-                                    <img src={{item.7}}>
-                                    <div class="date-time">
-                                        <span id = "date" >
-                                            {{ item.1 }} {{ item.2 }}
-                                        </span><br/> 
-                                        <span id = "day_time" >
-                                            {{ item.3 }} &#x2022; {{ item.4 }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span id = "event_name" >
-                                            {{ item.0 }}
-                                        </span><br/>
-                                        <span id = "venue_name_city" >
-                                            {{ item.5 }} 
-                                        </span> 
-                                    </div> 
-                                </div> 
-                            {% endfor %}
+                        {% endif %}
+                        <div class="saved-events" id="saved-events">
+                            {% if interested_events %}
+                            <div class="interested-events" id="interested-events">
+                                <h3>Interested Events</h3>
+                                {% for item in interested_events %}
+                                <div class="interested-event">
+                                <img src="{{item.7}}" />
+                                <div class="date-time">
+                                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                    <span id="day_time">
+                                    {{ item.3 }} &#x2022; {{ item.4 }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span id="event_name"> {{ item.0 }} </span><br />
+                                    <span id="venue_name_city"> {{ item.5 }} </span>
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if going_to_events %}
+                            <div class="going-to-events" id="going-to-events">
+                                <h3>Going to Events</h3>
+                                {% for item in going_to_events %}
+                                <div class="going-to-event">
+                                <img src="{{item.7}}" />
+                                <div class="date-time">
+                                    <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                    <span id="day_time">
+                                    {{ item.3 }} &#x2022; {{ item.4 }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span id="event_name"> {{ item.0 }} </span><br />
+                                    <span id="venue_name_city"> {{ item.5 }} </span>
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="footer footer-swipe">
@@ -602,7 +618,19 @@
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name); 
-                        $('.interested-events').empty();
+                        $('.pastEvents').empty();
+                        $('.pastEvents').html('<div class="past-events">')
+                        $('.past-events').html('<h3> Past Events </h3>')
+                        for (let item of response.past_events) {
+                            $('.past-events').append(
+                                '<div class="interested-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }
+                        $('.pastEvents').append('</div>')  
+                        $('.saved-events').empty();
+                        $('.saved-events').html('<div class="interested-events">')
                         $('.interested-events').html('<h3> Interested Events </h3>')
                         for (let item of response.interested_events) {
                             $('.interested-events').append(
@@ -611,15 +639,16 @@
                                 '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
                             )
                         }
-                        $('.going-to-events').empty();
+                        $('.saved-events').append('</div>')
+                        $('.saved-events').append('<div class="going-to-events">')
                         $('.going-to-events').html('<h3> Going to Events </h3>')
                         for (let item of response.going_to_events) {
                             $('.going-to-events').append(
                                 '<div class="going-to-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
                                 '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
-                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
-                            )
-                        }   
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'                                )
+                        } 
+                        $('.saved-events').append('</div>')             
                         $('.match').remove();
                         $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
                         $('#matched-person-first').html(response.previous_user.first_name);
@@ -710,7 +739,19 @@
                         $('#discover_artist3').html(response.discover_favorite_artists.artist3_name);
                         $('#discover_artist4').html(response.discover_favorite_artists.artist4_name);
                         $('#discover_artist5').html(response.discover_favorite_artists.artist5_name);
-                        $('.interested-events').empty();
+                        $('.pastEvents').empty();
+                        $('.pastEvents').html('<div class="past-events">')
+                        $('.past-events').html('<h3> Past Events </h3>')
+                        for (let item of response.past_events) {
+                            $('.past-events').append(
+                                '<div class="interested-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
+                                '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
+                                '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
+                            )
+                        }
+                        $('.pastEvents').append('</div>')  
+                        $('.saved-events').empty();
+                        $('.saved-events').html('<div class="interested-events">')
                         $('.interested-events').html('<h3> Interested Events </h3>')
                         for (let item of response.interested_events) {
                             $('.interested-events').append(
@@ -719,15 +760,16 @@
                                 '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
                             )
                         }
-                        $('.going-to-events').empty();
+                        $('.saved-events').append('</div>')
+                        $('.saved-events').append('<div class="going-to-events">')
                         $('.going-to-events').html('<h3> Going to Events </h3>')
                         for (let item of response.going_to_events) {
                             $('.going-to-events').append(
                                 '<div class="going-to-event"><img src=' + item[7] + '><div class="date-time"><span id = "date" >' + item[1] + '&nbsp;' + item[2] + 
                                 '</span><br/><span id = "day_time" >' + item[3] + '&#x2022;' + item[4] + '</span></div><div><span id = "event_name" >' + item[0] + 
                                 '</span><br/><span id = "venue_name_city" >' + item[5] + '</span></div></div>'
-                            )
-                        }             
+                            )                            }      
+                        $('.saved-events').append('</div>')                     
                         $('.match').remove();
                         $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
                         $('#matched-person-first').html(response.previous_user.first_name);
