@@ -190,49 +190,51 @@
                                     <div id="embed-iframe"></div>
                                     <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
                                 </div>
-                                <div>
-                                    <h3>About me</h3>
+                                <div class = "about-you">
+                                    <div>
+                                        <h3>About Me</h3>
+                                    </div>
+                                    <li>
+                                        <div>
+                                            <h4 id="discover_prompt1">{{prompt1}}</h4>
+                                            <div class="answer">
+                                                <div id="discover_response1" class="box">{{response1}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <h4 id="discover_prompt2">{{prompt2}}</h4>
+                                            <div class="answer">
+                                                <div id="discover_response2" class="box">{{response2}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <h4 id="discover_prompt3">{{prompt3}}</h4>
+                                            <div class="answer">
+                                                <div id="discover_response3" class="box">{{response3}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <h4 id="discover_prompt4">{{prompt4}}</h4>
+                                            <div class="answer">
+                                                <div id="discover_response4" class="box">{{response4}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <h4 id="discover_prompt5">{{prompt5}}</h4>
+                                            <div class="answer">
+                                                <div id="discover_response5" class="box">{{response5}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
                                 </div>
-                                <li>
-                                    <div>
-                                        <h4 id="discover_prompt1">{{prompt1}}</h4>
-                                        <div class="answer">
-                                            <div id="discover_response1" class="box">{{response1}}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4 id="discover_prompt2">{{prompt2}}</h4>
-                                        <div class="answer">
-                                            <div id="discover_response2" class="box">{{response2}}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4 id="discover_prompt3">{{prompt3}}</h4>
-                                        <div class="answer">
-                                            <div id="discover_response3" class="box">{{response3}}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4 id="discover_prompt4">{{prompt4}}</h4>
-                                        <div class="answer">
-                                            <div id="discover_response4" class="box">{{response4}}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4 id="discover_prompt5">{{prompt5}}</h4>
-                                        <div class="answer">
-                                            <div id="discover_response5" class="box">{{response5}}</div>
-                                        </div>
-                                    </div>
-                                </li>
                             </ul>
                             <ul>
                                 <div id="favorite-genres">
@@ -438,6 +440,26 @@
                     </div>
                 </div>
             </div>
+
+
+
+            <div id="report-user-popup" style="display:none;">
+                <button class="close-report-user" style="background: none; border: none; position: absolute; top: 0; right: 0;">&times;</button>
+                <div style="display: flex;justify-content: center;flex-direction: column;align-items: center; position: relative;">
+                    
+                    <h3 class="report_user_title" style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">Report Profile</h3>
+                    <p class="report_user_sub" style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 17px; margin: 0;">
+                     Please add details regarding your report of this profile.</p>
+                    <div class="report-text-area">
+                        <textarea rows="5" cols="25" style="resize: none;"></textarea>
+                    </div>
+                    <button class="submit-report-button">Submit Report</button>
+                </div>
+            </div>
+
+
+
+            </div>
             <div id="no-more-users" style="display:none;">
                 <div style="display: flex;justify-content: center;flex-direction: column;align-items: center;">
                     <p class="no_users_title" style="font-family:  'Franklin Gothic Medium', sans-serif; font-size: 30px; margin: 0;">No more potential matches</p>
@@ -551,9 +573,49 @@
             top: 20px;
         }
 
+
     </style>
     <script>
-        $(document).ready(function () {         
+        $(document).ready(function () {
+            $('.report-user').on('click', function () {
+
+                $('#report-user-popup').dialog({
+                    width: 325,
+                    height: 350,
+                    modal: true,
+                    resizable: false,
+                    draggable: true,
+                });
+            });
+
+            $('.close-report-user').on('click', function () {
+                $('#report-user-popup').dialog('close');
+            });
+
+            $('.submit-report-button').on('click', function () {
+
+                $.ajax({
+                    url: 'submit_report',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'report_message': $('.report-text-area textarea').val(),
+                        'reported_profile_id': {{discover_user.user_id}},
+                    },
+                    success: function (data) {
+                        if (data.status === 'success') {
+                            console.log('Report successful');
+                        } else {
+                            console.log('Report failed.');
+                        }
+                        $('#report-user-popup').dialog('close');
+                    },
+                });
+            });
+
+        });
+
+        $(document).ready(function () {
             if (out_of_users === "True") {
                 $('#no-more-users').dialog({
                     width: 300,
@@ -563,7 +625,8 @@
                     draggable: true,
                 })
             }
-        });
+        });     
+
         $(document).ready(function () {
             $('#like-button').click(function () {
                 $.ajax({

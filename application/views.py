@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 from common.decorators import moderator_no_access, moderator_only
+from .models import Reports
 
 # import os
 # from datetime import datetime
@@ -901,31 +902,6 @@ def discover_events(request):
                     saved_events_object.save()
                     return redirect("application:events")
 
-    # when the interested button is clicked - if using ajax
-    # if request.method == 'POST':
-    #     event = request.POST.get('item')
-    #     task = request.POST.get('interested')
-    #     # data=request.POST.get('data')
-    #     curr_event = request.POST.get('item')
-    #     # print("data: ", data)
-    #     print("tasK: ", task)
-    #     print("event", event)
-
-    # new = Todo(task=task)
-    # new.save()
-
-    # if request.GET.get("action") == "is_interested":
-    #     print("IN IS INTERESTED ACTION")
-
-    # elif request.GET.get("action") == "is_going":
-    #     print("IN IS GOING ACTION")
-    # print("item: ", request.GET.get('item'))
-    # print("current event: ", request.Get.get('item'))
-    # curr_event = request.POST.get('item')
-    # if curr_event not in saved_events.interestedEvents:
-    #     saved_events.interestedEvents.append(curr_event)
-    #     saved_events.save()
-
     return render(request, "application/discover_events.html", context)
 
 
@@ -1191,3 +1167,25 @@ def getEventList(user_events, pastEvents):
             )
         )
     return saved_events
+
+
+def submit_report(request):
+    if request.method == "POST":
+        reported_by = request.user
+        report_message = request.POST["report_message"]
+        reported_profile = User.objects.get(id=request.POST["reported_profile_id"])
+
+        # if this same user reported this same profile already, don't add new report
+        if not Reports.objects.filter(
+            reported_by=reported_by, reported_profile=reported_profile
+        ).exists():
+            report = Reports(
+                reported_by=reported_by,
+                report_message=report_message,
+                reported_profile=reported_profile,
+            )
+            report.save()
+            print(report.reported_time)
+            return JsonResponse({"status": "Report Added"})
+        return JsonResponse({"status": "Duplicate Report"})
+    return JsonResponse({"status": "Report not added"})
