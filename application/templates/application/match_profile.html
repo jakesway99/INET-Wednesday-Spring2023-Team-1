@@ -134,15 +134,17 @@
                     <div class="logo">
                         <h3>NYUBeatBuddies</h3>
                     </div>
-                    <div class="edit-profile">
-                        <a href="{% url 'chat:room' %}?friend_pk={{matched_user.user_id}}" class="edit-button">Chat</a>
-                    </div>
-                    <div class="edit-profile">
-                        <a href="{% url 'application:remove_match' match_pk=matched_user.user_id %}" class="edit-button">Remove Match</a>
-                    </div>
-                    <div class="report-user">
-                        <a href="#"style="font-size: 22px;"title="Report User">&#9872;</a>
-                        <!-- <a href="#"title="Report User">&#9888;</a> -->                      
+                    <div class="right-buttons">
+                        <div class="edit-profile">
+                            <a href="{% url 'chat:room' %}?friend_pk={{matched_user.user_id}}" class="edit-button">Chat</a>
+                        </div>
+                        <div class="edit-profile">
+                            <a href="{% url 'application:remove_match' match_pk=matched_user.user_id %}" class="edit-button">Remove Match</a>
+                        </div>
+                        <div class="report-user">
+                            <a href="#"style="font-size: 22px;"title="Report User">&#9872;</a>
+                            <!-- <a href="#"title="Report User">&#9888;</a> -->                      
+                        </div>
                     </div>
                 </div>
                 <div class="right-section-content">
@@ -336,56 +338,73 @@
                             </div>
                         </div>
                     </div>
-                    <div class="savedEvents">
-                        <div class="interested-events" id="interested-events">
-                            <h3> Interested Events </h3>
+                    <div class="events">
+                        {% if past_events %}
+                        <div class="pastEvents">
+                          <div class="past-events" id="past-events">
+                            <h3>Past Events</h3>
+                            {% for item in past_events %}
+                            <div class="interested-event">
+                              <img src="{{item.7}}" />
+                              <div class="date-time">
+                                <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                <span id="day_time">
+                                  {{ item.3 }} &#x2022; {{ item.4 }}
+                                </span>
+                              </div>
+                              <div>
+                                <span id="event_name"> {{ item.0 }} </span><br />
+                                <span id="venue_name_city"> {{ item.5 }} </span>
+                              </div>
+                            </div>
+                            {% endfor %}
+                          </div>    
+                        </div>
+                        {% endif %}
+                        <div class="saved-events">
+                          {% if interested_events %}
+                          <div class="interested-events" id="interested-events">
+                            <h3>Interested Events</h3>
                             {% for item in interested_events %}
-                                <div class = "interested-event">
-                                    <img src={{item.7}}>
-                                    <div class="date-time">
-                                        <span id = "date" >
-                                            {{ item.1 }} {{ item.2 }}
-                                        </span><br/>
-                                        <span id = "day_time" >
-                                            {{ item.3 }} &#x2022; {{ item.4 }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span id = "event_name" >
-                                            {{ item.0 }}
-                                        </span><br/>
-                                        <span id = "venue_name_city" >
-                                            {{ item.5 }} 
-                                        </span>
-                                    </div>
-                                </div> 
+                            <div class="interested-event">
+                              <img src="{{item.7}}" />
+                              <div class="date-time">
+                                <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                <span id="day_time">
+                                  {{ item.3 }} &#x2022; {{ item.4 }}
+                                </span>
+                              </div>
+                              <div>
+                                <span id="event_name"> {{ item.0 }} </span><br />
+                                <span id="venue_name_city"> {{ item.5 }} </span>
+                              </div>
+                            </div>
                             {% endfor %}
-                        </div>
-                        <div class="going-to-events" id="going-to-events">
-                            <h3> Going to Events </h3>
+                          </div>
+                          {% endif %}
+                          {% if going_to_events %}
+                          <div class="going-to-events" id="going-to-events">
+                            <h3>Going to Events</h3>
                             {% for item in going_to_events %}
-                                <div class = "going-to-event">
-                                    <img src={{item.7}}>
-                                    <div class="date-time">
-                                        <span id = "date" >
-                                            {{ item.1 }} {{ item.2 }}
-                                        </span><br/> 
-                                        <span id = "day_time" >
-                                            {{ item.3 }} &#x2022; {{ item.4 }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span id = "event_name" >
-                                            {{ item.0 }}
-                                        </span><br/>
-                                        <span id = "venue_name_city" >
-                                            {{ item.5 }} 
-                                        </span> 
-                                    </div> 
-                                </div> 
+                            <div class="going-to-event">
+                              <img src="{{item.7}}" />
+                              <div class="date-time">
+                                <span id="date"> {{ item.1 }} {{ item.2 }} </span><br />
+                                <span id="day_time">
+                                  {{ item.3 }} &#x2022; {{ item.4 }}
+                                </span>
+                              </div>
+                              <div>
+                                <span id="event_name"> {{ item.0 }} </span><br />
+                                <span id="venue_name_city"> {{ item.5 }} </span>
+                              </div>
+                            </div>
                             {% endfor %}
+                          </div>
+                          {% endif %}
                         </div>
-                    </div>  
+                      </div> 
+                    </div>
                     <div class="footer">
                         <div class="discover-events-wrapper">
                             <a href="{% url 'application:discover' %}">
