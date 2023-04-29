@@ -655,7 +655,7 @@ def getNextUserPk(request):
     for mod in all_moderators:
         if mod.pk in all_users_pks:
             all_users_pks.remove(mod.pk)
-    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
+    if len(all_users_pks) < 1:
         return curr_user.pk
     random_user_pk = random.choice(all_users_pks)
     return random_user_pk
