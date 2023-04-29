@@ -981,9 +981,10 @@
             </div>
           </div>
           <div class="events">
+            {% if past_events %}
             <div class="pastEvents">
               {% if past_events %}
-              <div class="interested-events" id="past-events">
+              <div class="past-events" id="past-events">
                 <h3>Past Events</h3>
                 {% for item in past_events %}
                 <div class="interested-event">
@@ -1024,7 +1025,8 @@
               </div>
               {% endif %}
             </div>
-            <div class="savedEvents">
+            {% endif %}
+            <div class="saved-events">
               {% if interested_events %}
               <div class="interested-events" id="interested-events">
                 <h3>Interested Events</h3>
