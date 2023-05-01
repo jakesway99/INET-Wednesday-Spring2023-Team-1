@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 from common.decorators import moderator_no_access, moderator_only
 from .models import Reports
+import datetime
 
 # import os
 # from datetime import datetime
@@ -13,7 +14,6 @@ import calendar
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
-import datetime
 from pytz import timezone
 
 # spotify api package
@@ -206,7 +206,27 @@ def home(request):
 
 @moderator_only
 def reports(request):
-    context = {}
+    reports = Reports.objects.all()
+    context = {"reports": []}
+    for r in reports:
+        reported_by = User.objects.get(pk=r.reported_by_id)
+        reported_by = Account.objects.get(user=reported_by)
+        reported_by = reported_by.__dict__
+        reported_by.pop("_state")
+        reported_profile = User.objects.get(pk=r.reported_profile_id)
+        reported_profile = Account.objects.get(user=reported_profile)
+        reported_profile = reported_profile.__dict__
+        reported_profile.pop("_state")
+        context["reports"].append(
+            {
+                "time": r.reported_time.strftime("%m/%d"),
+                "reported_by": reported_by,
+                "reported_profile": reported_profile,
+                "content": r.report_message,
+                "reported_by_pk": r.reported_by_id,
+                "reported_profile_pk": r.reported_profile_id,
+            }
+        )
     return render(request, "application/reports.html", context)
 
 
