@@ -1062,7 +1062,6 @@ def your_events(request):
 
 
 @login_required
-@moderator_no_access
 def match_profile(request, match_pk):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
