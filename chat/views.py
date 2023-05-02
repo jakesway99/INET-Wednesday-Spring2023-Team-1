@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from application.models import Account
 from application.views import getMatchesData
 from .utils import chat_history
+from common.decorators import moderator_no_access
 import pusher
 
 
@@ -26,6 +27,7 @@ def getChatRoom(user1, user2):
 
 
 @login_required
+@moderator_no_access
 def postMessage(request):
     user = request.GET.get("user")
     user = User.objects.get(pk=user)
@@ -65,6 +67,7 @@ def postMessage(request):
 
 
 @login_required
+@moderator_no_access
 def enterChat(request):
     friend_pk = request.GET.get("friend_pk")
     user = request.user

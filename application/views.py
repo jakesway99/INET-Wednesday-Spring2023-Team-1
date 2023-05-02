@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-
+from common.decorators import moderator_no_access, moderator_only
+from .models import Reports
+import datetime
 
 # import os
 # from datetime import datetime
@@ -12,7 +14,6 @@ import calendar
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
-import datetime
 from pytz import timezone
 
 # spotify api package
@@ -195,12 +196,42 @@ def get_favorite_data(curr_user, spotify="", get_pics=False):
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect("application:profile")
+        if request.user.groups.filter(name="Moderator").exists():
+            return redirect("application:reports")
+        else:
+            return redirect("application:profile")
     else:
         return redirect("account:login")
 
 
+@moderator_only
+def reports(request):
+    reports = Reports.objects.all()
+    context = {"reports": []}
+    for r in reports:
+        reported_by = User.objects.get(pk=r.reported_by_id)
+        reported_by = Account.objects.get(user=reported_by)
+        reported_by = reported_by.__dict__
+        reported_by.pop("_state")
+        reported_profile = User.objects.get(pk=r.reported_profile_id)
+        reported_profile = Account.objects.get(user=reported_profile)
+        reported_profile = reported_profile.__dict__
+        reported_profile.pop("_state")
+        context["reports"].append(
+            {
+                "time": r.reported_time.strftime("%m/%d"),
+                "reported_by": reported_by,
+                "reported_profile": reported_profile,
+                "content": r.report_message,
+                "reported_by_pk": r.reported_by_id,
+                "reported_profile_pk": r.reported_profile_id,
+            }
+        )
+    return render(request, "application/reports.html", context)
+
+
 @login_required
+@moderator_no_access
 def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
@@ -430,6 +461,7 @@ def getMatchesData(user):
 
 
 @login_required
+@moderator_no_access
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -559,6 +591,7 @@ def profile(request):
 
 
 @login_required
+@moderator_no_access
 def discover(request):
     global CURRENT_DISCOVER
     CURRENT_DISCOVER = getNextUserPk(request)
@@ -634,11 +667,16 @@ def getNextUserPk(request):
     all_users_pks = list(
         User.objects.filter(is_superuser=False).values_list("pk", flat=True)
     )
-    if len(all_users_pks) - len(previous_likes_and_dislikes) < 1:
-        return curr_user.pk
     for pk in previous_likes_and_dislikes:
         if pk in all_users_pks:
             all_users_pks.remove(pk)
+    moderators = Group.objects.get_or_create(name="Moderator")[0]
+    all_moderators = moderators.user_set.all()
+    for mod in all_moderators:
+        if mod.pk in all_users_pks:
+            all_users_pks.remove(mod.pk)
+    if len(all_users_pks) < 1:
+        return curr_user.pk
     random_user_pk = random.choice(all_users_pks)
     return random_user_pk
 
@@ -751,6 +789,7 @@ def getDiscoverProfile(request):
 
 
 @login_required
+@moderator_no_access
 def discover_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -883,35 +922,11 @@ def discover_events(request):
                     saved_events_object.save()
                     return redirect("application:events")
 
-    # when the interested button is clicked - if using ajax
-    # if request.method == 'POST':
-    #     event = request.POST.get('item')
-    #     task = request.POST.get('interested')
-    #     # data=request.POST.get('data')
-    #     curr_event = request.POST.get('item')
-    #     # print("data: ", data)
-    #     print("tasK: ", task)
-    #     print("event", event)
-
-    # new = Todo(task=task)
-    # new.save()
-
-    # if request.GET.get("action") == "is_interested":
-    #     print("IN IS INTERESTED ACTION")
-
-    # elif request.GET.get("action") == "is_going":
-    #     print("IN IS GOING ACTION")
-    # print("item: ", request.GET.get('item'))
-    # print("current event: ", request.Get.get('item'))
-    # curr_event = request.POST.get('item')
-    # if curr_event not in saved_events.interestedEvents:
-    #     saved_events.interestedEvents.append(curr_event)
-    #     saved_events.save()
-
     return render(request, "application/discover_events.html", context)
 
 
 @login_required
+@moderator_no_access
 def your_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -1101,6 +1116,7 @@ def match_profile(request, match_pk):
 
 
 @login_required
+@moderator_no_access
 def remove_match(request, match_pk):
     user_likes = Likes.objects.get(user=request.user)
     user_likes.likes.remove(int(match_pk))
@@ -1170,3 +1186,25 @@ def getEventList(user_events, pastEvents):
             )
         )
     return saved_events
+
+
+def submit_report(request):
+    if request.method == "POST":
+        reported_by = request.user
+        report_message = request.POST["report_message"]
+        reported_profile = User.objects.get(id=request.POST["reported_profile_id"])
+
+        # if this same user reported this same profile already, don't add new report
+        if not Reports.objects.filter(
+            reported_by=reported_by, reported_profile=reported_profile
+        ).exists():
+            report = Reports(
+                reported_by=reported_by,
+                report_message=report_message,
+                reported_profile=reported_profile,
+            )
+            report.save()
+            print(report.reported_time)
+            return JsonResponse({"status": "Report Added"})
+        return JsonResponse({"status": "Duplicate Report"})
+    return JsonResponse({"status": "Report not added"})

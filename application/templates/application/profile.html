@@ -407,6 +407,21 @@
         color: darkred;
         padding: 5px;
       }
+      .about-you {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .about-you ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .about-you h3,
+      .about-you h4 {
+        text-align: center;
+      }
 
       .bottom-column {
         display: flex;
@@ -770,11 +785,13 @@
           <div class="logo">
             <h3>NYUBeatBuddies</h3>
           </div>
-          <div class="edit-profile">
-            <a href="{% url 'application:profile_edit' %}" class="edit-button">Edit</a>
-          </div>
-          <div class="logout">
-            <a href="{% url 'account:logout' %}" class="edit-button">Logout</a>
+          <div class="right-buttons">
+            <div class="edit-profile">
+              <a href="{% url 'application:profile_edit' %}" class="edit-button">Edit</a>
+            </div>
+            <div class="logout">
+              <a href="{% url 'account:logout' %}" class="edit-button">Logout</a>
+            </div>
           </div>
         </div>
         <div class="right-section-content">
@@ -804,14 +821,14 @@
                   <div id="embed-iframe"></div>
                   <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
                 </div>
-
+                <div class = "about-you">
                 <div>
-                  <h3>About you</h3>
+                  <h3>About You</h3>
                 </div>
 
                 <li>
                   <div>
-                    <h4>{{prompt1}}</h4>
+                    <h4>{{prompt1}}:</h4>
                     <div class="answer">
                       <div class="box">{{response1}}</div>
                     </div>
@@ -819,7 +836,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt2}}</h4>
+                    <h4>{{prompt2}}:</h4>
                     <div class="answer">
                       <div class="box">{{response2}}</div>
                     </div>
@@ -827,7 +844,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt3}}</h4>
+                    <h4>{{prompt3}}:</h4>
                     <div class="answer">
                       <div class="box">{{response3}}</div>
                     </div>
@@ -835,7 +852,7 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt4}}</h4>
+                    <h4>{{prompt4}}:</h4>
                     <div class="answer">
                       <div class="box">{{response4}}</div>
                     </div>
@@ -843,12 +860,13 @@
                 </li>
                 <li>
                   <div>
-                    <h4>{{prompt5}}</h4>
+                    <h4>{{prompt5}}:</h4>
                     <div class="answer">
                       <div class="box">{{response5}}</div>
                     </div>
                   </div>
                 </li>
+                </div>
               </ul>
               <ul>
                 <div id="favorite-genres">
@@ -979,9 +997,10 @@
             </div>
           </div>
           <div class="events">
+            {% if past_events %}
             <div class="pastEvents">
               {% if past_events %}
-              <div class="interested-events" id="past-events">
+              <div class="past-events" id="past-events">
                 <h3>Past Events</h3>
                 {% for item in past_events %}
                 <div class="interested-event">
@@ -1022,7 +1041,8 @@
               </div>
               {% endif %}
             </div>
-            <div class="savedEvents">
+            {% endif %}
+            <div class="saved-events">
               {% if interested_events %}
               <div class="interested-events" id="interested-events">
                 <h3>Interested Events</h3>

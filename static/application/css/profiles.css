@@ -276,13 +276,14 @@ a {
 .right-header {
     display: flex;
     flex-direction: row;
-    justify-content: right;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .logo {
     display: flex;
+    margin-left: auto;
     padding-top: 10px;
-    width: 70%;
     justify-content: center;
 }
 
@@ -293,11 +294,20 @@ a {
     font-family: Verdana;
 }
 
+.right-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 10px;
+    max-width: fit-content;
+}
+
 .edit-profile {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     text-align: center;
     padding: 10px 5px;
+    min-width: fit-content;
 }
 
 .edit-profile a {
@@ -447,6 +457,22 @@ a {
 
 .click_song {
     cursor: pointer;
+}
+
+.about-you {
+display: flex;
+flex-direction: column;
+}
+
+.about-you ul {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.about-you h3,
+.about-you h4 {
+text-align: center;
 }
 
 .right-section-top .left-column .click_song:hover {
@@ -641,13 +667,13 @@ a {
     width: 100%;
 }
 
-.savedEvents {
+.saved-events {
     display: flex;
     flex-direction: column;
     width: 50%;
 }
 
-.savedEvents h3 {
+.saved-events h3 {
     display: flex;
     justify-content: center;
     margin-bottom: 15px;
@@ -656,6 +682,12 @@ a {
     font-family: Verdana;
     text-shadow: 2px 2px 2px white;
     color: rgb(94, 60, 100); 
+}
+
+.past-events {
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 .interested-events {
@@ -674,6 +706,7 @@ a {
     display: flex;
     flex-direction: column;
     width: 50%;
+    justify-content: center;
 }
 
 .pastEvents h3 {
@@ -681,10 +714,10 @@ a {
     justify-content: center;
     margin-bottom: 15px;
     font-size: 30px;
-    font-weight: 600; 
+    font-weight: 600;
     font-family: Verdana;
     text-shadow: 2px 2px 2px white;
-    color: rgb(94, 60, 100); 
+    color: rgb(94, 60, 100);
 }
 
 .interested-event img {
@@ -889,9 +922,10 @@ a {
 
 .logout {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     text-align: center;
     padding: 10px 5px;
+    min-width: fit-content;
 }
 
 .logout a {
@@ -904,6 +938,33 @@ a {
     margin-top: 10px;
 }
 
+.report_user_title {
+    text-align: center;
+}
+
+.report_user_sub {
+    text-align: center;
+    position: relative;
+    top: 5px;
+}
+
+.report-text-area {
+    margin-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 21px;
+    font-size: 0.95em;
+}
+
+.submit-report-button {
+    display: block;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: purple;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+}
 
 .highlight {
     background-color: white;
