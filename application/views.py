@@ -1061,7 +1061,61 @@ def your_events(request):
     return render(request, "application/your_events.html", context)
 
 
+@moderator_only
+def moderator_view(request, user_pk):
+    if request.user.groups.filter(name="Moderator").exists():
+        spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+        matches_data = getMatchesData(request.user)
+        user_data = Account.objects.get(user=request.user).__dict__
+        user_data.pop("_state")
+        user_data["age"] = str(
+            datetime.date.today().year - int(user_data["birth_year"])
+        )
+        matched_user = User.objects.get(pk=user_pk)
+        matched_user_data = Account.objects.get(user=matched_user).__dict__
+        matched_user_data.pop("_state")
+        matched_user_data["age"] = str(
+            datetime.date.today().year - int(matched_user_data["birth_year"])
+        )
+
+        (
+            initial_songs,
+            initial_artists,
+            initial_albums,
+            initial_genres,
+            initial_prompts,
+            artist_art,
+            album_art,
+        ) = get_favorite_data(matched_user, spotify, True)
+
+        account = Account.objects.get(user=request.user)
+        matched_account = Account.objects.get(user=matched_user)
+        interested_events, going_to_events, past_events = getSavedEvents(matched_user)
+
+        matched_pks = [match["pk"] for match in matches_data]
+        history = chat_history(request, matched_pks)
+        context = {}
+        context.update({"chat_history": history})
+        context.update(initial_songs)
+        context.update(initial_artists)
+        context.update(initial_albums)
+        context.update(initial_genres)
+        context.update(initial_prompts)
+        context.update(artist_art)
+        context.update(album_art)
+        context.update({"user": user_data})
+        context.update({"matched_user": matched_user_data})
+        context.update({"matches_data": matches_data})
+        context.update({"profile_picture": account.profile_picture})
+        context.update({"matched_profile_picture": matched_account.profile_picture})
+        context.update({"interested_events": interested_events})
+        context.update({"going_to_events": going_to_events})
+        context.update({"past_events": past_events})
+        return render(request, "application/moderator_view.html", context)
+
+
 @login_required
+@moderator_no_access
 def match_profile(request, match_pk):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
