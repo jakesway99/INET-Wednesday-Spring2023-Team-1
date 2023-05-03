@@ -87,7 +87,7 @@
             <p id="date">{{ report.time }}</p>
             <p>&emsp; &emsp;</p>
             <p id="event_name">
-              <span><b><a href="{% url 'application:match_profile' match_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:match_profile' match_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
+              <span><b><a href="{% url 'application:moderator_view' user_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:moderator_view' user_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
               
             </p>
             
