@@ -142,7 +142,6 @@
         left: 545px;
         font-size: 25px;
       }
-
       #actionsHeader {
         position: relative;
         color: purple;
@@ -203,14 +202,8 @@
             <img src="{{report.reported_by.profile_picture.url}}" />
             <p id="reportDate">{{ report.time }}</p>
             <p>&emsp; &emsp;</p>
-<<<<<<< HEAD
-            <p id="event_name">
-              <span><b><a href="{% url 'application:moderator_view' user_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:moderator_view' user_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
-              
-=======
             <p id="reportName">
-              <span><b><a href="{% url 'application:match_profile' match_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:match_profile' match_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
->>>>>>> 50d177ac6f5e7668b4cff147cd7d1ff9b12a3e79
+              <span><b><a href="{% url 'application:moderator_view' user_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:moderator_view' user_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
             </p>
             <form method="POST">
               {% csrf_token %} 
