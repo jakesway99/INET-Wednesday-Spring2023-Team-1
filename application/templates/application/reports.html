@@ -47,6 +47,111 @@
         });
       });
     </script>
+    <style>
+      #blockUser {
+        position: absolute;
+        font-size: 14px;
+        left: 950px;
+        bottom: 50px;
+        padding: 0 10px;
+        width: 12%;
+        height: 25%;
+        border-radius: 25px;
+        background-color: red;
+        color: white;
+        border-color: red;
+        border-style: solid;
+        cursor: pointer;
+        text-align: center;
+      }
+
+      #blockUser:hover {
+        background-color: white;
+        border-style: solid;
+        color: red;
+      }
+      #dismiss {
+        position: absolute;
+        font-size: 14px;
+        left: 950px;
+        bottom: 20px;
+        padding: 0 10px;
+        width: 12%;
+        height: 25%;
+        border-radius: 25px;
+        background-color: #0C4A92;
+        color: white;
+        border-color: #0C4A92;
+        border-style: solid;
+        cursor: pointer;
+        text-align: center;
+      }
+      #dismiss:hover {
+        background-color: white;
+        border-style: solid;
+        color: #0C4A92;
+      }
+
+      .reports-box {
+        margin: 20px;
+        padding-top: 50px;
+        padding-bottom: 40px; 
+      }
+
+      #reportDate {
+        position: absolute;
+        bottom: 10px; 
+        left: 140px;
+        font-size: 25px;
+        color: #0C4A92;
+      }
+
+      #reportName {
+        position: absolute;
+        bottom: 0px; 
+        left: 325px;
+        font-size: 19px;
+      }
+
+      .report-headers {
+        width: 100px;
+        border: 15px solid green;
+        padding: 10px;
+        margin: 20px;
+      }
+
+      #reportName span {
+        display:block;
+        width:600px;
+        word-break:normal;
+        padding-top: 2px;
+      }
+
+      /* #dateHeader {
+        position: absolute;
+        color: purple;
+        /* bottom: -40px; 
+        left: 315px;
+        font-size: 25px; */
+      /* } */ 
+
+      /* #detailsHeader {
+        position: ;
+        color: purple;
+        bottom: -2px; 
+        left: 545px;
+        font-size: 25px;
+      }
+
+      #actionsHeader {
+        position: relative;
+        color: purple;
+        bottom: 35px; 
+        left: 1196px;
+        font-size: 25px;
+      } */
+
+    </style>
   </head>
 
   <body>
@@ -55,7 +160,6 @@
         <div class="dropdown">
           <ul class="first">
               <a href="#">All Reports</a>
-
           </ul>
         </div>
         <div class="search-container">
@@ -78,19 +182,43 @@
             </button>
           </form>
         </div>
+        <div class="logoutButton">
+          <a href="{% url 'account:logout' %}" class="logout-button" >Logout</a>
+        </div>
       </div>
       <div class="main-page">
-        <div class="events-box">
+        <!-- <div class="reports-headers">
+          <h3 id="dateHeader">Date of Report</h3>
+          <h3 id="detailsHeader">Report Details</h3>
+          <h3 id="actionsHeader">Actions</h3>
+        </div> -->
+        <div class="reports-box">
+          <!-- <div class="reports-headers">
+            <h3 id="dateHeader">Date of Report</h3>
+            <h3 id="detailsHeader">Report Details</h3>
+            <h3 id="actionsHeader">Actions</h3>
+          </div> -->
           {% for report in reports %}
           <div class="event">
             <img src="{{report.reported_by.profile_picture.url}}" />
-            <p id="date">{{ report.time }}</p>
+            <p id="reportDate">{{ report.time }}</p>
             <p>&emsp; &emsp;</p>
-            <p id="event_name">
+            <p id="reportName">
               <span><b><a href="{% url 'application:match_profile' match_pk=report.reported_profile_pk%}">{{ report.reported_profile.first_name }} {{ report.reported_profile.last_name }}</a></b> reported by <a href="{% url 'application:match_profile' match_pk=report.reported_by_pk %}">{{ report.reported_by.first_name }} {{ report.reported_by.last_name }}</a><span id="report-content">{{report.content}}</span></span>
-              
             </p>
-            
+            <form method="POST">
+              {% csrf_token %} 
+              <button
+                name="blockUser"
+                id="blockUser"
+                class="button"
+                value="blockUser"
+              >
+                &#8856; Block User
+              </button>
+              <button name="dismiss" id="dismiss" class="button" value="dismiss">
+                Dismiss
+              </button>
             <br />
           </div>
           {% endfor %}
