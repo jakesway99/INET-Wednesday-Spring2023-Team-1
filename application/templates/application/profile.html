@@ -667,7 +667,14 @@
                 EmbedController.loadUri(click_song.dataset.spotifyId)
                 EmbedController.togglePlay();
               });
-            })
+            });
+          document.querySelectorAll('.response_box').forEach(
+            response_box => {
+              response_box.addEventListener('click', () => {
+                EmbedController.loadUri(response_box.dataset.spotifyId)
+                EmbedController.togglePlay();
+              });
+            });
         };
         IFrameAPI.createController(element, options, callback);
       };
@@ -830,7 +837,7 @@
                   <div>
                     <h4>{{prompt1}}:</h4>
                     <div class="answer">
-                      <div class="box">{{response1}}</div>
+                      <div class="response_box" data-spotify-id="spotify:track:{{response1_id}}">{{response1}}</div>
                     </div>
                   </div>
                 </li>
@@ -838,7 +845,7 @@
                   <div>
                     <h4>{{prompt2}}:</h4>
                     <div class="answer">
-                      <div class="box">{{response2}}</div>
+                      <div class="response_box" data-spotify-id="spotify:track:{{response2_id}}">{{response2}}</div>
                     </div>
                   </div>
                 </li>
@@ -846,7 +853,7 @@
                   <div>
                     <h4>{{prompt3}}:</h4>
                     <div class="answer">
-                      <div class="box">{{response3}}</div>
+                      <div class="response_box" data-spotify-id="spotify:track:{{response3_id}}">{{response3}}</div>
                     </div>
                   </div>
                 </li>
@@ -854,7 +861,7 @@
                   <div>
                     <h4>{{prompt4}}:</h4>
                     <div class="answer">
-                      <div class="box">{{response4}}</div>
+                      <div class="response_box" data-spotify-id="spotify:track:{{response4_id}}">{{response4}}</div>
                     </div>
                   </div>
                 </li>
@@ -862,7 +869,7 @@
                   <div>
                     <h4>{{prompt5}}:</h4>
                     <div class="answer">
-                      <div class="box">{{response5}}</div>
+                      <div class="response_box" data-spotify-id="spotify:track:{{response5_id}}">{{response5}}</div>
                     </div>
                   </div>
                 </li>
