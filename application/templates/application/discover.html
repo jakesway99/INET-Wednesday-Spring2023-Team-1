@@ -432,8 +432,8 @@
                             id="matched-person-first">First</span><span> </span><span
                             id="matched-person-last">Last</span></p>
                     <div style="display: flex;justify-content: center;flex-direction: row">
-                        <button class="chat-match-button"
-                            onclick="$('#my-dialog-content').dialog('close')">Chat</button>
+                        <a id="new-match-chat" href="{% url 'chat:room' %}?friend_pk={{message.friend_pk}}"><button class="chat-match-button"
+                            onclick="$('#my-dialog-content').dialog('close')">Chat</button></a>
                         <button class="close-match-button"
                             onclick="$('#my-dialog-content').dialog('close')">Close</button>
 
@@ -714,6 +714,7 @@
                         $('.saved-events').append('</div>')             
                         $('.match').remove();
                         $('#matched-person-picture').attr('src', response.previous_user.profile_picture);
+                        $('#new-match-chat').attr('href', "{% url 'chat:room' %}?friend_pk="+response.previous_user.pk.toString());
                         $('#matched-person-first').html(response.previous_user.first_name);
                         $('#matched-person-last').html(response.previous_user.last_name);
                         for (let match of response.updated_matches) {
