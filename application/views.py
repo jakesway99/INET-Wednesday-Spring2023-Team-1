@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 from common.decorators import moderator_no_access, moderator_only
 from .models import Reports
+import datetime
 
 # import os
 # from datetime import datetime
@@ -13,7 +14,6 @@ import calendar
 
 # from django.contrib.auth.forms import PasswordChangeForm
 import random
-import datetime
 from pytz import timezone
 
 # spotify api package
@@ -211,7 +211,27 @@ def home(request):
 
 @moderator_only
 def reports(request):
-    context = {}
+    reports = Reports.objects.all()
+    context = {"reports": []}
+    for r in reports:
+        reported_by = User.objects.get(pk=r.reported_by_id)
+        reported_by = Account.objects.get(user=reported_by)
+        reported_by = reported_by.__dict__
+        reported_by.pop("_state")
+        reported_profile = User.objects.get(pk=r.reported_profile_id)
+        reported_profile = Account.objects.get(user=reported_profile)
+        reported_profile = reported_profile.__dict__
+        reported_profile.pop("_state")
+        context["reports"].append(
+            {
+                "time": r.reported_time.strftime("%m/%d"),
+                "reported_by": reported_by,
+                "reported_profile": reported_profile,
+                "content": r.report_message,
+                "reported_by_pk": r.reported_by_id,
+                "reported_profile_pk": r.reported_profile_id,
+            }
+        )
     return render(request, "application/reports.html", context)
 
 
@@ -1044,6 +1064,59 @@ def your_events(request):
                     return redirect("application:your_events")
 
     return render(request, "application/your_events.html", context)
+
+
+@moderator_only
+def moderator_view(request, user_pk):
+    if request.user.groups.filter(name="Moderator").exists():
+        spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+        matches_data = getMatchesData(request.user)
+        user_data = Account.objects.get(user=request.user).__dict__
+        user_data.pop("_state")
+        user_data["age"] = str(
+            datetime.date.today().year - int(user_data["birth_year"])
+        )
+        matched_user = User.objects.get(pk=user_pk)
+        matched_user_data = Account.objects.get(user=matched_user).__dict__
+        matched_user_data.pop("_state")
+        matched_user_data["age"] = str(
+            datetime.date.today().year - int(matched_user_data["birth_year"])
+        )
+
+        (
+            initial_songs,
+            initial_artists,
+            initial_albums,
+            initial_genres,
+            initial_prompts,
+            artist_art,
+            album_art,
+        ) = get_favorite_data(matched_user, spotify, True)
+
+        account = Account.objects.get(user=request.user)
+        matched_account = Account.objects.get(user=matched_user)
+        interested_events, going_to_events, past_events = getSavedEvents(matched_user)
+
+        matched_pks = [match["pk"] for match in matches_data]
+        history = chat_history(request, matched_pks)
+        context = {}
+        context.update({"chat_history": history})
+        context.update(initial_songs)
+        context.update(initial_artists)
+        context.update(initial_albums)
+        context.update(initial_genres)
+        context.update(initial_prompts)
+        context.update(artist_art)
+        context.update(album_art)
+        context.update({"user": user_data})
+        context.update({"matched_user": matched_user_data})
+        context.update({"matches_data": matches_data})
+        context.update({"profile_picture": account.profile_picture})
+        context.update({"matched_profile_picture": matched_account.profile_picture})
+        context.update({"interested_events": interested_events})
+        context.update({"going_to_events": going_to_events})
+        context.update({"past_events": past_events})
+        return render(request, "application/moderator_view.html", context)
 
 
 @login_required
