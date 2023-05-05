@@ -748,7 +748,7 @@ text-align: center;
     display: flex;
     flex-direction: row;
     border: 2px solid lightgrey;
-    background-color: white;
+    background: #9ec5fe73;
     align-items: center;
 }
 
@@ -756,7 +756,7 @@ text-align: center;
     display: flex;
     flex-direction: row;
     border: 2px solid lightgrey;
-    background-color: white;
+    background: #9ec5fe73;
     align-items: center;
 }
 
@@ -772,7 +772,7 @@ text-align: center;
 
 #day_time {
     font-size: 18px;
-    color: grey;
+    color: darkslategray;
 }
 
 #event_name {
@@ -782,7 +782,7 @@ text-align: center;
 
 #venue_name_city {
     font-size: 20px;
-    color: grey;
+    color: darkslategray;
 }
 
 .chatroom {
