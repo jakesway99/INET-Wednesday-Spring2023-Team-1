@@ -981,4 +981,8 @@ text-align: center;
 .highlight {
     background-color: white;
     transition: background-color 3s ease-out;
-  }
+}
+
+hr {
+    border-top: 2px solid black;
+}
