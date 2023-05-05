@@ -777,7 +777,7 @@ text-align: center;
 
 #event_name {
     font-size: 20px;
-    font-weight: darkslategray;
+    font-weight: bold;
 }
 
 #venue_name_city {
