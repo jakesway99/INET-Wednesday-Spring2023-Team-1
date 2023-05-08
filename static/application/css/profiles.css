@@ -555,33 +555,32 @@ text-align: center;
     text-align: center;
   }
 
-  fieldset {
+fieldset {
     width:100%;
     height:200%;
     vertical-align: middle;
     text-align:center;
     margin-bottom: 5px;
-  }
+}
 
-  legend {
+legend {
     margin-left:5px;
     margin-top: 10px;
-  }
+}
 
-  #genre_button {
+#genre_button {
     border: 1px solid #ccc;
     border-radius: 30px;
     padding: 5px 10px;
     margin-right: 10px;
     margin-top: 6px;
     background-color: #f5f5f5;
-  }
+}
 
-  fieldset #genre_button:hover {
+fieldset #genre_button:hover {
     background-color: #e5e5e5;
     cursor: pointer;
-  } 
-
+} 
 
 .answer {
     width: 100%;
