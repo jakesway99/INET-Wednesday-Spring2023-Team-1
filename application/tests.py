@@ -1,5 +1,5 @@
 from django.test import TestCase, Client, RequestFactory
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.urls import reverse
 from django.contrib import admin
 from django.apps import apps
@@ -13,6 +13,7 @@ from .models import (
     EventList,
     Likes,
     SavedEvents,
+    Reports,
 )
 import os
 from .views import discover_events, profile_edit, profile, discover
@@ -603,3 +604,31 @@ class AdminRegistrationTestCase(TestCase):
 
         for model in chat_models:
             self.assertIn(model, registered_models)
+
+
+class ModeratorGroupTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = Client()
+        cls.user1 = User.objects.create_user(username="TEST_USER", password="@1234567")
+        cls.user2 = User.objects.create_user(
+            username="TEST_USER_2", password="@1234567"
+        )
+        cls.user3 = User.objects.create_user(
+            username="TEST_USER_3", password="@1234567"
+        )
+
+    def test_add_user_to_moderators_group(self):
+        moderators_group, created = Group.objects.get_or_create(name="Moderators")
+        self.assertFalse(moderators_group.user_set.filter(pk=self.user1.pk).exists())
+        moderators_group.user_set.add(self.user1)
+        self.assertTrue(moderators_group.user_set.filter(pk=self.user1.pk).exists())
+        Reports.objects.create(
+            reported_by=self.user2,
+            report_message="This is a report message.",
+            reported_profile=self.user3,
+        )
+        self.assertEquals(len(Reports.objects.all()), 1)
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse("application:reports"))
+        self.assertEqual(response.status_code, 403)
