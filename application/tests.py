@@ -580,9 +580,9 @@ class DiscoverEvents(TestCase):
             {"agoing": "agoing", "item": self.event2.pk},
         )
         self.assertEqual(response.status_code, 302)
-        
-class AdminRegistrationTestCase(TestCase):
 
+
+class AdminRegistrationTestCase(TestCase):
     def test_register_models_for_application(self):
         app_models = apps.get_app_config("application").get_models()
         registered_models = admin.site._registry
