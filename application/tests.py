@@ -1,6 +1,8 @@
 from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.contrib import admin
+from django.apps import apps
 from .models import (
     FavoriteGenre,
     FavoriteArtist,
@@ -578,3 +580,26 @@ class DiscoverEvents(TestCase):
             {"agoing": "agoing", "item": self.event2.pk},
         )
         self.assertEqual(response.status_code, 302)
+        
+class AdminRegistrationTestCase(TestCase):
+
+    def test_register_models_for_application(self):
+        app_models = apps.get_app_config("application").get_models()
+        registered_models = admin.site._registry
+
+        for model in app_models:
+            self.assertIn(model, registered_models)
+
+    def test_register_models_for_account(self):
+        acct_models = apps.get_app_config("account").get_models()
+        registered_models = admin.site._registry
+
+        for model in acct_models:
+            self.assertIn(model, registered_models)
+
+    def test_register_models_for_chat(self):
+        chat_models = apps.get_app_config("chat").get_models()
+        registered_models = admin.site._registry
+
+        for model in chat_models:
+            self.assertIn(model, registered_models)
