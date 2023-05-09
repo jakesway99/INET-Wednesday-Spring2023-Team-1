@@ -16,7 +16,7 @@ from .models import (
     Reports,
 )
 import os
-from .views import discover_events, profile_edit, profile, discover
+from .views import discover_events, profile_edit, profile, discover, moderator_view
 import datetime
 
 # from bs4 import BeautifulSoup
@@ -610,12 +610,21 @@ class ModeratorGroupTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.client = Client()
+        cls.request_factory = RequestFactory()
         cls.user1 = User.objects.create_user(username="TEST_USER", password="@1234567")
         cls.user2 = User.objects.create_user(
             username="TEST_USER_2", password="@1234567"
         )
         cls.user3 = User.objects.create_user(
             username="TEST_USER_3", password="@1234567"
+        )
+        cls.Acct = Account.objects.create(
+            user=cls.user1,
+            first_name="moderator",
+            last_name="moderator",
+            birth_year=1950,
+            location="nowhere",
+            profile_picture="placeholder",
         )
         cls.Acct2 = Account.objects.create(
             user=cls.user2,
@@ -647,4 +656,10 @@ class ModeratorGroupTestCase(TestCase):
         self.assertEquals(len(Reports.objects.all()), 1)
         self.client.force_login(self.user1)
         response = self.client.get(reverse("application:reports"))
+        self.assertEqual(response.status_code, 200)
+        request = self.request_factory.get(
+            reverse("application:moderator_view", kwargs={"user_pk": self.user2.pk})
+        )
+        request.user = self.user1
+        response = moderator_view(request, self.user2.pk)
         self.assertEqual(response.status_code, 200)
