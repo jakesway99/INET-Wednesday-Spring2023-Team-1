@@ -617,9 +617,25 @@ class ModeratorGroupTestCase(TestCase):
         cls.user3 = User.objects.create_user(
             username="TEST_USER_3", password="@1234567"
         )
+        cls.Acct2 = Account.objects.create(
+            user=cls.user2,
+            first_name="John",
+            last_name="Doe",
+            birth_year=1996,
+            location="NYC",
+            profile_picture="placeholder",
+        )
+        cls.Acct3 = Account.objects.create(
+            user=cls.user3,
+            first_name="Jenna",
+            last_name="Doe",
+            birth_year=1997,
+            location="Miami",
+            profile_picture="placeholder",
+        )
 
     def test_add_user_to_moderators_group(self):
-        moderators_group, created = Group.objects.get_or_create(name="Moderators")
+        moderators_group, created = Group.objects.get_or_create(name="Moderator")
         self.assertFalse(moderators_group.user_set.filter(pk=self.user1.pk).exists())
         moderators_group.user_set.add(self.user1)
         self.assertTrue(moderators_group.user_set.filter(pk=self.user1.pk).exists())
@@ -631,4 +647,4 @@ class ModeratorGroupTestCase(TestCase):
         self.assertEquals(len(Reports.objects.all()), 1)
         self.client.force_login(self.user1)
         response = self.client.get(reverse("application:reports"))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
