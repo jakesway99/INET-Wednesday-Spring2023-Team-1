@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
-from common.decorators import moderator_no_access, moderator_only
+from common.decorators import *
 from .models import Reports
 import datetime
 
@@ -59,7 +59,7 @@ def get_album_pic(album_id, spotify):
 
 def get_favorite_data(curr_user, spotify="", get_pics=False):
     if FavoriteSong.objects.filter(
-        user=curr_user
+            user=curr_user
     ):  # pre-populate edit form if data exists
         user_fav_songs = FavoriteSong.objects.get(user=curr_user)
 
@@ -224,6 +224,7 @@ def reports(request):
         reported_profile.pop("_state")
         context["reports"].append(
             {
+                "report_pk": r.pk,
                 "time": r.reported_time.strftime("%m/%d"),
                 "reported_by": reported_by,
                 "reported_profile": reported_profile,
@@ -232,11 +233,27 @@ def reports(request):
                 "reported_profile_pk": r.reported_profile_id,
             }
         )
+
     return render(request, "application/reports.html", context)
+
+
+@moderator_only
+def ban_user(request):
+    if request.method == 'POST':
+        if 'blockUser' in request.POST:
+            banned_user = User.objects.get(pk=request.POST.get('reported_profile_pk'))
+            banned_group = Group.objects.get(name='Banned')
+            banned_user.groups.add(banned_group)
+            banned_user.save()
+        report_pk = request.POST.get('report_pk')
+        remove_report = Reports.objects.get(pk=report_pk)
+        remove_report.delete()
+    return redirect("application:reports")
 
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def profile_edit(request):
     client_credentials_manager = SpotifyClientCredentials()
     token_dict = client_credentials_manager.get_access_token()
@@ -301,7 +318,7 @@ def profile_edit(request):
 
         if "song1_id" in request.POST:  # check which submit button was pressed on page
             if FavoriteSong.objects.filter(  # check if favorite song object exists for user
-                user=curr_user
+                    user=curr_user
             ):
                 model_instance = FavoriteSong.objects.get(user=curr_user)
                 form = SongEdit(request.POST, request.FILES, instance=model_instance)
@@ -321,7 +338,7 @@ def profile_edit(request):
 
         if "album1_id" in request.POST:
             if FavoriteAlbum.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteAlbum.objects.get(user=curr_user)
                 form = AlbumEdit(request.POST, request.FILES, instance=model_instance)
@@ -339,7 +356,7 @@ def profile_edit(request):
 
         if "genre1" in request.POST:
             if FavoriteGenre.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteGenre.objects.get(user=curr_user)
                 form = GenreEdit(request.POST, request.FILES, instance=model_instance)
@@ -357,7 +374,7 @@ def profile_edit(request):
 
         if "artist1_id" in request.POST:
             if FavoriteArtist.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = FavoriteArtist.objects.get(user=curr_user)
                 form = ArtistEdit(request.POST, request.FILES, instance=model_instance)
@@ -375,7 +392,7 @@ def profile_edit(request):
 
         if "response1" in request.POST:
             if UserPrompts.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = UserPrompts.objects.get(user=curr_user)
                 form = PromptEdit(request.POST, request.FILES, instance=model_instance)
@@ -396,7 +413,7 @@ def profile_edit(request):
 
         if "first_name" in request.POST:
             if Account.objects.filter(
-                user=curr_user
+                    user=curr_user
             ):  # check if favorite song object exists for user
                 model_instance = Account.objects.get(user=curr_user)
                 form = AccountSettingsForm(
@@ -467,6 +484,7 @@ def getMatchesData(user):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def profile(request):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -488,11 +506,11 @@ def profile(request):
         album_art,
     ) = get_favorite_data(curr_user, spotify, True)
     if (
-        initial_artists == {}
-        or initial_artists == {}
-        or initial_albums == {}
-        or initial_genres == {}
-        or initial_prompts == {}
+            initial_artists == {}
+            or initial_artists == {}
+            or initial_albums == {}
+            or initial_genres == {}
+            or initial_prompts == {}
     ):
         return redirect("application:profile_edit")
 
@@ -597,6 +615,7 @@ def profile(request):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def discover(request):
     global CURRENT_DISCOVER
     CURRENT_DISCOVER = getNextUserPk(request)
@@ -716,10 +735,10 @@ def getDiscoverProfile(request):
         [] if discover_user_likes.matches is None else discover_user_likes.matches
     )
     if (
-        request.GET.get("action") == "like"
-        and CURRENT_DISCOVER not in likes.likes
-        and CURRENT_DISCOVER != curr_user.pk
-        and not curr_user.is_superuser
+            request.GET.get("action") == "like"
+            and CURRENT_DISCOVER not in likes.likes
+            and CURRENT_DISCOVER != curr_user.pk
+            and not curr_user.is_superuser
     ):
         likes.likes.append(int(CURRENT_DISCOVER))
         if curr_user.pk in discover_user_likes.likes:
@@ -730,10 +749,10 @@ def getDiscoverProfile(request):
             is_match = True
 
     elif (
-        request.GET.get("action") == "dislike"
-        and CURRENT_DISCOVER not in likes.dislikes
-        and CURRENT_DISCOVER != curr_user.pk
-        and not curr_user.is_superuser
+            request.GET.get("action") == "dislike"
+            and CURRENT_DISCOVER not in likes.dislikes
+            and CURRENT_DISCOVER != curr_user.pk
+            and not curr_user.is_superuser
     ):
         likes.dislikes.append(int(CURRENT_DISCOVER))
     likes.save()
@@ -795,6 +814,7 @@ def getDiscoverProfile(request):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def discover_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -932,6 +952,7 @@ def discover_events(request):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def your_events(request):
     event_list = []
     all_events = EventList.objects.all()
@@ -1121,6 +1142,7 @@ def moderator_view(request, user_pk):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def match_profile(request, match_pk):
     spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
     curr_user = request.user
@@ -1176,6 +1198,7 @@ def match_profile(request, match_pk):
 
 @login_required
 @moderator_no_access
+@banned_no_access
 def remove_match(request, match_pk):
     user_likes = Likes.objects.get(user=request.user)
     user_likes.likes.remove(int(match_pk))
@@ -1255,7 +1278,7 @@ def submit_report(request):
 
         # if this same user reported this same profile already, don't add new report
         if not Reports.objects.filter(
-            reported_by=reported_by, reported_profile=reported_profile
+                reported_by=reported_by, reported_profile=reported_profile
         ).exists():
             report = Reports(
                 reported_by=reported_by,
@@ -1267,3 +1290,7 @@ def submit_report(request):
             return JsonResponse({"status": "Report Added"})
         return JsonResponse({"status": "Duplicate Report"})
     return JsonResponse({"status": "Report not added"})
+
+
+def banned(request):
+    return render(request, 'application/banned.html')
