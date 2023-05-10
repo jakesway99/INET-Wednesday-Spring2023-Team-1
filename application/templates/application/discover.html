@@ -665,6 +665,11 @@
                         $('#discover_response3').html(response.discover_prompts.response3);
                         $('#discover_response4').html(response.discover_prompts.response4);
                         $('#discover_response5').html(response.discover_prompts.response5);
+                        $('#discover_response1').attr('data-spotify-id', 'spotify:track:' + response.discover_prompts.response1_id);
+                        $('#discover_response2').attr('data-spotify-id', 'spotify:track:' + response.discover_prompts.response2_id);
+                        $('#discover_response3').attr('data-spotify-id', 'spotify:track:' + response.discover_prompts.response3_id);
+                        $('#discover_response4').attr('data-spotify-id', 'spotify:track:' + response.discover_prompts.response4_id);
+                        $('#discover_response5').attr('data-spotify-id', 'spotify:track:' + response.discover_prompts.response5_id);
                         $('#discover_genre1').html(response.discover_favorite_genres.genre1);
                         $('#discover_genre2').html(response.discover_favorite_genres.genre2);
                         $('#discover_genre3').html(response.discover_favorite_genres.genre3);
