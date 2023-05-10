@@ -169,19 +169,19 @@
                                 <h3>Top Songs</h3>
                                 <ul>
 
-                                <li class="click_song" data-spotify-id="spotify:track:{{song1_id}}" style="background-color: #cdb4db">
+                                <li class="click_song" id="discover_song1"  data-spotify-id="spotify:track:{{song1_id}}" style="background-color: #cdb4db">
                                     {{song1_name_artist}}
                                 </li>
-                                <li class="click_song" data-spotify-id="spotify:track:{{song2_id}}" style="background-color: #ffc8dd">
+                                <li class="click_song" id="discover_song2" data-spotify-id="spotify:track:{{song2_id}}" style="background-color: #ffc8dd">
                                     {{song2_name_artist}}
                                 </li>
-                                <li class="click_song" data-spotify-id="spotify:track:{{song3_id}}" style="background-color: #ffafcc">
+                                <li class="click_song" id="discover_song3" data-spotify-id="spotify:track:{{song3_id}}" style="background-color: #ffafcc">
                                     {{song3_name_artist}}
                                 </li>
-                                <li class="click_song" data-spotify-id="spotify:track:{{song4_id}}" style="background-color: #bde0fe">
+                                <li class="click_song" id="discover_song4" data-spotify-id="spotify:track:{{song4_id}}" style="background-color: #bde0fe">
                                     {{song4_name_artist}}
                                 </li>
-                                <li class="click_song" data-spotify-id="spotify:track:{{song5_id}}" style="background-color: #a2d2ff">
+                                <li class="click_song" id="discover_song5" data-spotify-id="spotify:track:{{song5_id}}" style="background-color: #a2d2ff">
                                     {{song5_name_artist}}
                                 </ul>
                             </div>
@@ -643,6 +643,11 @@
                         $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
                         $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
                         $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
+                        $('#discover_song1').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song1_id);
+                        $('#discover_song2').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song2_id);
+                        $('#discover_song3').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song3_id);
+                        $('#discover_song4').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song4_id);
+                        $('#discover_song5').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song5_id);
                         $('#discover_prompt1').html(response.discover_prompts.prompt1);
                         $('#discover_prompt2').html(response.discover_prompts.prompt2);
                         $('#discover_prompt3').html(response.discover_prompts.prompt3);
@@ -771,6 +776,11 @@
                         $('#discover_song3').html(response.discover_favorite_songs.song3_name_artist);
                         $('#discover_song4').html(response.discover_favorite_songs.song4_name_artist);
                         $('#discover_song5').html(response.discover_favorite_songs.song5_name_artist);
+                        $('#discover_song1').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song1_id);
+                        $('#discover_song2').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song2_id);
+                        $('#discover_song3').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song3_id);
+                        $('#discover_song4').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song4_id);
+                        $('#discover_song5').attr('data-spotify-id', 'spotify:track:' + response.discover_favorite_songs.song5_id);
                         $('#discover_prompt1').html(response.discover_prompts.prompt1);
                         $('#discover_prompt2').html(response.discover_prompts.prompt2);
                         $('#discover_prompt3').html(response.discover_prompts.prompt3);
