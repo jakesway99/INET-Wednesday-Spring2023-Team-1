@@ -24,13 +24,20 @@
             };
 
             const callback = (EmbedController) => {
-              document.querySelectorAll('.click_song').forEach(
-                click_song => {
-                  click_song.addEventListener('click', () => {
-                    EmbedController.loadUri(click_song.dataset.spotifyId)
-                    EmbedController.togglePlay();
-                  });
-                })
+                document.querySelectorAll('.click_song').forEach(
+                    click_song => {
+                      click_song.addEventListener('click', () => {
+                        EmbedController.loadUri(click_song.dataset.spotifyId)
+                        EmbedController.togglePlay();
+                      });
+                    })
+                document.querySelectorAll('.response_box').forEach(
+                    response_box => {
+                      response_box.addEventListener('click', () => {
+                        EmbedController.loadUri(response_box.dataset.spotifyId)
+                        EmbedController.togglePlay();
+                      });
+                    });
             };
             IFrameAPI.createController(element, options, callback);
           };
@@ -196,7 +203,7 @@
                                         <div>
                                             <h4 id="discover_prompt1">{{prompt1}}</h4>
                                             <div class="answer">
-                                                <div id="discover_response1" class="box">{{response1}}</div>
+                                                <div id="discover_response1" class="response_box" data-spotify-id="spotify:track:{{response1_id}}">{{response1}}</div>
                                             </div>
                                         </div>
                                     </li>
@@ -204,7 +211,7 @@
                                         <div>
                                             <h4 id="discover_prompt2">{{prompt2}}</h4>
                                             <div class="answer">
-                                                <div id="discover_response2" class="box">{{response2}}</div>
+                                                <div id="discover_response2" class="response_box" data-spotify-id="spotify:track:{{response2_id}}">{{response2}}</div>
                                             </div>
                                         </div>
                                     </li>
@@ -212,7 +219,7 @@
                                         <div>
                                             <h4 id="discover_prompt3">{{prompt3}}</h4>
                                             <div class="answer">
-                                                <div id="discover_response3" class="box">{{response3}}</div>
+                                                <div id="discover_response3" class="response_box" data-spotify-id="spotify:track:{{response3_id}}">{{response3}}</div>
                                             </div>
                                         </div>
                                     </li>
@@ -220,7 +227,7 @@
                                         <div>
                                             <h4 id="discover_prompt4">{{prompt4}}</h4>
                                             <div class="answer">
-                                                <div id="discover_response4" class="box">{{response4}}</div>
+                                                <div id="discover_response4" class="response_box" data-spotify-id="spotify:track:{{response4_id}}">{{response4}}</div>
                                             </div>
                                         </div>
                                     </li>
@@ -228,7 +235,7 @@
                                         <div>
                                             <h4 id="discover_prompt5">{{prompt5}}</h4>
                                             <div class="answer">
-                                                <div id="discover_response5" class="box">{{response5}}</div>
+                                                <div id="discover_response5" class="response_box" data-spotify-id="spotify:track:{{response5_id}}">{{response5}}</div>
                                             </div>
                                         </div>
                                     </li>
